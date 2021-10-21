@@ -1,9 +1,13 @@
 import pygame
+import os
 # import pygamepopup
 # from pygamepopup.menu_manager import MenuManager
 
 import tkinter as tk
 import tkinter.messagebox as messagebox
+
+from ctypes import POINTER, WINFUNCTYPE, windll
+from ctypes.wintypes import BOOL, HWND, RECT
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -12,10 +16,12 @@ root = tk.Tk()
 root.wm_withdraw() #to hide the main window
 
 class MyDialog:
-    def __init__(self, parent):
+    def __init__(self, parent, win_pos, mouse_pos):
         # print(tk.Toplevel(parent))
         # tk.Toplevel(parent)
         top = self.top = tk.Toplevel()
+        print(win_pos[0] + mouse_pos[0], win_pos[1] + mouse_pos[1])
+        top.geometry(f"+{win_pos[0] + mouse_pos[0]}+{win_pos[1] + mouse_pos[1]}")
         # print(top)
         self.myLabel = tk.Label(top, text='Enter your username below')
         self.myLabel.pack()
@@ -87,9 +93,18 @@ def main():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 print("mouse clicked")
-                # pos = pygame.mouse.get_pos()
-                # print(pos)
-                inputDialog = MyDialog(root)
+                mouse_pos = pygame.mouse.get_pos()
+                print(mouse_pos)
+
+                hwnd = pygame.display.get_wm_info()["window"]
+                prototype = WINFUNCTYPE(BOOL, HWND, POINTER(RECT))
+                paramflags = (1, "hwnd"), (2, "lprect")
+                GetWindowRect = prototype(("GetWindowRect", windll.user32), paramflags)
+                # finally get our data!
+                rect = GetWindowRect(hwnd)
+                # print(rect.top, rect.left, rect.bottom, rect.right)
+                
+                inputDialog = MyDialog(root, (rect.left, rect.top), mouse_pos)
                 root.wait_window(inputDialog.top)
 
         
