@@ -210,20 +210,17 @@ def main():
     background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     background.fill(pygame.Color('#456000'))
 
-    # cursor_img = pygame.image.load('resource/cursor/RPG Style Arrow Alt.cur')
-    # horizontal_cursor = pygame.image.load('resource/cursor/RPG Style Horizontal Resize.cur')
-    # vertical_cursor = pygame.image.load('resource/cursor/RPG Style Vertical Resize.cur')
-    # pygame.mouse.set_visible(False)
-    # cursor_img_rect = cursor_img.get_rect()
+    cursor_img = pygame.image.load('resource/cursor/RPG Style Arrow Alt.cur')
+    horizontal_cursor = pygame.image.load('resource/cursor/RPG Style Horizontal Resize.cur')
+    vertical_cursor = pygame.image.load('resource/cursor/RPG Style Vertical Resize.cur')
+    pygame.mouse.set_visible(False)
+    cursor_img_rect = cursor_img.get_rect()
 
     # show_mainmenu()
 
     global running
     while running:
         fpsClock.tick(60)
-
-        
-        # cursor_img_rect.center = pygame.mouse.get_pos()  # update position 
         
         print(pygame.time.get_ticks())
         for event in pygame.event.get():
@@ -279,13 +276,14 @@ def main():
         all_sprites.draw(screen)
         
         mouse_pos = pygame.mouse.get_pos()
+        cursor_img_rect.center = pygame.mouse.get_pos()  # update position 
         # print(mouse_pos)
-        # if mouse_pos[0] >= SCREEN_WIDTH - UNIT_SIZE / 2 or mouse_pos[0] < UNIT_SIZE / 2:
-        #     screen.blit(horizontal_cursor, cursor_img_rect)
-        # elif mouse_pos[1] >= SCREEN_HEIGHT - UNIT_SIZE / 2 or mouse_pos[1] < UNIT_SIZE / 2:
-        #     screen.blit(vertical_cursor, cursor_img_rect)
-        # else:
-        #     screen.blit(cursor_img, cursor_img_rect)
+        if mouse_pos[0] >= SCREEN_WIDTH - UNIT_SIZE / 2 or mouse_pos[0] < UNIT_SIZE / 2:
+            screen.blit(horizontal_cursor, cursor_img_rect)
+        elif mouse_pos[1] >= SCREEN_HEIGHT - UNIT_SIZE / 2 or mouse_pos[1] < UNIT_SIZE / 2:
+            screen.blit(vertical_cursor, cursor_img_rect)
+        else:
+            screen.blit(cursor_img, cursor_img_rect)
 
         draw_mousepos(screen, mouse_pos)
         # pygame.display.update()
