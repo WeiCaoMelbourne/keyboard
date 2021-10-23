@@ -1,9 +1,73 @@
 
 import tkinter as tk
-from .modal_window import ModalWindow
+from tkinter.constants import RAISED, W
+from .win_pos import window_pos
 # Menu
 # L = tk.Label(root, text ="Right-click to display menu", width = 40, height = 20)
 # L.pack()
+
+class SetupWindow():
+    def __init__(self, title='Mess', msg='', b1='OK', b2='', b3='', b4=''):
+        WIDTH = 300
+        HEIGHT = 420
+
+        # Creating Dialogue for messagebox
+        self.root = tk.Toplevel()
+        # self.root.grab_set()
+        self.root.grab_set_global()
+
+        # Removing titlebar from the Dialogue
+        self.root.overrideredirect(True)
+
+        self.root.config(border=3, relief=RAISED)
+
+        win_pos = window_pos()
+        self.root.geometry(f"{WIDTH}x{HEIGHT}+{win_pos[0]+200}+{win_pos[1]+200}")
+
+        self.titlebar = tk.Label(self.root, text="环境设定")
+        # self.titlebar.place(x=5, y=5)
+        self.titlebar.pack(fill=tk.BOTH, padx=5, pady=5)
+
+        # button_frame = tk.Frame(self.root, height=40)
+        # button_frame.pack(side=tk.TOP, fill=tk.X)
+        labelframe1 = tk.LabelFrame(self.root, text="讯息显示速度", width=WIDTH-40, height=90)
+        # labelframe1.place(x=20, y=HEIGHT-250)
+        labelframe1.pack(expand=1, fill=tk.BOTH, padx=20, pady=10)
+
+        self.v = tk.StringVar()
+        r1 = tk.Radiobutton(labelframe1, text="慢", variable=self.v, value="slow")
+        r1.pack(side=tk.LEFT, padx=20)
+        r2 = tk.Radiobutton(labelframe1, text="普通", variable=self.v, value="normal")
+        r2.pack(side=tk.LEFT, padx=20)
+        r3 = tk.Radiobutton(labelframe1, text="快", variable=self.v, value="fast")
+        r3.pack(side=tk.LEFT, padx=20)
+
+        labelframe2 = tk.LabelFrame(self.root, text="武将移动速度", width=WIDTH-40, height=90)
+        # self.labelframe.place(x=20, y=HEIGHT-150)
+        labelframe2.pack(expand=1, fill=tk.BOTH, padx=20, pady=0)
+
+        # Creating Close Button
+        okBtn = tk.Button(self.root, text='确定', command=lambda:self.ok(), width=8)
+        # self.CloseBtn.place(x=WIDTH/2-70, y=HEIGHT-50)
+        okBtn.pack(side=tk.LEFT, fill=tk.BOTH, padx=20, pady=10)
+
+        cancleBtn = tk.Button(self.root, text='取消', command=lambda:self.cancel(), width=8)
+        # self.CloseBtn.place(x=WIDTH/2+20, y=HEIGHT-50)
+        cancleBtn.pack(side=tk.LEFT, fill=tk.BOTH, padx=20, pady=10)
+
+        self.root.wait_window()
+    
+    def closed(self):
+        self.root.destroy()
+        self.choice = 'closed'
+
+    def ok(self):
+        self.root.destroy() 
+        self.choice = 'ok'     
+
+    def cancel(self):
+        self.root.destroy() 
+        self.choice = 'cancel'
 
 class CreateToolTip(object):
     """
@@ -65,12 +129,8 @@ def save(root):
     print("save")
 
 def setup(root):
-    a = ModalWindow(msg='Hello I m your multiline message',
-                    title='Hello World',
-                    b1='Button 1',
-                    b2='Button 2',
-                    )
-    print(a.choice)
+    a = SetupWindow()
+    # print(a.choice)
 
 def config_toolbar(root):
     toolbar = tk.Frame(root, height=30)
