@@ -9,7 +9,8 @@ import tkinter.messagebox as messagebox
 
 from ctypes import POINTER, WINFUNCTYPE, windll
 from ctypes.wintypes import BOOL, HWND, RECT
-# from modules.main_menu import *
+from modules.main_menu import *
+from modules.toolbar import *
 from modules.win_pos import *
 
 SCREEN_WIDTH = 800
@@ -21,27 +22,18 @@ FPS = 60
 char_img = pygame.image.load('resource/img/t1.png')
 
 root = tk.Tk()
+
+#pictures must be a global variable, otherwise it won't work
+# exit_btn = None
+# exit_btn = tk.PhotoImage(file='resource/icon/exit.png')
+
 embed = tk.Frame(root, width=SCREEN_WIDTH, height=SCREEN_HEIGHT) #creates embed frame for pygame window
+config_menu(root)
+config_toolbar(root)
+
 embed.pack()
 os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
 os.environ['SDL_VIDEODRIVER'] = 'windib'
-
-def quit_callback():
-    # global running
-    # running = False
-    print("quit")
-
-def config_menu(root):
-    menubar = tk.Menu(root)
-    filemenu = tk.Menu(menubar, tearoff=True)
-    filemenu.add_command(label="读取")
-    filemenu.add_command(label="保存")
-    filemenu.add_separator()
-    filemenu.add_command(label="结束游戏", command=root.quit)
-    menubar.add_cascade(label="文件", menu=filemenu)
-    root.config(menu=menubar)
-
-
 
 running = True
 # def quit_callback():
@@ -193,10 +185,6 @@ def draw_mousebox(screen, pos):
     outline_rect = pygame.Rect(x, y, WIDTH, HEIGHT)
     pygame.draw.rect(screen, COLOR_WHITE, outline_rect, 2)
 
-# window = tk.Tk()
-# window.mainloop()
-# def main():
-    # show_mainmenu()
     
 pygame.display.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -217,19 +205,11 @@ vertical_cursor = pygame.image.load('resource/cursor/RPG Style Vertical Resize.c
 pygame.mouse.set_visible(False)
 cursor_img_rect = cursor_img.get_rect()
 
-# show_mainmenu()
-config_menu(root)
-
-
-    # while running:
-    #     fpsClock.tick(60)
-        
-        # print(pygame.time.get_ticks())
-        
-        
-
 def game():
-    pygame.mouse.set_visible(False)
+    global running
+    if running == False:
+        root.quit()
+
     # print(pygame.time.get_ticks())
     for event in pygame.event.get():
         print("evnet", event)
@@ -298,6 +278,7 @@ def game():
     draw_mousebox(screen, mouse_pos)
 
     pygame.display.update()
+    root.update()
     root.after(1000 // FPS, game)
 
 if __name__ == "__main__":
