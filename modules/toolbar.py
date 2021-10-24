@@ -71,8 +71,8 @@ class SetupWindow():
 
 class CharactersWindow():
     def __init__(self, title='Mess', msg='', b1='OK', b2='', b3='', b4=''):
-        WIDTH = 300
-        HEIGHT = 420
+        WIDTH = 600
+        HEIGHT = 400
 
         # Creating Dialogue for messagebox
         self.root = tk.Toplevel()
@@ -85,24 +85,48 @@ class CharactersWindow():
         self.root.config(border=3, relief=RAISED)
 
         win_pos = window_pos()
-        self.root.geometry(f"{WIDTH}x{HEIGHT}+{win_pos[0]+200}+{win_pos[1]+200}")
+        self.root.geometry(f"{WIDTH}x{HEIGHT}+{win_pos[0]+100}+{win_pos[1]+100}")
 
+        
         self.titlebar = tk.Label(self.root, text="部队情报一览")
         # self.titlebar.place(x=5, y=5)
         self.titlebar.pack(fill=tk.BOTH, padx=5, pady=5)
 
+        box_frame = tk.Frame(self.root, height=30)
+        box_frame.pack(side=tk.TOP, fill=tk.X, padx=10)
+
+        style = ttk.Style()
+        style.theme_use("default")
+        # tree.config(style="black.Treeview")
+        # style.configure("Treeview", background="#383838", foreground="white")
+        
         columns = ('#1', '#2', '#3')
-        tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        tree.heading('#1', text='First Name')
-        tree.heading('#2', text='Last Name')
-        tree.heading('#3', text='Email')
-        contacts = []
-        for n in range(1, 10):
-            contacts.append((f'first {n}', f'last {n}', f'email{n}@example.com'))
-                # adding data to the treeview
-        for contact in contacts:
-            tree.insert('', tk.END, values=contact)
+        tree = ttk.Treeview(box_frame, columns=columns, show='headings', height=15)
+        tree.tag_configure('odd', background='green')
+        tree.tag_configure('even', background='lightgreen')
+        tree.heading('#1', text='武将名')
+        tree.heading('#2', text='部队属性')
+        tree.heading('#3', text='Lv', command=lambda:self.treeview_sort_column(tree, '#3', False))
+        # tree['selectmode'] = "extended"
+
+        sb = tk.Scrollbar(box_frame, orient=tk.VERTICAL)
+        sb.pack(side=tk.RIGHT, fill=tk.Y)
+
+        sb.config(command=tree.yview)
+        tree.config(yscrollcommand=sb.set)
+        
+        values_list = [("曹操", "群雄", 14), ] * 25
+        # values_list = [("曹操", "群雄", 14), ("于禁", "弓兵", 10), ("郭嘉", "法师", 11)]
+        for index, values in enumerate(values_list):
+            if index % 2 == 0:
+                tree.insert('', tk.END, values=values)
+            else:
+                tree.insert('', tk.END, values=values, tags=('odd',))
+        # tree.tag_configure('oddrow', background='orange')
         tree.pack()
+
+        # style.map("tree")
+
         # tree.grid(row=0, column=0, sticky='nsew')
         # scrollbar = tk.Scrollbar(self.root, orient=tk.VERTICAL, command=tree.yview)
         # tree.configure(yscroll=scrollbar.set)
@@ -111,13 +135,24 @@ class CharactersWindow():
         # Creating Close Button
         okBtn = tk.Button(self.root, text='确定', command=lambda:self.ok(), width=8)
         # self.CloseBtn.place(x=WIDTH/2-70, y=HEIGHT-50)
-        okBtn.pack(side=tk.LEFT, fill=tk.BOTH, padx=20, pady=10)
+        okBtn.pack(side=tk.RIGHT, fill=tk.BOTH, padx=10, pady=10)
 
-        cancleBtn = tk.Button(self.root, text='取消', command=lambda:self.cancel(), width=8)
-        # self.CloseBtn.place(x=WIDTH/2+20, y=HEIGHT-50)
-        cancleBtn.pack(side=tk.LEFT, fill=tk.BOTH, padx=20, pady=10)
+        # cancleBtn = tk.Button(self.root, text='取消', command=lambda:self.cancel(), width=8)
+        # # self.CloseBtn.place(x=WIDTH/2+20, y=HEIGHT-50)
+        # cancleBtn.pack(side=tk.LEFT, fill=tk.BOTH, padx=20, pady=10)
 
         self.root.wait_window()
+
+    def treeview_sort_column(self, tv, col, reverse):
+        l = [(tv.set(k, col), k) for k in tv.get_children('')]
+        l.sort(reverse=reverse)
+
+        # rearrange items in sorted positions
+        for index, (val, k) in enumerate(l):
+            tv.move(k, '', index)
+
+        # reverse sort next time
+        tv.heading(col, command=lambda:self.treeview_sort_column(tv, col, not reverse))
     
     def closed(self):
         self.root.destroy()
