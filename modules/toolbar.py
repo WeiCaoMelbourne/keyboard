@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter.constants import RAISED, W
+from tkinter.constants import RAISED
+from PIL import Image, ImageTk
 from .win_pos import window_pos
 from .tv_funcs import treeview_sort_column
 # Menu
@@ -98,10 +99,27 @@ class ToolsWindow():
         style = ttk.Style()
         style.theme_use("default")
         style.map("Treeview", background=[('disabled', 'SystemButtonFace'), ('selected', 'SystemHighlight')])
+        # Using .layout(), you can retrieve the layout specifications of each style
+        # print(style.layout("Treeview.Item"))
+        # If you comment "Treeitem.focus" out when overwriting the layout, the focus drawing behavior (and the dashed line) will disappear
+        style.layout("Treeview.Item",
+            [(
+                'Treeitem.padding', 
+                {
+                    'sticky': 'nswe', 
+                    'children': [
+                        ('Treeitem.indicator', {'side': 'left', 'sticky': ''}),
+                        ('Treeitem.image', {'side': 'left', 'sticky': ''}),
+                        #('Treeitem.focus', {'side': 'left', 'sticky': '', 'children': [('Treeitem.text', {'side': 'left', 'sticky': ''}), ]})
+                        ],
+                }
+            )]
+            )
         
         columns = ('#1', '#2', '#3')
-        tree = ttk.Treeview(frame1, columns=columns, show='headings', height=13)
+        tree = ttk.Treeview(frame1, columns=columns, height=13)
         tree.tag_configure('odd', background='gainsboro')
+        tree.heading('#0', text='Pic')
         tree.heading('#1', text='名称')
         tree.heading('#2', text='持有者')
         tree.heading('#3', text='属性', command=lambda:treeview_sort_column(tree, '#3', False))
@@ -112,13 +130,19 @@ class ToolsWindow():
         sb.config(command=tree.yview)
         tree.config(yscrollcommand=sb.set)
         
+        # self.spear_img = tk.PhotoImage(file="resource/icon/spear.png")
+        img = Image.open('resource/icon/spear.png')
+        img = img.resize((25, 25), Image.ANTIALIAS)
+        self.spear_img = ImageTk.PhotoImage(img)
+
         # values_list = [("曹操", "群雄", 14), ] * 25
         values_list = [("布衣", "仓库", "衣服"), ("短剑", "仓库", "剑"), ("短枪", "仓库", "枪")]
+        # tree.insert('', tk.END, values=("布衣", "仓库", "衣服"), image=self.spear_img)
         for index, values in enumerate(values_list):
             if index % 2 == 0:
                 tree.insert('', tk.END, values=values)
             else:
-                tree.insert('', tk.END, values=values, tags=('odd',))
+                tree.insert('', tk.END, values=values, image=self.spear_img, tags=('odd',))
         tree.pack()
 
         # treeview 2
