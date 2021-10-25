@@ -97,13 +97,14 @@ class CharactersWindow():
 
         style = ttk.Style()
         style.theme_use("default")
+        style.map("Treeview", background=[('disabled', 'SystemButtonFace'), ('selected', 'SystemHighlight')])
         # tree.config(style="black.Treeview")
         # style.configure("Treeview", background="#383838", foreground="white")
         
         columns = ('#1', '#2', '#3')
         tree = ttk.Treeview(box_frame, columns=columns, show='headings', height=15)
-        tree.tag_configure('odd', background='green')
-        tree.tag_configure('even', background='lightgreen')
+        tree.tag_configure('odd', background='gainsboro')
+        # tree.tag_configure('even', background='lightgreen')
         tree.heading('#1', text='武将名')
         tree.heading('#2', text='部队属性')
         tree.heading('#3', text='Lv', command=lambda:self.treeview_sort_column(tree, '#3', False))
