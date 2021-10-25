@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.constants import RAISED, W
 from .win_pos import window_pos
+from .tv_funcs import treeview_sort_column
 # Menu
 # L = tk.Label(root, text ="Right-click to display menu", width = 40, height = 20)
 # L.pack()
@@ -68,6 +69,92 @@ class SetupWindow():
     def cancel(self):
         self.root.destroy() 
         self.choice = 'cancel'
+
+class ToolsWindow():
+    def __init__(self, title='Mess', msg='', b1='OK', b2='', b3='', b4=''):
+        WIDTH = 600
+        HEIGHT = 400
+
+        # Creating Dialogue for messagebox
+        self.root = tk.Toplevel()
+        self.root.grab_set_global()
+        self.root.overrideredirect(True)
+        self.root.config(border=3, relief=RAISED)
+
+        win_pos = window_pos()
+        self.root.geometry(f"{WIDTH}x{HEIGHT}+{win_pos[0]+100}+{win_pos[1]+100}")
+        self.titlebar = tk.Label(self.root, text="道具一览")
+        self.titlebar.pack(fill=tk.BOTH, padx=5, pady=5)
+
+        notebook = ttk.Notebook(self.root)
+        notebook.pack(expand=True)
+
+        # create frames
+        frame1 = ttk.Frame(notebook, width=WIDTH-30, height=HEIGHT-320)
+        frame2 = ttk.Frame(notebook, width=WIDTH-30, height=HEIGHT-320)
+        frame1.pack(fill='both', expand=True)
+        frame2.pack(fill='both', expand=True)
+
+        style = ttk.Style()
+        style.theme_use("default")
+        style.map("Treeview", background=[('disabled', 'SystemButtonFace'), ('selected', 'SystemHighlight')])
+        
+        columns = ('#1', '#2', '#3')
+        tree = ttk.Treeview(frame1, columns=columns, show='headings', height=13)
+        tree.tag_configure('odd', background='gainsboro')
+        tree.heading('#1', text='名称')
+        tree.heading('#2', text='持有者')
+        tree.heading('#3', text='属性', command=lambda:treeview_sort_column(tree, '#3', False))
+
+        sb = tk.Scrollbar(frame1, orient=tk.VERTICAL)
+        sb.pack(side=tk.RIGHT, fill=tk.Y)
+
+        sb.config(command=tree.yview)
+        tree.config(yscrollcommand=sb.set)
+        
+        # values_list = [("曹操", "群雄", 14), ] * 25
+        values_list = [("布衣", "仓库", "衣服"), ("短剑", "仓库", "剑"), ("短枪", "仓库", "枪")]
+        for index, values in enumerate(values_list):
+            if index % 2 == 0:
+                tree.insert('', tk.END, values=values)
+            else:
+                tree.insert('', tk.END, values=values, tags=('odd',))
+        tree.pack()
+
+        # treeview 2
+        columns = ('#1', '#2', '#3')
+        tree2 = ttk.Treeview(frame2, columns=columns, show='headings', height=13)
+        tree2.tag_configure('odd', background='gainsboro')
+        tree2.heading('#1', text='名称')
+        tree2.heading('#2', text='库存')
+        tree2.heading('#3', text='功效', command=lambda:treeview_sort_column(tree, '#3', False))
+
+        sb2 = tk.Scrollbar(frame2, orient=tk.VERTICAL)
+        sb2.pack(side=tk.RIGHT, fill=tk.Y)
+
+        sb2.config(command=tree.yview)
+        tree2.config(yscrollcommand=sb.set)
+        
+        # values_list = [("曹操", "群雄", 14), ] * 25
+        values_list2 = [("米", 14, "恢复HP"), ("豆", 10, "恢复HP")]
+        for index, values in enumerate(values_list2):
+            if index % 2 == 0:
+                tree2.insert('', tk.END, values=values)
+            else:
+                tree2.insert('', tk.END, values=values, tags=('odd',))
+        tree2.pack()
+
+        notebook.add(frame1, text='武器')
+        notebook.add(frame2, text='道具')
+
+        okBtn = tk.Button(self.root, text='确定', command=lambda:self.ok(), width=8)
+        okBtn.pack(side=tk.RIGHT, fill=tk.BOTH, padx=10, pady=10)
+
+        self.root.wait_window()
+
+    def ok(self):
+        self.root.destroy() 
+        self.choice = 'ok'   
 
 class CharactersWindow():
     def __init__(self, title='Mess', msg='', b1='OK', b2='', b3='', b4=''):
@@ -234,6 +321,10 @@ def characters(root):
     a = CharactersWindow()
     # print(a.choice)
 
+def tools(root):
+    a = ToolsWindow()
+    # print(a.choice)
+
 def config_toolbar(root):
     toolbar = tk.Frame(root, height=30)
     toolbar.pack(side=tk.TOP, fill=tk.X)
@@ -267,7 +358,7 @@ def config_toolbar(root):
     char_button.pack(side=tk.LEFT)
     CreateToolTip(setup_button, "武将一览")
 
-    tool_img = tk.PhotoImage(file='resource/icon/characters.png')
-    tool_button= tk.Button(toolbar2, image=tool_img, command=lambda: setup(root=root), width=25, height=25)
+    tool_img = tk.PhotoImage(file='resource/icon/tools.png')
+    tool_button= tk.Button(toolbar2, image=tool_img, command=lambda: tools(root=root), width=25, height=25)
     tool_button.pack(side=tk.LEFT)
     CreateToolTip(setup_button, "持有道具一览")
