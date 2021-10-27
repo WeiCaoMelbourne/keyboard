@@ -4,6 +4,8 @@ from tkinter.constants import RAISED
 from PIL import Image, ImageTk
 from .win_pos import window_pos
 from .tv_funcs import treeview_sort_column
+from .msg_box import MsgBoxWindow
+
 # Menu
 # L = tk.Label(root, text ="Right-click to display menu", width = 40, height = 20)
 # L.pack()
@@ -349,6 +351,10 @@ def tools(root):
     a = ToolsWindow()
     # print(a.choice)
 
+def about(root):
+    a = MsgBoxWindow()
+    # print(a.choice)
+
 def config_toolbar(root):
     toolbar = tk.Frame(root, height=30)
     toolbar.pack(side=tk.TOP, fill=tk.X)
@@ -385,4 +391,13 @@ def config_toolbar(root):
     tool_img = tk.PhotoImage(file='resource/icon/tools.png')
     tool_button= tk.Button(toolbar2, image=tool_img, command=lambda: tools(root=root), width=25, height=25)
     tool_button.pack(side=tk.LEFT)
-    CreateToolTip(setup_button, "持有道具一览")
+    CreateToolTip(tool_button, "持有道具一览")
+
+    # about_img = tk.PhotoImage(file='resource/icon/about.png')
+    global about_img
+    img = Image.open('resource/icon/about.png')
+    img = img.resize((25, 25), Image.ANTIALIAS)
+    about_img = ImageTk.PhotoImage(img)
+    about_button= tk.Button(toolbar2, image=about_img, command=lambda: about(root=root), width=25, height=25)
+    about_button.pack(side=tk.LEFT)
+    CreateToolTip(about_button, "关于")
