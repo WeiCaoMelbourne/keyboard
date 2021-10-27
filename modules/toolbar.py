@@ -203,10 +203,13 @@ class CharactersWindow():
         
         self.titlebar = tk.Label(self.root, text="部队情报一览")
         # self.titlebar.place(x=5, y=5)
+        self.titlebar.bind("<ButtonPress-1>", self.start_move)
+        self.titlebar.bind("<ButtonRelease-1>", self.stop_move)
+        self.titlebar.bind("<B1-Motion>", self.do_move)
         self.titlebar.pack(fill=tk.BOTH, padx=5, pady=5)
 
         box_frame = tk.Frame(self.root, height=30)
-        box_frame.pack(side=tk.TOP, fill=tk.X, padx=10)
+        box_frame.pack(side=tk.TOP, fill=tk.BOTH, padx=10)
 
         style = ttk.Style()
         style.theme_use("default")
@@ -279,6 +282,21 @@ class CharactersWindow():
     def cancel(self):
         self.root.destroy() 
         self.choice = 'cancel'
+
+    def start_move(self, event):
+        self.x = event.x
+        self.y = event.y
+
+    def stop_move(self, event):
+        self.x = None
+        self.y = None
+
+    def do_move(self, event):
+        deltax = event.x - self.x
+        deltay = event.y - self.y
+        x = self.root.winfo_x() + deltax
+        y = self.root.winfo_y() + deltay
+        self.root.geometry(f"+{x}+{y}")
 
 class CreateToolTip(object):
     """
