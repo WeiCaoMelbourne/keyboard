@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 from .win_pos import window_pos
 from .tv_funcs import treeview_sort_column
 from .msg_box import MsgBoxWindow
+from .modal_window import ModalWindow
 
 # Menu
 # L = tk.Label(root, text ="Right-click to display menu", width = 40, height = 20)
@@ -182,10 +183,48 @@ class ToolsWindow():
         self.root.destroy() 
         self.choice = 'ok'   
 
+class CharacterWindow():
+    def __init__(self, parent, **kwargs):
+        WIDTH = 400
+        HEIGHT = 300
+
+        # print(**kwargs)
+        for key, value in kwargs.items():
+            print("{} is {}".format(key,value))
+
+        self.parent = parent
+        self.root = tk.Toplevel(parent.root)
+        # self.root.grab_set()
+        # self.root.grab_set_global()
+
+        # Removing titlebar from the Dialogue
+        self.root.overrideredirect(True)
+        self.root.config(border=3, relief=RAISED)
+        win_pos = window_pos()
+        self.root.geometry(f"{WIDTH}x{HEIGHT}+{kwargs['x']}+{kwargs['y']}")
+
+        okBtn = tk.Button(self.root, text='确定', command=lambda:self.ok(), width=8)
+        # self.CloseBtn.place(x=WIDTH/2-70, y=HEIGHT-50)
+        okBtn.pack(side=tk.RIGHT, padx=10, pady=10)
+
+        # cancleBtn = tk.Button(self.root, text='取消', command=lambda:self.cancel(), width=8)
+        # # self.CloseBtn.place(x=WIDTH/2+20, y=HEIGHT-50)
+        # cancleBtn.pack(side=tk.LEFT, fill=tk.BOTH, padx=20, pady=10)
+
+        # self.root.wait_window()
+        self.choice = None
+
+    def ok(self):
+        self.root.destroy() 
+        self.parent.childWin = None
+        # self.choice = 'ok' 
+
 class CharactersWindow():
     def __init__(self, title='Mess', msg='', b1='OK', b2='', b3='', b4=''):
         WIDTH = 600
         HEIGHT = 400
+
+        self.childWin = None
 
         # Creating Dialogue for messagebox
         self.root = tk.Toplevel()
@@ -232,8 +271,8 @@ class CharactersWindow():
         sb.config(command=self.tree.yview)
         self.tree.config(yscrollcommand=sb.set)
         
-        values_list = [("曹操", "群雄", 14), ] * 25
-        # values_list = [("曹操", "群雄", 14), ("于禁", "弓兵", 10), ("郭嘉", "法师", 11)]
+        # values_list = [("曹操", "群雄", 14), ] * 25
+        values_list = [("曹操", "群雄", 14), ("于禁", "弓兵", 10), ("郭嘉", "法师", 11)]
         for index, values in enumerate(values_list):
             if index % 2 == 0:
                 self.tree.insert('', tk.END, values=values)
@@ -264,6 +303,14 @@ class CharactersWindow():
     def treeview_clicked(self, event):
         item = self.tree.identify('item', event.x,event.y)
         print("you clicked on", self.tree.item(item, "value"))
+        if self.childWin:
+            print("Already exists")
+            pass
+        else:
+            self.childWin = CharacterWindow(parent=self, x=self.root.winfo_x() + self.root.winfo_width(), y=self.root.winfo_y())
+            # print(self.childWin.choice)
+            # if self.childWin.choice == 'ok':
+            #     self.childWin = None
 
     def treeview_sort_column(self, tv, col, reverse):
         l = [(tv.set(k, col), k) for k in tv.get_children('')]
@@ -376,6 +423,7 @@ def tools(root):
 
 def about(root):
     a = MsgBoxWindow()
+    # a = ModalWindow()
     # print(a.choice)
 
 def config_toolbar(root):
