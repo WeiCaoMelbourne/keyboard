@@ -218,29 +218,30 @@ class CharactersWindow():
         # style.configure("Treeview", background="#383838", foreground="white")
         
         columns = ('#1', '#2', '#3')
-        tree = ttk.Treeview(box_frame, columns=columns, show='headings', height=15)
-        tree.tag_configure('odd', background='gainsboro')
+        self.tree = ttk.Treeview(box_frame, columns=columns, show='headings', height=15)
+        self.tree.tag_configure('odd', background='gainsboro')
         # tree.tag_configure('even', background='lightgreen')
-        tree.heading('#1', text='武将名')
-        tree.heading('#2', text='部队属性')
-        tree.heading('#3', text='Lv', command=lambda:self.treeview_sort_column(tree, '#3', False))
+        self.tree.heading('#1', text='武将名')
+        self.tree.heading('#2', text='部队属性')
+        self.tree.heading('#3', text='Lv', command=lambda:self.treeview_sort_column(tree, '#3', False))
         # tree['selectmode'] = "extended"
 
         sb = tk.Scrollbar(box_frame, orient=tk.VERTICAL)
         sb.pack(side=tk.RIGHT, fill=tk.Y)
 
-        sb.config(command=tree.yview)
-        tree.config(yscrollcommand=sb.set)
+        sb.config(command=self.tree.yview)
+        self.tree.config(yscrollcommand=sb.set)
         
         values_list = [("曹操", "群雄", 14), ] * 25
         # values_list = [("曹操", "群雄", 14), ("于禁", "弓兵", 10), ("郭嘉", "法师", 11)]
         for index, values in enumerate(values_list):
             if index % 2 == 0:
-                tree.insert('', tk.END, values=values)
+                self.tree.insert('', tk.END, values=values)
             else:
-                tree.insert('', tk.END, values=values, tags=('odd',))
+                self.tree.insert('', tk.END, values=values, tags=('odd',))
         # tree.tag_configure('oddrow', background='orange')
-        tree.pack()
+        self.tree.bind("<ButtonPress-1>", self.treeview_clicked)
+        self.tree.pack()
 
         # style.map("tree")
 
@@ -252,13 +253,17 @@ class CharactersWindow():
         # Creating Close Button
         okBtn = tk.Button(self.root, text='确定', command=lambda:self.ok(), width=8)
         # self.CloseBtn.place(x=WIDTH/2-70, y=HEIGHT-50)
-        okBtn.pack(side=tk.RIGHT, fill=tk.BOTH, padx=10, pady=10)
+        okBtn.pack(side=tk.RIGHT, padx=10, pady=10)
 
         # cancleBtn = tk.Button(self.root, text='取消', command=lambda:self.cancel(), width=8)
         # # self.CloseBtn.place(x=WIDTH/2+20, y=HEIGHT-50)
         # cancleBtn.pack(side=tk.LEFT, fill=tk.BOTH, padx=20, pady=10)
 
         self.root.wait_window()
+
+    def treeview_clicked(self, event):
+        item = self.tree.identify('item', event.x,event.y)
+        print("you clicked on", self.tree.item(item, "value"))
 
     def treeview_sort_column(self, tv, col, reverse):
         l = [(tv.set(k, col), k) for k in tv.get_children('')]
