@@ -1,0 +1,10 @@
+{
+    "曹操": {
+        "pic": "resource/characters/caocao/61.jpg",
+        "status": "正常",
+        "strategies": [
+            "旋风",
+            "小补给"
+        ]
+    }        
+}

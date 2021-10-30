@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter.constants import RAISED
+from tkinter.constants import BOTH, RAISED, SUNKEN
 from PIL import Image, ImageTk
 from .win_pos import window_pos
 from .tv_funcs import treeview_sort_column
 from .msg_box import MsgBoxWindow
 from .modal_window import ModalWindow
+import json
 
 # Menu
 # L = tk.Label(root, text ="Right-click to display menu", width = 40, height = 20)
@@ -186,9 +187,9 @@ class ToolsWindow():
 class CharacterWindow():
     def __init__(self, parent, **kwargs):
         WIDTH = 400
-        HEIGHT = 300
+        HEIGHT = 400
+        LEFTFRAME_WIDTH = WIDTH/2-20
 
-        # print(**kwargs)
         for key, value in kwargs.items():
             print("{} is {}".format(key,value))
 
@@ -200,12 +201,115 @@ class CharacterWindow():
         # Removing titlebar from the Dialogue
         self.root.overrideredirect(True)
         self.root.config(border=3, relief=RAISED)
-        win_pos = window_pos()
         self.root.geometry(f"{WIDTH}x{HEIGHT}+{kwargs['x']}+{kwargs['y']}")
+
+        titlebar = tk.Label(self.root, text="武将情报", anchor="w")
+        # self.titlebar.place(x=5, y=5)
+        titlebar.bind("<ButtonPress-1>", self.start_move)
+        titlebar.bind("<ButtonRelease-1>", self.stop_move)
+        titlebar.bind("<B1-Motion>", self.do_move)
+        titlebar.pack(fill=tk.Y, padx=5, pady=5)
+
+        main_frame = tk.Frame(self.root, height=HEIGHT-90, background="red")
+        main_frame.pack(side=tk.TOP, fill=tk.BOTH)
+
+        left_frame = tk.Frame(main_frame, width=LEFTFRAME_WIDTH, height=HEIGHT-90, background="blue")
+        left_frame.pack(side=tk.LEFT, fill=tk.BOTH, padx=10)
+
+        # avator_file = ;
+        lefttop_frame = tk.Frame(left_frame, width=WIDTH/2-20, height=HEIGHT-90, background="yellow")
+        lefttop_frame.pack(side=tk.TOP, fill=tk.BOTH, padx=10)
+
+        all_chars = {}
+        with open('data/characters.json', 'rb') as f:
+            all_chars = json.load(f)
+            # about_info = f.readlines()
+            print(all_chars)
+        char_info = all_chars[kwargs['brief'][0]]
+        print(char_info)
+        img = Image.open(char_info['pic'])
+        img = img.resize((70, 70), Image.ANTIALIAS)
+        game_img = ImageTk.PhotoImage(img)
+        icon_label = tk.Label(lefttop_frame, image=game_img)
+        icon_label.image = game_img
+        icon_label.grid(row=0, rowspan=2, column=0)
+
+        name_label = tk.Label(lefttop_frame, text=kwargs['brief'][0])
+        name_label.grid(row=0, rowspan=1, column=1)
+
+        money_frame = tk.LabelFrame(lefttop_frame, text="现金", width=80, height=40)
+        money_frame.grid(row=1, rowspan=1, column=1, padx=10)
+        name_label = tk.Label(money_frame, text='2000')
+        name_label.pack()
+
+        troop_frame = tk.LabelFrame(left_frame, text="部队属性", height=70, width=150)
+        troop_frame.pack(fill=tk.X, padx=10, pady=5)
+        troop_label = tk.Label(troop_frame, text='群雄')
+        troop_label.grid(row=0, rowspan=1, column=0, columnspan=1)
+        troop_label2 = tk.Label(troop_frame, text='Lv 14')
+        troop_label2.grid(row=1, rowspan=1, column=0, columnspan=1)
+        troop_label3 = tk.Label(troop_frame, text='Exp')
+        troop_label3.grid(row=1, rowspan=1, column=1, columnspan=1, sticky=tk.E, padx=2)
+        # troop_frame.grid_columnconfigure(1, minsize=50)
+
+        style = ttk.Style(self.root)
+        style.layout("LabeledProgressbar",
+                [('LabeledProgressbar.trough',
+                {'children': [('LabeledProgressbar.pbar',
+                                {'side': 'left', 'sticky': 'ns'}),
+                                ("LabeledProgressbar.label",   # label inside the bar
+                                {"sticky": "w"})],
+                'sticky': 'nswe'})])
+        style.configure("LabeledProgressbar", background='#9d4edd')
+        style.configure("LabeledProgressbar", text="40/100")
+        exp = ttk.Progressbar(troop_frame, length=80, style='LabeledProgressbar', maximum=100)
+        # exp = ttk.Progressbar(troop_frame, length=60, maximum=100)
+        exp['value'] = 90
+        exp.grid(row=1, rowspan=1, column=2, columnspan=1, padx=3)
+
+        status_frame = tk.LabelFrame(left_frame, text="状态", height=130, width=150)
+        status_frame.pack(fill=tk.X, padx=10, pady=5)
+        hp_label = tk.Label(status_frame, text='HP')
+        hp_label.grid(row=0, column=0)
+        style.layout("HPProgressbar",
+                [('HPProgressbar.trough',
+                {'children': [('HPProgressbar.pbar',
+                                {'side': 'left', 'sticky': 'ns'}),
+                                ("HPProgressbar.label",   # label inside the bar
+                                {"sticky": "w"})],
+                'sticky': 'nswe'})])
+        style.configure("HPProgressbar", background='#83c5be')
+        style.configure("HPProgressbar", text="30/100")
+        hp_bar = ttk.Progressbar(status_frame, style='HPProgressbar', maximum=100)
+        hp_bar['value'] = 40
+        hp_bar.grid(row=0, column=1, columnspan=3, padx=3)
+        mp_label = tk.Label(status_frame, text='MP')
+        mp_label.grid(row=1, column=0)
+        style.layout("MPProgressbar",
+                [('MPProgressbar.trough',
+                {'children': [('MPProgressbar.pbar',
+                                {'side': 'left', 'sticky': 'ns'}),
+                                ("MPProgressbar.label",   # label inside the bar
+                                {"sticky": "w"})],
+                'sticky': 'nswe'})])
+        style.configure("MPProgressbar", background='#ccd5ae')
+        style.configure("MPProgressbar", text="20/100")
+        mp_bar = ttk.Progressbar(status_frame, style='MPProgressbar', maximum=100)
+        mp_bar['value'] = 50
+        mp_bar.grid(row=1, column=1, columnspan=3, padx=3)
+
+        # status_label = tk.Message(status_frame, text='正常', relief=SUNKEN, width=LEFTFRAME_WIDTH)
+        # status_label.grid(row=2, rowspan=2, column=0, columnspan=4)
+        # status_label.pack(fill=BOTH)
+        status_label = tk.Label(status_frame, text='正常', relief=SUNKEN, width=18, height=4, anchor="nw")
+        status_label.grid(row=2, rowspan=2, column=0, columnspan=4, padx=5, pady=10)
+        
+        right_frame = tk.Frame(main_frame, width=WIDTH/2-20, height=HEIGHT-90, background="green")
+        right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, padx=10)
 
         okBtn = tk.Button(self.root, text='确定', command=lambda:self.ok(), width=8)
         # self.CloseBtn.place(x=WIDTH/2-70, y=HEIGHT-50)
-        okBtn.pack(side=tk.RIGHT, padx=10, pady=10)
+        okBtn.pack(side=tk.BOTTOM, padx=10, pady=10)
 
         # cancleBtn = tk.Button(self.root, text='取消', command=lambda:self.cancel(), width=8)
         # # self.CloseBtn.place(x=WIDTH/2+20, y=HEIGHT-50)
@@ -218,6 +322,21 @@ class CharacterWindow():
         self.root.destroy() 
         self.parent.childWin = None
         # self.choice = 'ok' 
+
+    def start_move(self, event):
+        self.x = event.x
+        self.y = event.y
+
+    def stop_move(self, event):
+        self.x = None
+        self.y = None
+
+    def do_move(self, event):
+        deltax = event.x - self.x
+        deltay = event.y - self.y
+        x = self.root.winfo_x() + deltax
+        y = self.root.winfo_y() + deltay
+        self.root.geometry(f"+{x}+{y}")
 
 class CharactersWindow():
     def __init__(self, title='Mess', msg='', b1='OK', b2='', b3='', b4=''):
@@ -282,32 +401,21 @@ class CharactersWindow():
         self.tree.bind("<ButtonPress-1>", self.treeview_clicked)
         self.tree.pack()
 
-        # style.map("tree")
-
-        # tree.grid(row=0, column=0, sticky='nsew')
-        # scrollbar = tk.Scrollbar(self.root, orient=tk.VERTICAL, command=tree.yview)
-        # tree.configure(yscroll=scrollbar.set)
-        # scrollbar.grid(row=0, column=1, sticky='ns')
-        
-        # Creating Close Button
         okBtn = tk.Button(self.root, text='确定', command=lambda:self.ok(), width=8)
-        # self.CloseBtn.place(x=WIDTH/2-70, y=HEIGHT-50)
         okBtn.pack(side=tk.RIGHT, padx=10, pady=10)
-
-        # cancleBtn = tk.Button(self.root, text='取消', command=lambda:self.cancel(), width=8)
-        # # self.CloseBtn.place(x=WIDTH/2+20, y=HEIGHT-50)
-        # cancleBtn.pack(side=tk.LEFT, fill=tk.BOTH, padx=20, pady=10)
 
         self.root.wait_window()
 
     def treeview_clicked(self, event):
         item = self.tree.identify('item', event.x,event.y)
-        print("you clicked on", self.tree.item(item, "value"))
+        char_info = self.tree.item(item, "value")
+        print("you clicked on", char_info)
         if self.childWin:
             print("Already exists")
             pass
         else:
-            self.childWin = CharacterWindow(parent=self, x=self.root.winfo_x() + self.root.winfo_width(), y=self.root.winfo_y())
+            self.childWin = CharacterWindow(parent=self, 
+                x=self.root.winfo_x() + self.root.winfo_width(), y=self.root.winfo_y(), brief=char_info)
             # print(self.childWin.choice)
             # if self.childWin.choice == 'ok':
             #     self.childWin = None
