@@ -188,7 +188,7 @@ class CharacterWindow():
     def __init__(self, parent, **kwargs):
         WIDTH = 400
         HEIGHT = 400
-        LEFTFRAME_WIDTH = WIDTH/2-10
+        LEFTFRAME_WIDTH = WIDTH/2-20
         MAINFRAME_HEIGHT = HEIGHT-90
 
         for key, value in kwargs.items():
@@ -219,7 +219,7 @@ class CharacterWindow():
 
         # avator_file = ;
         lefttop_frame = tk.Frame(left_frame, width=WIDTH/2-20, background="yellow")
-        lefttop_frame.pack(side=tk.TOP, fill=tk.BOTH, padx=10)
+        lefttop_frame.pack(side=tk.TOP, fill=tk.BOTH, padx=5)
 
         all_chars = {}
         with open('data/characters.json', 'rb') as f:
@@ -244,7 +244,7 @@ class CharacterWindow():
         name_label.pack()
 
         troop_frame = tk.LabelFrame(left_frame, text="部队属性", height=70, width=150)
-        troop_frame.pack(fill=tk.X, padx=10, pady=5)
+        troop_frame.pack(fill=tk.X, padx=5, pady=5)
         troop_label = tk.Label(troop_frame, text='群雄')
         troop_label.grid(row=0, rowspan=1, column=0, columnspan=1)
         troop_label2 = tk.Label(troop_frame, text='Lv 14')
@@ -268,8 +268,8 @@ class CharacterWindow():
         exp['value'] = 90
         exp.grid(row=1, rowspan=1, column=2, columnspan=1, padx=3)
 
-        status_frame = tk.LabelFrame(left_frame, text="状态", height=130, width=150)
-        status_frame.pack(fill=tk.X, padx=10, pady=5)
+        status_frame = tk.LabelFrame(left_frame, text="状态", height=130, width=130)
+        status_frame.pack(fill=tk.X, padx=5, pady=5)
         hp_label = tk.Label(status_frame, text='HP')
         hp_label.grid(row=0, column=0)
         style.layout("HPProgressbar",
@@ -302,7 +302,7 @@ class CharacterWindow():
         # status_label = tk.Message(status_frame, text='正常', relief=SUNKEN, width=LEFTFRAME_WIDTH)
         # status_label.grid(row=2, rowspan=2, column=0, columnspan=4)
         # status_label.pack(fill=BOTH)
-        status_label = tk.Label(status_frame, text=char_info['status'], relief=SUNKEN, width=20, height=4, anchor="nw")
+        status_label = tk.Label(status_frame, text=char_info['status'], relief=SUNKEN, width=18, height=4, anchor="nw")
         status_label.grid(row=2, rowspan=2, column=0, columnspan=4, padx=5, pady=10)
         
         right_frame = tk.Frame(main_frame, width=LEFTFRAME_WIDTH, height=MAINFRAME_HEIGHT, background="green")
@@ -318,18 +318,19 @@ class CharacterWindow():
         # basics_frame.columnconfigure(tuple(range(2)), weight=1)
         # basics_frame.columnconfigure(0, weight=1)
         attack_label = ttk.Label(basics_frame, text=f"武力 {char_info['武力']}", width=12)
-        attack_label.grid(row=0, column=0, sticky="news", padx=5, pady=2)
+        attack_label.grid(row=0, column=0, sticky="news", padx=5, pady=1)
         agile_label = ttk.Label(basics_frame, text=f"武力 {char_info['敏捷']}", width=12)
-        agile_label.grid(row=0, column=1, sticky="news", padx=5, pady=2)
+        agile_label.grid(row=0, column=1, sticky="news", padx=5, pady=1)
         mind_label = ttk.Label(basics_frame, text=f"武力 {char_info['智力']}", width=12)
-        mind_label.grid(row=1, column=0, sticky="news", padx=5, pady=2)
+        mind_label.grid(row=1, column=0, sticky="news", padx=5, pady=1)
         luck_label = ttk.Label(basics_frame, text=f"武力 {char_info['运气']}", width=12)
-        luck_label.grid(row=1, column=1, sticky="news", padx=5, pady=2)
+        luck_label.grid(row=1, column=1, sticky="news", padx=5, pady=1)
         leadship_label = ttk.Label(basics_frame, text=f"武力 {char_info['统率']}", width=12)
-        leadship_label.grid(row=3, column=0, sticky="news", padx=5, pady=2)
+        leadship_label.grid(row=3, column=0, sticky="news", padx=5, pady=1)
         
-        brief_label = tk.Label(frame1, text=f"{char_info['列传']}", relief=SUNKEN, wraplength=160, width=23, height=10, anchor="nw")
-        brief_label.pack()
+        # brief_label = tk.Label(frame1, text=f"{char_info['列传']}", relief=SUNKEN, wraplength=160, width=23, height=10, anchor="nw")
+        brief_label = tk.Message(frame1, text=f"{char_info['列传']}", relief=SUNKEN, width=180, bg="#e5e5e5")
+        brief_label.pack(padx=10, pady=5)
 
         total = ttk.Frame(frame1, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
         total.pack(fill=tk.BOTH, expand=True)
@@ -339,6 +340,22 @@ class CharacterWindow():
         totalright_label.pack(side=tk.RIGHT, padx=10, pady=5)
 
         notebook.add(frame1, text='武将列传')
+
+        frame2 = ttk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
+        frame2.pack(fill=tk.BOTH, expand=True)
+        notebook.add(frame2, text='部队特性')
+
+        frame3 = ttk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
+        frame3.pack(fill=tk.BOTH, expand=True)
+        notebook.add(frame3, text='能力')
+
+        frame4 = ttk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
+        frame4.pack(fill=tk.BOTH, expand=True)
+        notebook.add(frame4, text='装备')
+
+        frame5 = ttk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
+        frame5.pack(fill=tk.BOTH, expand=True)
+        notebook.add(frame5, text='策略')
 
         okBtn = tk.Button(self.root, text='确定', command=lambda:self.ok(), width=8)
         # self.CloseBtn.place(x=WIDTH/2-70, y=HEIGHT-50)
