@@ -7,6 +7,7 @@ from .tv_funcs import treeview_sort_column
 from .msg_box import MsgBoxWindow
 from .modal_window import ModalWindow
 import json
+from .item_window import ItemWindow
 
 # Menu
 # L = tk.Label(root, text ="Right-click to display menu", width = 40, height = 20)
@@ -189,7 +190,7 @@ class CharacterWindow():
         with open('data/items.json', 'rb') as f:
             all_items = json.load(f)
             # about_info = f.readlines()
-            print(all_items)
+            # print(all_items)
 
         WIDTH = 400
         HEIGHT = 400
@@ -200,6 +201,7 @@ class CharacterWindow():
             print("{} is {}".format(key,value))
 
         self.parent = parent
+        self.item_win = None
         self.root = tk.Toplevel(parent.root)
         # self.root.grab_set()
         # self.root.grab_set_global()
@@ -230,7 +232,7 @@ class CharacterWindow():
         with open('data/characters.json', 'rb') as f:
             all_chars = json.load(f)
             # about_info = f.readlines()
-            print(all_chars)
+
         char_info = all_chars[kwargs['brief'][0]]
         print(char_info)
         img = Image.open(char_info['pic'])
@@ -459,7 +461,7 @@ class CharacterWindow():
         img_label.image = item_img
         img_label.grid(row=1, rowspan=2, column=0, padx=10, sticky=tk.W)
 
-        img_label.bind("<ButtonPress-1>", lambda event, item=item: self.item_clicked(event, item))
+        img_label.bind("<ButtonPress-1>", lambda event, item=item: self.item_clicked(event, all_items, item))
         # img_label.bind("<ButtonPress-1>", lambda:self.item_clicked(item, event, ))
         
         if not (item == None or item == ''):
@@ -484,8 +486,20 @@ class CharacterWindow():
             addon2_label = ttk.Label(weapen_frame, text=f"{all_items[item]['main_effect']['effect']}", background='red', anchor='w')
             addon2_label.grid(row=3, column=1, padx=5, sticky=tk.W)
 
-    def item_clicked(self, event, item):
-        print(item)
+    def item_clicked(self, event, all_items, item):
+        if not item:
+            return
+
+        if self.item_win:
+            self.item_win.root.lift()
+            print("Already exists")
+            pass
+        else:
+            self.item_win = ItemWindow(parent=self, 
+                x=self.root.winfo_x()-200, y=self.root.winfo_y(), all_items=all_items, item=item)
+            self.item_win.root.lift()
+            self.item_win.root.attributes('-topmost',True)
+            self.item_win.root.after_idle(self.item_win.root.attributes, '-topmost', False)
 
     def ok(self):
         self.root.destroy() 
@@ -508,7 +522,7 @@ class CharacterWindow():
         self.root.geometry(f"+{x}+{y}")
 
 class CharactersWindow():
-    def __init__(self, title='Mess', msg='', b1='OK', b2='', b3='', b4=''):
+    def __init__(self):
         WIDTH = 600
         HEIGHT = 400
 
@@ -526,7 +540,6 @@ class CharactersWindow():
 
         win_pos = window_pos()
         self.root.geometry(f"{WIDTH}x{HEIGHT}+{win_pos[0]+100}+{win_pos[1]+100}")
-
         
         self.titlebar = tk.Label(self.root, text="部队情报一览")
         # self.titlebar.place(x=5, y=5)
@@ -582,7 +595,7 @@ class CharactersWindow():
             #In this case, it it clicking header to sort, so do not display window
             return
 
-        print("you clicked on", char_info)
+        # print("you clicked on", char_info)
         if self.childWin:
             self.childWin.root.lift()
             print("Already exists")
@@ -593,9 +606,6 @@ class CharactersWindow():
             self.childWin.root.lift()
             self.childWin.root.attributes('-topmost',True)
             self.childWin.root.after_idle(self.childWin.root.attributes, '-topmost', False)
-            # print(self.childWin.choice)
-            # if self.childWin.choice == 'ok':
-            #     self.childWin = None
 
     def treeview_sort_column(self, tv, col, reverse):
         l = [(tv.set(k, col), k) for k in tv.get_children('')]
