@@ -186,6 +186,11 @@ class ToolsWindow():
 
 class CharacterWindow():
     def __init__(self, parent, **kwargs):
+        with open('data/items.json', 'rb') as f:
+            all_items = json.load(f)
+            # about_info = f.readlines()
+            print(all_items)
+
         WIDTH = 400
         HEIGHT = 400
         LEFTFRAME_WIDTH = WIDTH/2-20
@@ -399,6 +404,29 @@ class CharacterWindow():
 
         frame4 = ttk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
         frame4.pack(fill=tk.BOTH, expand=True)
+        weapen_frame = ttk.LabelFrame(frame4, text="武器", height=85)
+        weapen_frame.pack(fill=tk.X, padx=5, pady=2)
+        self.item_display(weapen_frame, all_items, char_info['武器'])
+        # weapen_label = ttk.Label(weapen_frame, text=f"{char_info['武器']}", background='red', anchor='w')
+        # weapen_label.grid(row=0, column=0, padx=10, sticky=tk.W)
+        # weapen_img = tk.PhotoImage(file=f"resource/items/{char_info['武器']}.png")
+        # img_label = ttk.Label(weapen_frame, image=weapen_img, relief=SUNKEN)
+        # img_label.image = weapen_img
+        # img_label.grid(row=1, rowspan=2, column=0, padx=10, sticky=tk.W)
+        # lv_label = ttk.Label(weapen_frame, text="Lv 10", background='red')
+        # lv_label.grid(row=1, column=1, padx=5, sticky=tk.W)
+        # exp_label = ttk.Label(weapen_frame, text="Exp 10/100", background='red')
+        # exp_label.grid(row=2, column=1, padx=5, sticky=tk.W)
+        # addon_label = ttk.Label(weapen_frame, text="攻击力", background='red', anchor='w')
+        # addon_label.grid(row=3, column=0, padx=10, sticky=tk.W)
+
+        armor_frame = ttk.LabelFrame(frame4, text="护具", height=85)
+        armor_frame.pack(fill=tk.X, padx=5, pady=2)
+        self.item_display(armor_frame, all_items, char_info['护具'])
+        
+        treasure_frame = ttk.LabelFrame(frame4, text="辅助", height=85)
+        treasure_frame.pack(fill=tk.X, padx=5, pady=2)
+        self.item_display(treasure_frame, all_items, char_info['辅助'])
         notebook.add(frame4, text='装备')
 
         frame5 = ttk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
@@ -415,6 +443,49 @@ class CharacterWindow():
 
         # self.root.wait_window()
         self.choice = None
+
+    def item_display(self, weapen_frame, all_items, item):
+        if item == None or item == '':
+            itemname_label = ttk.Label(weapen_frame, text="无", background='red', anchor='w')
+        else:
+            itemname_label = ttk.Label(weapen_frame, text=f"{item}", background='red', anchor='w')
+            
+        itemname_label.grid(row=0, column=0, padx=10, sticky=tk.W)
+        if item == None or item == '':
+            item_img = tk.PhotoImage(file=f"resource/items/blank.png")
+        else:
+            item_img = tk.PhotoImage(file=f"resource/items/{item}.png")
+        img_label = ttk.Label(weapen_frame, image=item_img, relief=SUNKEN)
+        img_label.image = item_img
+        img_label.grid(row=1, rowspan=2, column=0, padx=10, sticky=tk.W)
+
+        img_label.bind("<ButtonPress-1>", lambda event, item=item: self.item_clicked(event, item))
+        # img_label.bind("<ButtonPress-1>", lambda:self.item_clicked(item, event, ))
+        
+        if not (item == None or item == ''):
+            lv_label = ttk.Label(weapen_frame, text="Lv", background='red')
+            lv_label.grid(row=1, column=1, padx=5, sticky=tk.W)
+            lv2_label = ttk.Label(weapen_frame, text=f"{all_items[item]['lv']}", background='red')
+            lv2_label.grid(row=1, column=2, sticky=tk.W)
+
+            exp_label = ttk.Label(weapen_frame, text="Exp", background='red')
+            exp_label.grid(row=2, column=1, padx=5, sticky=tk.W)
+            style = ttk.Style(self.root)
+            style_name = f"{item}.LabeledProgressbar"
+            style.configure(style_name, text=f"{all_items[item]['exp']}/100")
+            exp = ttk.Progressbar(weapen_frame, length=80, style=style_name, maximum=100)
+            exp['value'] = all_items[item]['exp']
+            exp.grid(row=2, column=2, sticky=tk.W)
+        
+        if not (item == None or item == ''):
+            addon_label = ttk.Label(weapen_frame, text=f"{all_items[item]['main_effect']['main']}", background='red', anchor='w')
+            addon_label.grid(row=3, column=0, padx=10, sticky=tk.W)
+
+            addon2_label = ttk.Label(weapen_frame, text=f"{all_items[item]['main_effect']['effect']}", background='red', anchor='w')
+            addon2_label.grid(row=3, column=1, padx=5, sticky=tk.W)
+
+    def item_clicked(self, event, item):
+        print(item)
 
     def ok(self):
         self.root.destroy() 
@@ -479,7 +550,7 @@ class CharactersWindow():
         # tree.tag_configure('even', background='lightgreen')
         self.tree.heading('#1', text='武将名')
         self.tree.heading('#2', text='部队属性')
-        self.tree.heading('#3', text='Lv', command=lambda:self.treeview_sort_column(tree, '#3', False))
+        self.tree.heading('#3', text='Lv', command=lambda:self.treeview_sort_column(self.tree, '#3', False))
         # tree['selectmode'] = "extended"
 
         sb = tk.Scrollbar(box_frame, orient=tk.VERTICAL)
@@ -505,8 +576,12 @@ class CharactersWindow():
         self.root.wait_window()
 
     def treeview_clicked(self, event):
-        item = self.tree.identify('item', event.x,event.y)
+        item = self.tree.identify('item', event.x, event.y)
         char_info = self.tree.item(item, "value")
+        if not char_info:
+            #In this case, it it clicking header to sort, so do not display window
+            return
+
         print("you clicked on", char_info)
         if self.childWin:
             self.childWin.root.lift()

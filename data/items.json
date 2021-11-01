@@ -1,0 +1,24 @@
+{
+    "倚天剑": {
+        "pic": "resource/items/倚天剑.png",
+        "main_effect": {
+            "main": "攻击力",
+            "effect": "+26"
+        },
+        "lv": 2,
+        "max_lv": 5,
+        "exp": 30,
+        "type": "武器"
+    },
+    "白银铠": {
+        "pic": "resource/items/白银铠.png",
+        "main_effect": {
+            "main": "防御力",
+            "effect": "+40"
+        },
+        "lv": 1,
+        "max_lv": 5,
+        "exp": 10,
+        "type": "护具"
+    }
+}
