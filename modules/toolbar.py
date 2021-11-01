@@ -347,6 +347,54 @@ class CharacterWindow():
 
         frame3 = ttk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
         frame3.pack(fill=tk.BOTH, expand=True)
+        attack_frame = ttk.LabelFrame(frame3, text="攻击力", height=130, width=130)
+        attack_frame.pack(fill=tk.X, padx=5, pady=2)
+        style.layout("AbilityProgressbar",
+                [('AbilityProgressbar.trough',
+                {'children': [('AbilityProgressbar.pbar',
+                                {'side': 'left', 'sticky': 'ns'}),
+                                ("AbilityProgressbar.label",   # label inside the bar
+                                {"sticky": "e"})],
+                'sticky': 'nswe'})])
+        style.configure("AbilityProgressbar", background='#4895ef')
+        style.configure("AbilityProgressbar", text="111")
+        attack_bar = ttk.Progressbar(attack_frame, style='AbilityProgressbar', maximum=100)
+        attack_bar['value'] = 40
+        attack_bar.pack(pady=1)
+
+        attack_frame = ttk.LabelFrame(frame3, text="精神力", height=130, width=130)
+        attack_frame.pack(fill=tk.X, padx=5, pady=2)
+        style.configure("1.AbilityProgressbar", text="90")
+        mind_bar = ttk.Progressbar(attack_frame, style='1.AbilityProgressbar', maximum=100)
+        mind_bar['value'] = 50
+        mind_bar.pack(pady=1)
+
+        attack_frame = ttk.LabelFrame(frame3, text="防御力", height=130, width=130)
+        attack_frame.pack(fill=tk.X, padx=5, pady=2)
+        style.configure("2.AbilityProgressbar", text="146")
+        defense_bar = ttk.Progressbar(attack_frame, style='2.AbilityProgressbar', maximum=100)
+        defense_bar['value'] = 60
+        defense_bar.pack(pady=1)
+
+        attack_frame = ttk.LabelFrame(frame3, text="爆发力", height=130, width=130)
+        attack_frame.pack(fill=tk.X, padx=5, pady=2)
+        style.configure("4.AbilityProgressbar", text="83")
+        bar4 = ttk.Progressbar(attack_frame, style='4.AbilityProgressbar', maximum=100)
+        bar4['value'] = 70
+        bar4.pack(pady=1)
+
+        attack_frame = ttk.LabelFrame(frame3, text="士气", height=130, width=130)
+        attack_frame.pack(fill=tk.X, padx=5, pady=2)
+        style.configure("5.AbilityProgressbar", text="86")
+        bar5 = ttk.Progressbar(attack_frame, style='5.AbilityProgressbar', maximum=100)
+        bar5['value'] = 50
+        bar5.pack(pady=1)
+        notebook.add(frame3, text='能力')
+
+        attack_frame = ttk.LabelFrame(frame3, text="移动力", height=130, width=130)
+        attack_frame.pack(fill=tk.X, padx=5, pady=2)
+        move_label = ttk.Label(attack_frame, text='6')
+        move_label.pack(pady=1)
         notebook.add(frame3, text='能力')
 
         frame4 = ttk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
@@ -461,11 +509,15 @@ class CharactersWindow():
         char_info = self.tree.item(item, "value")
         print("you clicked on", char_info)
         if self.childWin:
+            self.childWin.root.lift()
             print("Already exists")
             pass
         else:
             self.childWin = CharacterWindow(parent=self, 
                 x=self.root.winfo_x() + self.root.winfo_width(), y=self.root.winfo_y(), brief=char_info)
+            self.childWin.root.lift()
+            self.childWin.root.attributes('-topmost',True)
+            self.childWin.root.after_idle(self.childWin.root.attributes, '-topmost', False)
             # print(self.childWin.choice)
             # if self.childWin.choice == 'ok':
             #     self.childWin = None
