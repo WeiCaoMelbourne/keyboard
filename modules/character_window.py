@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter.constants import BOTH, RAISED, SUNKEN
 from tkinter import ttk
 import json
+from .item_window import ItemWindow
 
 class CharacterWindow():
     def __init__(self, parent, **kwargs):
@@ -30,7 +31,7 @@ class CharacterWindow():
         titlebar.bind("<ButtonPress-1>", self.start_move)
         titlebar.bind("<ButtonRelease-1>", self.stop_move)
         titlebar.bind("<B1-Motion>", self.do_move)
-        titlebar.pack(fill=tk.Y, padx=5, pady=5)
+        titlebar.pack(fill=tk.Y, padx=5)
 
         main_frame = tk.Frame(self.root, height=MAINFRAME_HEIGHT)
         main_frame.pack(side=tk.TOP, fill=tk.BOTH)
@@ -134,31 +135,39 @@ class CharacterWindow():
         notebook.pack(expand=True)
         frame1 = tk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
         frame1.pack(fill=tk.BOTH, expand=True)
-        basics_frame = tk.LabelFrame(frame1, text="部队属性", height=70, width=150)
+        basics_frame = tk.LabelFrame(frame1, text="部队属性", height=80, width=150)
         basics_frame.pack(fill=tk.X, padx=10, pady=5)
         # basics_frame.columnconfigure(tuple(range(2)), weight=1)
         # basics_frame.columnconfigure(0, weight=1)
         attack_label = tk.Label(basics_frame, text=f"武力 {char_info['武力']}", width=12)
-        attack_label.grid(row=0, column=0, sticky="news", padx=5, pady=1)
-        agile_label = tk.Label(basics_frame, text=f"武力 {char_info['敏捷']}", width=12)
-        agile_label.grid(row=0, column=1, sticky="news", padx=5, pady=1)
-        mind_label = tk.Label(basics_frame, text=f"武力 {char_info['智力']}", width=12)
-        mind_label.grid(row=1, column=0, sticky="news", padx=5, pady=1)
-        luck_label = tk.Label(basics_frame, text=f"武力 {char_info['运气']}", width=12)
-        luck_label.grid(row=1, column=1, sticky="news", padx=5, pady=1)
-        leadship_label = tk.Label(basics_frame, text=f"武力 {char_info['统率']}", width=12)
-        leadship_label.grid(row=3, column=0, sticky="news", padx=5, pady=1)
-        
+        # attack_label.grid(row=0, column=0, sticky="news", padx=5, pady=1)
+        attack_label.place(x=5, y=0)
+        agile_label = tk.Label(basics_frame, text=f"敏捷 {char_info['敏捷']}", width=12)
+        agile_label.place(x=90, y=0)
+        # agile_label.grid(row=0, column=1, sticky="news", padx=5, pady=1)
+        mind_label = tk.Label(basics_frame, text=f"智力 {char_info['智力']}", width=12)
+        # mind_label.grid(row=1, column=0, sticky="news", padx=5, pady=1)
+        mind_label.place(x=5, y=17)
+        luck_label = tk.Label(basics_frame, text=f"运气 {char_info['运气']}", width=12)
+        # luck_label.grid(row=1, column=1, sticky="news", padx=5, pady=1)
+        luck_label.place(x=90, y=17)
+        leadship_label = tk.Label(basics_frame, text=f"统率 {char_info['统率']}", width=12)
+        # leadship_label.grid(row=3, column=0, sticky="news", padx=5, pady=1)
+        leadship_label.place(x=5, y=34)
+
         # brief_label = tk.Label(frame1, text=f"{char_info['列传']}", relief=SUNKEN, wraplength=160, width=23, height=10, anchor="nw")
         brief_label = tk.Message(frame1, text=f"{char_info['列传']}", relief=SUNKEN, width=180, bg="#e5e5e5")
         brief_label.pack(padx=10, pady=5)
+        # brief_label.place(x=10, y=100)
 
-        total = tk.Frame(frame1, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
-        total.pack(fill=tk.BOTH, expand=True)
-        totalleft_label = tk.Label(total, text=f"出阵数 15", width=10)
-        totalleft_label.pack(side=tk.LEFT, padx=10, pady=5)
-        totalright_label = tk.Label(total, text=f"撤退数 0", width=10)
-        totalright_label.pack(side=tk.RIGHT, padx=10, pady=5)
+        # total = tk.Frame(frame1, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
+        # total.pack(fill=tk.BOTH, expand=True)
+        totalleft_label = tk.Label(frame1, text=f"出阵数 15", width=10)
+        # totalleft_label.pack(side=tk.LEFT, padx=10, pady=5)
+        totalleft_label.place(x=5, y=TAB_HEIGHT-15)
+        totalright_label = tk.Label(frame1, text=f"撤退数 0", width=10)
+        # totalright_label.pack(side=tk.RIGHT, padx=10, pady=5)
+        totalright_label.place(x=95, y=TAB_HEIGHT-15)
 
         notebook.add(frame1, text='武将列传')
 
@@ -221,7 +230,7 @@ class CharacterWindow():
         frame4 = tk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
         frame4.pack(fill=tk.BOTH, expand=True)
         weapen_frame = tk.LabelFrame(frame4, text="武器", height=85)
-        weapen_frame.pack(fill=tk.X, padx=5, pady=2)
+        weapen_frame.pack(fill=tk.X, padx=5)
         self.item_display(weapen_frame, all_items, char_info['武器'])
         # weapen_label = tk.Label(weapen_frame, text=f"{char_info['武器']}", anchor='w')
         # weapen_label.grid(row=0, column=0, padx=10, sticky=tk.W)
@@ -237,21 +246,76 @@ class CharacterWindow():
         # addon_label.grid(row=3, column=0, padx=10, sticky=tk.W)
 
         armor_frame = tk.LabelFrame(frame4, text="护具", height=85)
-        armor_frame.pack(fill=tk.X, padx=5, pady=2)
+        armor_frame.pack(fill=tk.X, padx=5)
         self.item_display(armor_frame, all_items, char_info['护具'])
         
         treasure_frame = tk.LabelFrame(frame4, text="辅助", height=85)
-        treasure_frame.pack(fill=tk.X, padx=5, pady=2)
+        treasure_frame.pack(fill=tk.X, padx=5)
         self.item_display(treasure_frame, all_items, char_info['辅助'])
         notebook.add(frame4, text='装备')
 
         frame5 = tk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
         frame5.pack(fill=tk.BOTH, expand=True)
+
+        style.theme_use("default")
+        style.map("Treeview", background=[('disabled', 'SystemButtonFace'), ('selected', 'SystemHighlight')])
+        # Using .layout(), you can retrieve the layout specifications of each style
+        # print(style.layout("Treeview.Item"))
+        # If you comment "Treeitem.focus" out when overwriting the layout, the focus drawing behavior (and the dashed line) will disappear
+        style.layout("Treeview.Item",
+            [(
+                'Treeitem.padding', 
+                {
+                    'sticky': 'nswe', 
+                    'children': [
+                        ('Treeitem.indicator', {'side': 'left', 'sticky': ''}),
+                        ('Treeitem.image', {'side': 'left', 'sticky': ''}),
+                        #('Treeitem.focus', {'side': 'left', 'sticky': '', 'children': [('Treeitem.text', {'side': 'left', 'sticky': ''}), ]})
+                        ],
+                }
+            )]
+            )
+        columns = ('#1', '#2')
+        style.configure('Treeview.Item', indicatorsize=-4)
+        self.mptree = ttk.Treeview(frame5, columns=columns, height=14)
+        # self.mptree = ttk.Treeview(frame5, columns=columns, height=13, padding=[-15,0,0,0])
+        self.mptree.tag_configure('odd', background='gainsboro')
+        self.mptree.heading('#0', text='')
+        self.mptree.heading('#1', text='策略名')
+        self.mptree.heading('#2', text='MP')
+        self.mptree.column("#0", width=20, stretch=False)
+        self.mptree.column("#1", width=90, stretch=False)
+        self.mptree.column("#2", width=50, stretch=False)
+
+        self.mptree.bind('<Button-1>', self.treeview_mousedown)
+        self.mptree.bind("<Motion>", lambda e: "break")   # Do not change cursor when it moves to separator
+        
+        sb = tk.Scrollbar(frame5, orient=tk.VERTICAL)
+        sb.pack(side=tk.RIGHT, fill=tk.Y)
+
+        sb.config(command=self.mptree.yview)
+        self.mptree.config(yscrollcommand=sb.set)
+        
+        # self.spear_img = tk.PhotoImage(file="resource/icon/spear.png")
+        # img = Image.open('resource/mp/旋风.png')
+        # img = img.resize((25, 25), Image.ANTIALIAS)
+        self.spear_img = ImageTk.PhotoImage(file='resource/mp/旋风.png')
+
+        # values_list = [("曹操", "群雄", 14), ] * 25
+        values_list = [("布衣", "仓库"), ("短剑", "仓库"), ("短枪", "仓库")]
+        # tree.insert('', tk.END, values=("布衣", "仓库", "衣服"), image=self.spear_img)
+        for index, values in enumerate(values_list):
+            if index % 2 == 0:
+                self.mptree.insert('', tk.END, values=values)
+            else:
+                # self.mptree.insert('', tk.END, values=values, text="旋风", tags=('odd',))
+                self.mptree.insert('', tk.END, values=values, text="旋风", image=self.spear_img, tags=('odd',))
+        self.mptree.pack(padx=5)
         notebook.add(frame5, text='策略')
 
         okBtn = tk.Button(self.root, text='确定', command=lambda:self.ok(), width=8)
         # self.CloseBtn.place(x=WIDTH/2-70, y=HEIGHT-50)
-        okBtn.pack(side=tk.BOTTOM, padx=10, pady=10)
+        okBtn.pack(side=tk.RIGHT, padx=10, pady=5)
 
         # cancleBtn = tk.Button(self.root, text='取消', command=lambda:self.cancel(), width=8)
         # # self.CloseBtn.place(x=WIDTH/2+20, y=HEIGHT-50)
@@ -276,7 +340,7 @@ class CharacterWindow():
         img_label.grid(row=1, rowspan=2, column=0, padx=10, sticky=tk.W)
 
         img_label.bind("<ButtonPress-1>", lambda event, item=item: self.item_clicked(event, all_items, item))
-        # img_label.bind("<ButtonPress-1>", lambda:self.item_clicked(item, event, ))
+        # img_label.bind("<ButtonPress-1>", lambda:self.item_clicked(item, event))
         
         if not (item == None or item == ''):
             lv_label = tk.Label(weapen_frame, text="Lv")
@@ -299,6 +363,10 @@ class CharacterWindow():
 
             addon2_label = tk.Label(weapen_frame, text=f"{all_items[item]['main_effect']['effect']}", anchor='w')
             addon2_label.grid(row=3, column=1, padx=5, sticky=tk.W)
+        else:
+            # This empty lable makes tab height always the same
+            addon_label = tk.Label(weapen_frame, text=" ", anchor='w')
+            addon_label.grid(row=3, column=0, padx=10, sticky=tk.W)
 
     def item_clicked(self, event, all_items, item):
         if not item:
@@ -334,3 +402,9 @@ class CharacterWindow():
         x = self.root.winfo_x() + deltax
         y = self.root.winfo_y() + deltay
         self.root.geometry(f"+{x}+{y}")
+
+    # Do not allow column resize
+    def treeview_mousedown(self, event):
+        if self.mptree.identify_region(event.x, event.y) == "separator":
+            # must return "break", otherwise it won't work
+            return "break"

@@ -7,7 +7,6 @@ from .tv_funcs import treeview_sort_column
 from .msg_box import MsgBoxWindow
 from .modal_window import ModalWindow
 import json
-from .item_window import ItemWindow
 from .character_window import CharacterWindow
 
 class SetupWindow():
