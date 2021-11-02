@@ -296,30 +296,20 @@ class CharacterWindow():
         sb.config(command=self.mptree.yview)
         self.mptree.config(yscrollcommand=sb.set)
         
-        # self.spear_img = tk.PhotoImage(file="resource/icon/spear.png")
-        # img = Image.open('resource/mp/旋风.png')
-        # img = img.resize((25, 25), Image.ANTIALIAS)
-        self.spear_img = ImageTk.PhotoImage(file='resource/mp/旋风.png')
-
-        # values_list = [("曹操", "群雄", 14), ] * 25
-        values_list = [("布衣", "仓库"), ("短剑", "仓库"), ("短枪", "仓库")]
-        # tree.insert('', tk.END, values=("布衣", "仓库", "衣服"), image=self.spear_img)
+        values_list = [(key, value) for key, value in char_info['策略'].items()]
         for index, values in enumerate(values_list):
+            mp_img = ImageTk.PhotoImage(file=f'resource/mp/{values[0]}.png')
+            # use setattr to make this img variable last
+            setattr(self, 'mp_img' + str(index), mp_img)
             if index % 2 == 0:
-                self.mptree.insert('', tk.END, values=values)
+                self.mptree.insert('', tk.END, values=values, image=mp_img)
             else:
-                # self.mptree.insert('', tk.END, values=values, text="旋风", tags=('odd',))
-                self.mptree.insert('', tk.END, values=values, text="旋风", image=self.spear_img, tags=('odd',))
+                self.mptree.insert('', tk.END, values=values, image=mp_img, tags=('odd',))
         self.mptree.pack(padx=5)
         notebook.add(frame5, text='策略')
 
         okBtn = tk.Button(self.root, text='确定', command=lambda:self.ok(), width=8)
-        # self.CloseBtn.place(x=WIDTH/2-70, y=HEIGHT-50)
         okBtn.pack(side=tk.RIGHT, padx=10, pady=5)
-
-        # cancleBtn = tk.Button(self.root, text='取消', command=lambda:self.cancel(), width=8)
-        # # self.CloseBtn.place(x=WIDTH/2+20, y=HEIGHT-50)
-        # cancleBtn.pack(side=tk.LEFT, fill=tk.BOTH, padx=20, pady=10)
 
         # self.root.wait_window()
         self.choice = None
