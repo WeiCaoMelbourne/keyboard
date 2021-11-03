@@ -26,12 +26,12 @@ class CharacterWindow():
         self.root.config(border=3, relief=RAISED)
         self.root.geometry(f"{WIDTH}x{HEIGHT}+{kwargs['x']}+{kwargs['y']}")
 
-        titlebar = tk.Label(self.root, text="武将情报", anchor="w")
+        titlebar = tk.Label(self.root, text="武将情报", anchor="center")
         # self.titlebar.place(x=5, y=5)
         titlebar.bind("<ButtonPress-1>", self.start_move)
         titlebar.bind("<ButtonRelease-1>", self.stop_move)
         titlebar.bind("<B1-Motion>", self.do_move)
-        titlebar.pack(fill=tk.Y, padx=5)
+        titlebar.pack(fill=tk.BOTH, padx=5)
 
         main_frame = tk.Frame(self.root, height=MAINFRAME_HEIGHT)
         main_frame.pack(side=tk.TOP, fill=tk.BOTH)
@@ -370,10 +370,12 @@ class CharacterWindow():
     def start_move(self, event):
         self.x = event.x
         self.y = event.y
+        self.root.config(cursor="fleur")
 
     def stop_move(self, event):
         self.x = None
         self.y = None
+        self.root.config(cursor="arrow")
 
     def do_move(self, event):
         deltax = event.x - self.x
