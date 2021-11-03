@@ -12,6 +12,8 @@ class StartMainmenu():
 
         self.parent = parent
         self.state = kwargs['state']
+        self.choice = None
+
         self.root = tk.Toplevel(parent)
 
         # messagebox.showinfo(title="Hello", message="What is it")
@@ -33,7 +35,7 @@ class StartMainmenu():
         titlebar = tk.Label(self.root, text=f"{config['title']}", anchor="center")
         titlebar.pack(fill=tk.X, padx=15, pady=5)
 
-        bt1 = tk.Button(self.root, text='开始新游戏')
+        bt1 = tk.Button(self.root, text='开始新游戏', command=self.new_game)
         bt1.pack(fill=tk.X, padx=20, ipady=2)
         bt2 = tk.Button(self.root, text='读取保存进度')
         bt2.pack(fill=tk.X, padx=20, ipady=2)
@@ -41,10 +43,16 @@ class StartMainmenu():
         bt3.pack(fill=tk.X, padx=20, ipady=2)
         okBtn = tk.Button(self.root, text='结束游戏', command=self.ok)
         okBtn.pack(fill=tk.X, padx=20, ipady=2)
-
+        
         parent.wait_window(self.root)
 
     def ok(self):
         self.state['starting'] = False
         self.root.destroy()
+        self.choice = "quit"
+
+    def new_game(self):
+        self.state['starting'] = False
+        self.root.destroy()
+        self.choice = "new"
     

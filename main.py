@@ -14,14 +14,16 @@ from modules.toolbar import *
 from modules.win_pos import *
 from modules.start_window import StartMainmenu
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 640
+SCREEN_HEIGHT = 400
 UNIT_SIZE = 50
 COLOR_WHITE = (255, 255, 255)
+COLOR_BLACK = (0, 0, 0)
 FPS = 60
 
 global_state = {
-    "starting": True 
+    "starting": True,
+    "section": 1
 }
 
 char_img = pygame.image.load('resource/img/t1.png')
@@ -201,8 +203,13 @@ all_sprites.add(c)
 
 fpsClock = pygame.time.Clock()
 
-background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+background = pygame.Surface(screen.get_size())
 background.fill(pygame.Color('#456000'))
+
+background_img = pygame.image.load('resource/mmap/start.png').convert()
+background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
+end_img = pygame.image.load('resource/mmap/end.png').convert()
+end_img = pygame.transform.scale(end_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 cursor_img = pygame.image.load('resource/cursor/RPG Style Arrow Alt.cur')
 horizontal_cursor = pygame.image.load('resource/cursor/RPG Style Horizontal Resize.cur')
@@ -215,7 +222,7 @@ def game():
     if running == False:
         root.quit()
 
-    print(pygame.time.get_ticks())
+    # print(pygame.time.get_ticks())
     # last_update = pygame.time.get_ticks()
     for event in pygame.event.get():
         print("evnet", event)
@@ -292,10 +299,19 @@ def game():
 
     # start menu. It needs to be after root.update to get correct window pos
     if global_state['starting']:
-        screen.blit(background, (0, 0))
+        # background.blit(background_img, pygame.Rect((0,0),(10, 10)))
+        screen.blit(background_img, (0, 0))
         pygame.display.update()
         start_win = StartMainmenu(root, 
-            x=root.winfo_x()+root.winfo_width()//2, y=root.winfo_y()+root.winfo_height()//2, state=global_state)
+            x=root.winfo_x()+root.winfo_width()//2-50, y=root.winfo_y()+root.winfo_height()//2, state=global_state)
+        
+        if start_win.choice == 'quit':
+            print("Quite")
+            screen.fill(COLOR_BLACK)
+            screen.blit(end_img, (0, 0))
+            pygame.display.update()
+            pygame.time.wait(2000)
+            root.quit()
     
     root.after(1000 // FPS, game)
 
