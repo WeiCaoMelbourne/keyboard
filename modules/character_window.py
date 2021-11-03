@@ -1,7 +1,7 @@
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter.constants import BOTH, RAISED, SUNKEN
-from tkinter import ttk
+from tkinter import Label, ttk
 import json
 from .item_window import ItemWindow
 
@@ -48,9 +48,9 @@ class CharacterWindow():
             all_chars = json.load(f)
             # about_info = f.readlines()
 
-        char_info = all_chars[kwargs['brief'][0]]
-        print(char_info)
-        img = Image.open(char_info['pic'])
+        self.char_info = all_chars[kwargs['brief'][0]]
+        print(self.char_info)
+        img = Image.open(self.char_info['pic'])
         img = img.resize((70, 70), Image.ANTIALIAS)
         game_img = ImageTk.PhotoImage(img)
         icon_label = tk.Label(lefttop_frame, image=game_img)
@@ -124,7 +124,7 @@ class CharacterWindow():
         # status_label = tk.Message(status_frame, text='正常', relief=SUNKEN, width=LEFTFRAME_WIDTH)
         # status_label.grid(row=2, rowspan=2, column=0, columnspan=4)
         # status_label.pack(fill=BOTH)
-        status_label = tk.Label(status_frame, text=char_info['status'], relief=SUNKEN, width=18, height=4, anchor="nw")
+        status_label = tk.Label(status_frame, text=self.char_info['status'], relief=SUNKEN, width=18, height=4, anchor="nw")
         status_label.grid(row=2, rowspan=2, column=0, columnspan=4, padx=5, pady=10)
         
         right_frame = tk.Frame(main_frame, width=LEFTFRAME_WIDTH, height=MAINFRAME_HEIGHT, background="green")
@@ -139,24 +139,24 @@ class CharacterWindow():
         basics_frame.pack(fill=tk.X, padx=10, pady=5)
         # basics_frame.columnconfigure(tuple(range(2)), weight=1)
         # basics_frame.columnconfigure(0, weight=1)
-        attack_label = tk.Label(basics_frame, text=f"武力 {char_info['武力']}", width=12)
+        attack_label = tk.Label(basics_frame, text=f"武力 {self.char_info['武力']}", width=12)
         # attack_label.grid(row=0, column=0, sticky="news", padx=5, pady=1)
         attack_label.place(x=5, y=0)
-        agile_label = tk.Label(basics_frame, text=f"敏捷 {char_info['敏捷']}", width=12)
+        agile_label = tk.Label(basics_frame, text=f"敏捷 {self.char_info['敏捷']}", width=12)
         agile_label.place(x=90, y=0)
         # agile_label.grid(row=0, column=1, sticky="news", padx=5, pady=1)
-        mind_label = tk.Label(basics_frame, text=f"智力 {char_info['智力']}", width=12)
+        mind_label = tk.Label(basics_frame, text=f"智力 {self.char_info['智力']}", width=12)
         # mind_label.grid(row=1, column=0, sticky="news", padx=5, pady=1)
         mind_label.place(x=5, y=17)
-        luck_label = tk.Label(basics_frame, text=f"运气 {char_info['运气']}", width=12)
+        luck_label = tk.Label(basics_frame, text=f"运气 {self.char_info['运气']}", width=12)
         # luck_label.grid(row=1, column=1, sticky="news", padx=5, pady=1)
         luck_label.place(x=90, y=17)
-        leadship_label = tk.Label(basics_frame, text=f"统率 {char_info['统率']}", width=12)
+        leadship_label = tk.Label(basics_frame, text=f"统率 {self.char_info['统率']}", width=12)
         # leadship_label.grid(row=3, column=0, sticky="news", padx=5, pady=1)
         leadship_label.place(x=5, y=34)
 
-        # brief_label = tk.Label(frame1, text=f"{char_info['列传']}", relief=SUNKEN, wraplength=160, width=23, height=10, anchor="nw")
-        brief_label = tk.Message(frame1, text=f"{char_info['列传']}", relief=SUNKEN, width=180, bg="#e5e5e5")
+        # brief_label = tk.Label(frame1, text=f"{self.char_info['列传']}", relief=SUNKEN, wraplength=160, width=23, height=10, anchor="nw")
+        brief_label = tk.Message(frame1, text=f"{self.char_info['列传']}", relief=SUNKEN, width=180, bg="#e5e5e5")
         brief_label.pack(padx=10, pady=5)
         # brief_label.place(x=10, y=100)
 
@@ -173,6 +173,7 @@ class CharacterWindow():
 
         frame2 = tk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
         frame2.pack(fill=tk.BOTH, expand=True)
+        self.troop_tab(frame2)
         notebook.add(frame2, text='部队特性')
 
         frame3 = tk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
@@ -231,27 +232,15 @@ class CharacterWindow():
         frame4.pack(fill=tk.BOTH, expand=True)
         weapen_frame = tk.LabelFrame(frame4, text="武器", height=85)
         weapen_frame.pack(fill=tk.X, padx=5)
-        self.item_display(weapen_frame, all_items, char_info['武器'])
-        # weapen_label = tk.Label(weapen_frame, text=f"{char_info['武器']}", anchor='w')
-        # weapen_label.grid(row=0, column=0, padx=10, sticky=tk.W)
-        # weapen_img = tk.PhotoImage(file=f"resource/items/{char_info['武器']}.png")
-        # img_label = tk.Label(weapen_frame, image=weapen_img, relief=SUNKEN)
-        # img_label.image = weapen_img
-        # img_label.grid(row=1, rowspan=2, column=0, padx=10, sticky=tk.W)
-        # lv_label = tk.Label(weapen_frame, text="Lv 10")
-        # lv_label.grid(row=1, column=1, padx=5, sticky=tk.W)
-        # exp_label = tk.Label(weapen_frame, text="Exp 10/100")
-        # exp_label.grid(row=2, column=1, padx=5, sticky=tk.W)
-        # addon_label = tk.Label(weapen_frame, text="攻击力", anchor='w')
-        # addon_label.grid(row=3, column=0, padx=10, sticky=tk.W)
+        self.item_display(weapen_frame, all_items, self.char_info['武器'])
 
         armor_frame = tk.LabelFrame(frame4, text="护具", height=85)
         armor_frame.pack(fill=tk.X, padx=5)
-        self.item_display(armor_frame, all_items, char_info['护具'])
+        self.item_display(armor_frame, all_items, self.char_info['护具'])
         
         treasure_frame = tk.LabelFrame(frame4, text="辅助", height=85)
         treasure_frame.pack(fill=tk.X, padx=5)
-        self.item_display(treasure_frame, all_items, char_info['辅助'])
+        self.item_display(treasure_frame, all_items, self.char_info['辅助'])
         notebook.add(frame4, text='装备')
 
         frame5 = tk.Frame(notebook, width=LEFTFRAME_WIDTH, height=TAB_HEIGHT)
@@ -296,7 +285,7 @@ class CharacterWindow():
         sb.config(command=self.mptree.yview)
         self.mptree.config(yscrollcommand=sb.set)
         
-        values_list = [(key, value) for key, value in char_info['策略'].items()]
+        values_list = [(key, value) for key, value in self.char_info['策略'].items()]
         for index, values in enumerate(values_list):
             mp_img = ImageTk.PhotoImage(file=f'resource/mp/{values[0]}.png')
             # use setattr to make this img variable last
@@ -398,3 +387,44 @@ class CharacterWindow():
         if self.mptree.identify_region(event.x, event.y) == "separator":
             # must return "break", otherwise it won't work
             return "break"
+
+    def troop_tab(self, frame):
+        with open('data/troop-details.json', 'rb') as f:
+            troop_details = json.load(f)
+
+        sub_frame1 = tk.Frame(frame, height=100)
+        sub_frame1.pack(fill=tk.X, pady=5, padx=10)
+
+        label1 = tk.Label(sub_frame1, text=f"种类:\t{self.char_info['部队种类']}", width=12, anchor='w')
+        label1.grid(row=0, column=0)
+        label2 = tk.Label(sub_frame1, text=f"级别:\t{self.char_info['部队等级']}", width=12, anchor='w')
+        label2.grid(row=0, column=1)
+        label3 = tk.Label(sub_frame1, text=f"武器:\t{troop_details[self.char_info['部队等级']]['武器']}", width=12, anchor='w')
+        label3.grid(row=1, column=0)
+        label4 = tk.Label(sub_frame1, text=f"护具:\t{troop_details[self.char_info['部队等级']]['护具']}", width=12, anchor='w')
+        label4.grid(row=1, column=1)
+        label5 = tk.Label(sub_frame1, text=f"攻击力:\t{troop_details[self.char_info['部队等级']]['攻击力']}", width=12, anchor='w')
+        label5.grid(row=2, column=0)
+        label6 = tk.Label(sub_frame1, text=f"精神力:\t{troop_details[self.char_info['部队等级']]['精神力']}", width=12, anchor='w')
+        label6.grid(row=2, column=1)
+        label7 = tk.Label(sub_frame1, text=f"防御力:\t{troop_details[self.char_info['部队等级']]['防御力']}", width=12, anchor='w')
+        label7.grid(row=3, column=0)
+        label8 = tk.Label(sub_frame1, text=f"爆发:\t{troop_details[self.char_info['部队等级']]['爆发']}", width=12, anchor='w')
+        label8.grid(row=3, column=1)
+        label9 = tk.Label(sub_frame1, text=f"士气:\t{troop_details[self.char_info['部队等级']]['士气']}", width=12, anchor='w')
+        label9.grid(row=4, column=0)
+        label10 = tk.Label(sub_frame1, text=f"移动:\t{troop_details[self.char_info['部队等级']]['移动']}", width=12, anchor='w')
+        label10.grid(row=4, column=1)
+
+        sub_frame2 = tk.Frame(frame, height=100)
+        sub_frame2.pack(fill=tk.X, pady=5)
+        label_area = tk.Label(sub_frame2, text="攻击范围", width=12)
+        label_area.pack()
+        item_img = tk.PhotoImage(file=f"resource/hitarea/{troop_details[self.char_info['部队等级']]['攻击范围']}.png")
+        img_label = tk.Label(sub_frame2, image=item_img, relief=SUNKEN)
+        img_label.image = item_img
+        img_label.pack()
+        
+        # brief_label = tk.Message(frame, text=f"{troop_details[self.char_info['部队等级']]['详情']}", relief=SUNKEN, width=180, bg="#e5e5e5")
+        brief_label = tk.Label(frame, text=f"{troop_details[self.char_info['部队等级']]['详情']}", relief=SUNKEN, width=18, wraplength=160, height=4, anchor="nw")
+        brief_label.pack(fill=tk.X, padx=10, pady=5)
