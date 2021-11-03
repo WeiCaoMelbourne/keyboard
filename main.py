@@ -42,6 +42,9 @@ embed.pack()
 os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
 os.environ['SDL_VIDEODRIVER'] = 'windib'
 
+# center main window. It must be called after packing all elements of this window
+root.eval('tk::PlaceWindow . center')
+
 running = True
 # def quit_callback():
 #     global running
@@ -222,6 +225,22 @@ def game():
     if running == False:
         root.quit()
 
+    # start menu. It needs to be after root.update to get correct window pos
+    if global_state['starting']:
+        # background.blit(background_img, pygame.Rect((0,0),(10, 10)))
+        screen.blit(background_img, (0, 0))
+        pygame.display.update()
+        start_win = StartMainmenu(root, 
+            x=root.winfo_x()+root.winfo_width()//2-50, y=root.winfo_y()+root.winfo_height()//2, state=global_state)
+        
+        if start_win.choice == 'quit':
+            print("Quite")
+            screen.fill(COLOR_BLACK)
+            screen.blit(end_img, (0, 0))
+            pygame.display.update()
+            pygame.time.wait(2000)
+            root.quit()
+            
     # print(pygame.time.get_ticks())
     # last_update = pygame.time.get_ticks()
     for event in pygame.event.get():
@@ -297,24 +316,11 @@ def game():
     pygame.display.update()
     root.update()
 
-    # start menu. It needs to be after root.update to get correct window pos
-    if global_state['starting']:
-        # background.blit(background_img, pygame.Rect((0,0),(10, 10)))
-        screen.blit(background_img, (0, 0))
-        pygame.display.update()
-        start_win = StartMainmenu(root, 
-            x=root.winfo_x()+root.winfo_width()//2-50, y=root.winfo_y()+root.winfo_height()//2, state=global_state)
-        
-        if start_win.choice == 'quit':
-            print("Quite")
-            screen.fill(COLOR_BLACK)
-            screen.blit(end_img, (0, 0))
-            pygame.display.update()
-            pygame.time.wait(2000)
-            root.quit()
+    
     
     root.after(1000 // FPS, game)
 
 if __name__ == "__main__":
+    root.update()
     root.after(0, game)
     root.mainloop()
