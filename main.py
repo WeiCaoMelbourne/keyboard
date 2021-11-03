@@ -12,12 +12,17 @@ from ctypes.wintypes import BOOL, HWND, RECT
 from modules.main_menu import *
 from modules.toolbar import *
 from modules.win_pos import *
+from modules.start_window import StartMainmenu
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 UNIT_SIZE = 50
 COLOR_WHITE = (255, 255, 255)
 FPS = 60
+
+global_state = {
+    "starting": True 
+}
 
 char_img = pygame.image.load('resource/img/t1.png')
 
@@ -210,14 +215,19 @@ def game():
     if running == False:
         root.quit()
 
-    # print(pygame.time.get_ticks())
+    print(pygame.time.get_ticks())
+    # last_update = pygame.time.get_ticks()
     for event in pygame.event.get():
         print("evnet", event)
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            print("mouse clicked")
-            show_mainmenu()
+
+            # start_win.root.lift()
+            # start_win.attributes('-topmost',True)
+            # start_win.after_idle(self.item_win.root.attributes, '-topmost', False)
+        # if event.type == pygame.MOUSEBUTTONDOWN:
+        #     print("mouse clicked")
+        #     show_mainmenu()
 
             # mouse_pos = pygame.mouse.get_pos()
             # print(mouse_pos)
@@ -279,6 +289,14 @@ def game():
 
     pygame.display.update()
     root.update()
+
+    # start menu. It needs to be after root.update to get correct window pos
+    if global_state['starting']:
+        screen.blit(background, (0, 0))
+        pygame.display.update()
+        start_win = StartMainmenu(root, 
+            x=root.winfo_x()+root.winfo_width()//2, y=root.winfo_y()+root.winfo_height()//2, state=global_state)
+    
     root.after(1000 // FPS, game)
 
 if __name__ == "__main__":
