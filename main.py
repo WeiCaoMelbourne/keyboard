@@ -213,6 +213,7 @@ background_img = pygame.image.load('resource/mmap/start.png').convert()
 background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 end_img = pygame.image.load('resource/mmap/end.png').convert()
 end_img = pygame.transform.scale(end_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
+caocao_img = pygame.image.load('resource/pmap/曹操.png').convert()
 
 cursor_img = pygame.image.load('resource/cursor/RPG Style Arrow Alt.cur')
 horizontal_cursor = pygame.image.load('resource/cursor/RPG Style Horizontal Resize.cur')
@@ -220,8 +221,30 @@ vertical_cursor = pygame.image.load('resource/cursor/RPG Style Vertical Resize.c
 pygame.mouse.set_visible(False)
 cursor_img_rect = cursor_img.get_rect()
 
+# class Story:
+#     pass
+
+# story_object = Story()
+
+class CaoCao(pygame.sprite.Sprite):
+    def  __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = caocao_img
+        # self.image = pygame.Surface((50, 50))
+        # self.image.fill((0, 255, 255))
+        self.rect = pygame.Rect(0, 0, 48, 64)
+        self.rect.width = 48
+        self.rect.height = 64
+        self.rect.x = 100
+        self.rect.y = 100
+        
+
+    def update(self):
+        pass
+
+# main loop here
 def game():
-    global running
+    global running, background_img
     if running == False:
         root.quit()
 
@@ -240,6 +263,17 @@ def game():
             pygame.display.update()
             pygame.time.wait(2000)
             root.quit()
+
+    if global_state['section'] == 1:
+        background_img = pygame.image.load('resource/mmap/1-1.bmp').convert()
+        background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+        a = CaoCao()
+        all_sprites.add(a)
+
+        # screen.fill(COLOR_BLACK)
+        # screen.blit(story_object.background_img, (0, 0))
+
             
     # print(pygame.time.get_ticks())
     # last_update = pygame.time.get_ticks()
@@ -298,7 +332,8 @@ def game():
 
     # # Display screen
     # # screen.fill((0, 0, 0))
-    screen.blit(background, (0, 0))
+    # screen.blit(background, (0, 0))
+    screen.blit(background_img, (0, 0))
     all_sprites.draw(screen)
     
     mouse_pos = pygame.mouse.get_pos()
@@ -316,11 +351,9 @@ def game():
     pygame.display.update()
     root.update()
 
-    
-    
     root.after(1000 // FPS, game)
 
 if __name__ == "__main__":
-    root.update()
+    root.update()   # call this update to display background before showing main menu
     root.after(0, game)
     root.mainloop()
