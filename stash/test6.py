@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 
-screen = pygame.display.set_mode((500,500))
+screen = pygame.display.set_mode((640, 400))
 pygame.display.set_caption("First Game")
 
 x = 50
@@ -14,6 +14,8 @@ run = True
 
 background_img = pygame.image.load('resource/mmap/1-1.bmp').convert()
 caocao_img = pygame.image.load('resource/pmap/曹操.png').convert()
+dialog_bg_img = pygame.image.load('resource/mark/dialogr_bg.png').convert()
+dialog_face_img = pygame.image.load('resource/face/曹操-1.bmp').convert()
 
 class CaoCao(pygame.sprite.Sprite):
     def  __init__(self):
@@ -77,6 +79,17 @@ c = CaoCao()
 all_sprites.add(c)
 clock = pygame.time.Clock()
 
+font_name = 'resource/font/FangZhengShuSong-GBK-1.ttf'
+# font_name = pygame.font.match_font('arial')
+def draw_text(surf, text, size, x, y):
+    font = pygame.font.Font(font_name, size)
+    text_surface = font.render(text, True, (0, 0, 255))
+    text_rect = text_surface.get_rect()
+    text_rect.left = x
+    text_rect.top = y
+    surf.blit(text_surface, text_rect)
+
+# pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_HAND)
 while run:
     pygame.time.delay(10) # This will delay the game the given amount of milliseconds. In our casee 0.1 seconds will be the delay
     # clock.tick(60)
@@ -88,10 +101,18 @@ while run:
     # screen.blit(background_img, (100, 100), pygame.Rect(0, 0, 48, 64))
 
     screen.blit(background_img, (0, 0))
+    screen.blit(dialog_bg_img, (200, 200))
+    screen.blit(dialog_face_img, (560, 210))
+    draw_text(screen, '曹操', 17, 220, 205)
+    draw_text(screen, '测试一下曹操的对话', 16, 225, 230)
+    # screen.blit(dialog_bg_img, (300, 300))
+    # for y in range(0, 60, 32):
+    #     for x in range(0, 120, 32):
+    #         screen.blit(dialog_bg_img, (x + 400, y + 300))
 
     # Move 曹操
-    all_sprites.update()
-    all_sprites.draw(screen)
+    # all_sprites.update()
+    # all_sprites.draw(screen)
 
     pygame.display.update()
 
