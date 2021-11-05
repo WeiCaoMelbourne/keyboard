@@ -1,6 +1,7 @@
 import pygame
 from ..shared_variables import shared
 from ..common_funcs import drawr_dialog, drawl_dialog
+import json
 
 root = None
 screen = None
@@ -8,12 +9,12 @@ background_img = None
 cursor_img = None
 FPS = None
 act = 0
+s1_story = None
 # caocao_face_img = pygame.image.load('resource/face/曹操-1.bmp').convert()
 
 # s1_bg_img = pygame.image.load('resource/mmap/1-1.bmp').convert()
 
 def s1_main():
-    print("In s1_main")
     global act
     for event in pygame.event.get():
         print("evnet in s1_entrance", event)
@@ -32,9 +33,9 @@ def s1_main():
     screen.blit(cursor_img, cursor_img_rect)
 
     if act == 1:
-        drawr_dialog(screen, "曹操", "曹操", "测试一下曹操的对话1", 200, 200)
+        drawr_dialog(screen, "曹操", "曹操", "测试一下曹操的对话1", -10, -10)
     elif act == 2:
-        drawl_dialog(screen, "曹操", "曹操", "测试一下曹操的对话2", 100, 100)
+        drawl_dialog(screen, "曹操", "曹操", "测试一下曹操的对话2", 10, -10)
 
     pygame.display.update()
     root.update()
@@ -42,7 +43,10 @@ def s1_main():
 
 def s1_entrance(parent_root, parent_screen, parent_fps, parent_img, parent_cur):
     print("In s1_1")
-    global root, screen, background_img, cursor_img, FPS
+    
+    global root, screen, background_img, cursor_img, FPS, s1_story
+    # with open('data/story/s1.json', 'rb') as f:
+    #     s1_story = json.load(f)
     # tk_root = shared['root']
     root = parent_root
     screen = parent_screen

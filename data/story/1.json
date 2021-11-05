@@ -1,0 +1,47 @@
+{
+    "对话": [
+        {
+            "speaker": "士兵",
+            "content": "队长，咱们得快点",
+            "pos": "right",
+            "coordinates": "-10, -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "我知道",
+            "pos": "left",
+            "coordinates": "10, -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "请留步",
+            "pos": "right",
+            "coordinates": "-10, -10"
+        },
+        {
+            "speaker": "士兵",
+            "content": "来者何人，你想阻止官兵吗？",
+            "pos": "left",
+            "coordinates": "10, -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "且慢",
+            "pos": "right",
+            "coordinates": "-10, -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "老丈找我有事？\n我是官军骑兵队长，\n姓曹名操，字孟德",
+            "pos": "left",
+            "coordinates": "10, -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "其实，小老儿见你相貌异于常人，所以不经意便喊住了您。",
+            "pos": "right",
+            "coordinates": "-10, -10"
+        },
+    ]
+    
+}

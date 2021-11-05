@@ -8,7 +8,6 @@ face_img_dict = {
 }
 
 def draw_text(screen, text, size, color, x, y):
-    print("draw_text start", text)
     global font_name
     if font_name == None:
         font_name = 'resource/font/FangZhengShuSong-GBK-1.ttf'
@@ -19,28 +18,34 @@ def draw_text(screen, text, size, color, x, y):
     text_rect.top = y
     screen.blit(text_surface, text_rect)
 
-def drawr_dialog(screen, title, speaker, text, x, y):
+def prepare_dialog(speaker, x, y):
     global dialogr_bg_img, dialogl_bg_img, font_name
     if dialogr_bg_img == None:
         dialogr_bg_img = pygame.image.load('resource/mark/dialogr_bg.png').convert()
     if dialogl_bg_img == None:
         dialogl_bg_img = pygame.image.load('resource/mark/dialogl_bg.png').convert()
-    screen.blit(dialogr_bg_img, (x, y))
+    if x < 0 or y < 0:
+        w, h = pygame.display.get_surface().get_size()
+        if x < 0:
+            dialog_img_rect = dialogr_bg_img.get_rect()
+            x = w + x - dialog_img_rect.width
+        if y < 0:
+            dialog_img_rect = dialogr_bg_img.get_rect()
+            y = h + y - dialog_img_rect.height
     if speaker not in face_img_dict:
         face_img_dict[speaker] = pygame.image.load(f'resource/face/{speaker}.bmp').convert()
+    return (x, y)
+
+def drawr_dialog(screen, title, speaker, text, x, y):
+    (x, y) = prepare_dialog(speaker, x, y)
+    screen.blit(dialogr_bg_img, (x, y))
     screen.blit(face_img_dict[speaker], (x + 360, y + 10))
     draw_text(screen, title, 17, (0, 0, 255), x + 20, y + 5)
     draw_text(screen, text, 16, (0, 0, 0), x + 30, y + 30)
 
 def drawl_dialog(screen, title, speaker, text, x, y):
-    global dialogr_bg_img, dialogl_bg_img, font_name
-    if dialogr_bg_img == None:
-        dialogr_bg_img = pygame.image.load('resource/mark/dialogr_bg.png').convert()
-    if dialogl_bg_img == None:
-        dialogl_bg_img = pygame.image.load('resource/mark/dialogl_bg.png').convert()
-    screen.blit(dialogl_bg_img, (x, y))
-    if speaker not in face_img_dict:
-        face_img_dict[speaker] = pygame.image.load(f'resource/face/{speaker}.bmp').convert()
+    (x, y) = prepare_dialog(speaker, x, y)
+    screen.blit(dialogr_bg_img, (x, y))
     screen.blit(face_img_dict[speaker], (x + 10, y + 10))
     draw_text(screen, title, 17, (0, 0, 255), x + 100, y + 5)
     draw_text(screen, text, 16, (0, 0, 0), x + 110, y + 30)
