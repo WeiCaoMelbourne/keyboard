@@ -14,14 +14,7 @@ from modules.toolbar import *
 from modules.win_pos import *
 from modules.start_window import StartMainmenu
 from modules.stories.s1_1 import s1_entrance
-from modules.shared_variables import shared
-
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 400
-UNIT_SIZE = 50
-COLOR_WHITE = (255, 255, 255)
-COLOR_BLACK = (0, 0, 0)
-FPS = 100
+from modules.constant import *
 
 global_state = {
     "starting": True,
@@ -215,7 +208,6 @@ background_img = pygame.image.load('resource/mmap/start.png').convert()
 background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 end_img = pygame.image.load('resource/mmap/end.png').convert()
 end_img = pygame.transform.scale(end_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
-caocao_img = pygame.image.load('resource/pmap/曹操.png').convert()
 
 cursor_img = pygame.image.load('resource/cursor/arrow.png')
 horizontal_cursor = pygame.image.load('resource/cursor/arrow.png')
@@ -227,22 +219,6 @@ cursor_img_rect = cursor_img.get_rect()
 #     pass
 
 # story_object = Story()
-
-class CaoCao(pygame.sprite.Sprite):
-    def  __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = caocao_img
-        # self.image = pygame.Surface((50, 50))
-        # self.image.fill((0, 255, 255))
-        self.rect = pygame.Rect(0, 0, 48, 64)
-        self.rect.width = 48
-        self.rect.height = 64
-        self.rect.x = 100
-        self.rect.y = 100
-        
-
-    def update(self):
-        pass
 
 # main loop here
 def game():
@@ -366,9 +342,7 @@ def game():
     root.update()
     print("before root.after")
     if global_state['section'] == 1:
-        # shared["root"] = root
-        # root.after(1000 // FPS, s1_1)
-        s1_entrance(root, screen, FPS, background_img, cursor_img)
+        s1_entrance(root, screen, cursor_img)
     else:    
         root.after(1000 // FPS, game)
     print("after root.after")

@@ -1,4 +1,5 @@
 import pygame
+from .constant import *
 
 dialogr_bg_img = None
 dialogl_bg_img = None
@@ -8,16 +9,21 @@ face_img_dict = {
     
 }
 
-def draw_text(screen, text, size, color, x, y):
+def draw_text(screen, text, size, color, x, y, fill=False):
+    # print("draw_text", text, fill)
     global font_name
     if font_name == None:
         font_name = 'resource/font/FangZhengShuSong-GBK-1.ttf'
     font = pygame.font.Font(font_name, size)
     text_surface = font.render(text, True, color)
+    # print(text_surface.get_size())
     text_rect = text_surface.get_rect()
     text_rect.left = x
     text_rect.top = y
+    if fill:
+        screen.fill(COLOR_BLUE, text_rect)
     screen.blit(text_surface, text_rect)
+    return text_rect
 
 def prepare_dialog(speaker, x, y):
     global dialogr_bg_img, dialogl_bg_img, font_name
@@ -61,7 +67,8 @@ def draw_dialog(screen, title, speaker, text, x, y, direct="left"):
     else:
         drawr_dialog(screen, title, speaker, text, x, y)
 
-def drawe_selecter(screen, title, options):
+def draw_selecter(screen, speaker, options, selected=None):
+    # print("draw_selecter", selected)
     global selector_bg_img
     if selector_bg_img == None:
         selector_bg_img = pygame.image.load('resource/mark/select_dialog_bg.png').convert()
@@ -69,4 +76,14 @@ def drawe_selecter(screen, title, options):
     dialog_img_rect = selector_bg_img.get_rect()
     x = (w - dialog_img_rect.width) // 2
     y = (h - dialog_img_rect.height) // 2
-    screen.blit(dialogl_bg_img, (x, y))
+    screen.blit(selector_bg_img, (x, y))
+    screen.blit(face_img_dict[speaker], (x + 10, y + 10))
+    option_rects = []
+    for i, t in enumerate(options):
+        if selected == i:
+            draw_text(screen, t, 16, (0, 0, 0), x + 110, y + 30 + i * 18, fill=True)
+        else:
+            rect = draw_text(screen, t, 16, (0, 0, 0), x + 110, y + 30 + i * 18)
+            option_rects.append(rect)
+
+    return option_rects
