@@ -386,7 +386,7 @@ def config_toolbar(root):
     toolbar.pack(side=tk.TOP, fill=tk.X)
     
     # Images must be declared as global, otherwise imega won't work
-    global exit_img, save_img, setup_img, char_img, tool_img
+    global exit_img, save_img, setup_img, char_img, tool_img, load_img
     exit_img = tk.PhotoImage(file='resource/icon/exit.png')
     exit_button= tk.Button(toolbar, image=exit_img, command=lambda: exit(root=root), width=25, height=25)
     exit_button.pack(side=tk.LEFT)
@@ -396,6 +396,11 @@ def config_toolbar(root):
     save_button= tk.Button(toolbar, image=save_img, command=lambda: save(root=root), width=25, height=25)
     save_button.pack(side=tk.LEFT)
     CreateToolTip(save_button, "保存游戏")
+
+    load_img = tk.PhotoImage(file='resource/icon/load.png')
+    load_button= tk.Button(toolbar, image=load_img, command=lambda: save(root=root), width=25, height=25)
+    load_button.pack(side=tk.LEFT)
+    CreateToolTip(load_button, "读取游戏")
 
     setup_img = tk.PhotoImage(file='resource/icon/setup.png')
     setup_button= tk.Button(toolbar, image=setup_img, command=lambda: setup(root=root), width=25, height=25)

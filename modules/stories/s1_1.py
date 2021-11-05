@@ -18,6 +18,16 @@ def s1_main():
         print("evnet in s1_entrance", event, pygame.mouse.get_pos())
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.ACTIVEEVENT:
+            print(event)
+            if event.gain == 0:
+                root.config(cursor="arrow")
+            else:
+                root.config(cursor="none")
+            # if event.state & pygame.APPMOUSEFOCUS == pygame.APPMOUSEFOCUS:
+            #     print ('mouse focus ' + ('gained' if event.gain else 'lost'))
+            # if event.state & pygame.APPINPUTFOCUS == pygame.APPINPUTFOCUS:
+            #     print ('input focus ' + ('gained' if event.gain else 'lost'))
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if option_rects:
                 mouse_pos = pygame.mouse.get_pos()
