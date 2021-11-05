@@ -1,31 +1,40 @@
 import pygame
 from ..shared_variables import shared
+from ..common_funcs import drawr_dialog, drawl_dialog
 
 root = None
 screen = None
 background_img = None
 cursor_img = None
 FPS = None
-
-print("Inside s1_1.py")
+act = 0
+# caocao_face_img = pygame.image.load('resource/face/曹操-1.bmp').convert()
 
 # s1_bg_img = pygame.image.load('resource/mmap/1-1.bmp').convert()
 
 def s1_main():
     print("In s1_main")
+    global act
     for event in pygame.event.get():
         print("evnet in s1_entrance", event)
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            act += 1
 
     screen.blit(background_img, (0, 0))
     # all_sprites.draw(screen)
     
-    mouse_pos = pygame.mouse.get_pos()
+    # mouse_pos = pygame.mouse.get_pos()
     cursor_img_rect = cursor_img.get_rect()
     cursor_img_rect.center = pygame.mouse.get_pos()  # update position 
     # print(mouse_pos)
     screen.blit(cursor_img, cursor_img_rect)
+
+    if act == 1:
+        drawr_dialog(screen, "曹操", "曹操", "测试一下曹操的对话1", 200, 200)
+    elif act == 2:
+        drawl_dialog(screen, "曹操", "曹操", "测试一下曹操的对话2", 100, 100)
 
     pygame.display.update()
     root.update()

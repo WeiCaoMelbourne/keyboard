@@ -197,7 +197,7 @@ def draw_mousebox(screen, pos):
     outline_rect = pygame.Rect(x, y, WIDTH, HEIGHT)
     pygame.draw.rect(screen, COLOR_WHITE, outline_rect, 2)
 
-    
+pygame.init()    
 pygame.display.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 # screen.fill((0, 0, 0))
@@ -249,7 +249,7 @@ def game():
     global running, background_img
     if running == False:
         root.quit()
-
+    
     # start menu. It needs to be after root.update to get correct window pos
     if global_state['starting']:
         # background.blit(background_img, pygame.Rect((0,0),(10, 10)))
