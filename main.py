@@ -13,13 +13,15 @@ from modules.main_menu import *
 from modules.toolbar import *
 from modules.win_pos import *
 from modules.start_window import StartMainmenu
+from modules.stories.s1_1 import s1_entrance
+from modules.shared_variables import shared
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 400
 UNIT_SIZE = 50
 COLOR_WHITE = (255, 255, 255)
 COLOR_BLACK = (0, 0, 0)
-FPS = 60
+FPS = 100
 
 global_state = {
     "starting": True,
@@ -215,9 +217,9 @@ end_img = pygame.image.load('resource/mmap/end.png').convert()
 end_img = pygame.transform.scale(end_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 caocao_img = pygame.image.load('resource/pmap/曹操.png').convert()
 
-cursor_img = pygame.image.load('resource/cursor/RPG Style Arrow Alt.cur')
-horizontal_cursor = pygame.image.load('resource/cursor/RPG Style Horizontal Resize.cur')
-vertical_cursor = pygame.image.load('resource/cursor/RPG Style Vertical Resize.cur')
+cursor_img = pygame.image.load('resource/cursor/arrow.png')
+horizontal_cursor = pygame.image.load('resource/cursor/arrow.png')
+vertical_cursor = pygame.image.load('resource/cursor/arrow.png')
 pygame.mouse.set_visible(False)
 cursor_img_rect = cursor_img.get_rect()
 
@@ -264,12 +266,24 @@ def game():
             pygame.time.wait(2000)
             root.quit()
 
-    if global_state['section'] == 1:
-        background_img = pygame.image.load('resource/mmap/1-1.bmp').convert()
-        background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    # if global_state['section'] == 1:
+    #     # background_img = pygame.image.load('resource/mmap/1-1.bmp').convert()
+    #     # background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-        a = CaoCao()
-        all_sprites.add(a)
+    #     # a = CaoCao()
+    #     # all_sprites.add(a)
+    #     # global FPS
+    #     shared["root"] = root
+    #     # # shared['FPS'] = FPS
+    #     # shared['running'] = running
+    #     # shared['test'] = "hello"
+    #     # shared['count'] = 1
+    #     # print("before")
+    #     # # root.after(1000 // FPS, s1_1)
+    #     # s1_1()
+        # print("back now")
+        # FPS = shared['FPS']
+        # print("getting here ")
 
         # screen.fill(COLOR_BLACK)
         # screen.blit(story_object.background_img, (0, 0))
@@ -350,10 +364,19 @@ def game():
 
     pygame.display.update()
     root.update()
-
-    root.after(1000 // FPS, game)
+    print("before root.after")
+    if global_state['section'] == 1:
+        # shared["root"] = root
+        # root.after(1000 // FPS, s1_1)
+        s1_entrance(root, screen, FPS, background_img, cursor_img)
+    else:    
+        root.after(1000 // FPS, game)
+    print("after root.after")
 
 if __name__ == "__main__":
+    root.config(cursor="none")
     root.update()   # call this update to display background before showing main menu
     root.after(0, game)
+    print("here it is...........................")
     root.mainloop()
+    pygame.quit()
