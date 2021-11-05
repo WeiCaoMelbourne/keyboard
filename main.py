@@ -209,9 +209,9 @@ background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HE
 end_img = pygame.image.load('resource/mmap/end.png').convert()
 end_img = pygame.transform.scale(end_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-cursor_img = pygame.image.load('resource/cursor/arrow.png')
-horizontal_cursor = pygame.image.load('resource/cursor/arrow.png')
-vertical_cursor = pygame.image.load('resource/cursor/arrow.png')
+cursor_img = pygame.image.load('resource/cursor/arrow.png').convert()
+horizontal_cursor = pygame.image.load('resource/cursor/arrow.png').convert()
+vertical_cursor = pygame.image.load('resource/cursor/arrow.png').convert()
 pygame.mouse.set_visible(False)
 cursor_img_rect = cursor_img.get_rect()
 
