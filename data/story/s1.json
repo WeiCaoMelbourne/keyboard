@@ -2,32 +2,111 @@
     "对话": [
         {
             "speaker": "士兵",
-            "content": "队长，咱们得快点"
+            "content": "队长，咱们得快点",
+            "pos": "right",
+            "coordinates": "-10 -10"
         },
         {
             "speaker": "曹操",
-            "content": "我知道"
+            "content": "我知道",
+            "pos": "left",
+            "coordinates": "10 -10"
         },
         {
             "speaker": "许子将",
-            "content": "请留步"
+            "content": "请留步",
+            "pos": "right",
+            "coordinates": "-10 -10"
         },
         {
             "speaker": "士兵",
-            "content": "来者何人，你想阻止官兵吗？"
+            "content": "来者何人，你想阻止官兵吗？",
+            "pos": "left",
+            "coordinates": "10 -10"
         },
         {
             "speaker": "曹操",
-            "content": "且慢"
+            "content": "且慢",
+            "pos": "right",
+            "coordinates": "-10 -10"
         },
         {
             "speaker": "曹操",
-            "content": "老丈找我有事？\n我是官军骑兵队长，\n姓曹名操，字孟德"
+            "content": "老丈找我有事？\n我是官军骑兵队长，\n姓曹名操，字孟德",
+            "pos": "left",
+            "coordinates": "10 -10"
         },
         {
             "speaker": "许子将",
-            "content": "其实，小老儿见你相貌异于常人，所以不经意便喊住了您。"
+            "content": "其实，小老儿见你相貌异于常人，\n所以不经意便喊住了您。",
+            "pos": "right",
+            "coordinates": "-10 -10"
         },
+        {
+            "speaker": "士兵",
+            "content": "喂，不得对我们队长无礼。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "哎，多嘴！",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "老丈，你可会看相？",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "是的。",
+            "pos": "right",
+            "coordinates": "-10 -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "这倒有意思，不知我面相如何？",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "阁下乃治世之能臣，乱世之奸雄",
+            "pos": "right",
+            "coordinates": "-10 -10"
+        },
+        {
+            "speaker": "士兵",
+            "content": "你，你说什么",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "慢着！",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "老丈，你是说天将大乱吗？",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "哈哈，小老儿可没这么说。",
+            "pos": "right",
+            "coordinates": "-10 -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "老丈不必隐瞒了。\n不过，奸雄这话......",
+            "pos": "left",
+            "coordinates": "10 -10"
+        }
     ]
-    
 }

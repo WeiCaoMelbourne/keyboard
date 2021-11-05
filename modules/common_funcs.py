@@ -3,6 +3,7 @@ import pygame
 dialogr_bg_img = None
 dialogl_bg_img = None
 font_name = None
+selector_bg_img = None
 face_img_dict = {
     
 }
@@ -41,11 +42,31 @@ def drawr_dialog(screen, title, speaker, text, x, y):
     screen.blit(dialogr_bg_img, (x, y))
     screen.blit(face_img_dict[speaker], (x + 360, y + 10))
     draw_text(screen, title, 17, (0, 0, 255), x + 20, y + 5)
-    draw_text(screen, text, 16, (0, 0, 0), x + 30, y + 30)
+    texts = text.split("\n")
+    for i, t in enumerate(texts):
+        draw_text(screen, t, 16, (0, 0, 0), x + 30, y + 30 + i * 18)
 
 def drawl_dialog(screen, title, speaker, text, x, y):
     (x, y) = prepare_dialog(speaker, x, y)
-    screen.blit(dialogr_bg_img, (x, y))
+    screen.blit(dialogl_bg_img, (x, y))
     screen.blit(face_img_dict[speaker], (x + 10, y + 10))
     draw_text(screen, title, 17, (0, 0, 255), x + 100, y + 5)
-    draw_text(screen, text, 16, (0, 0, 0), x + 110, y + 30)
+    texts = text.split("\n")
+    for i, t in enumerate(texts):
+        draw_text(screen, t, 16, (0, 0, 0), x + 110, y + 30 + i * 18)
+
+def draw_dialog(screen, title, speaker, text, x, y, direct="left"):
+    if direct == "left":
+        drawl_dialog(screen, title, speaker, text, x, y)
+    else:
+        drawr_dialog(screen, title, speaker, text, x, y)
+
+def drawe_selecter(screen, title, options):
+    global selector_bg_img
+    if selector_bg_img == None:
+        selector_bg_img = pygame.image.load('resource/mark/select_dialog_bg.png').convert()
+    w, h = pygame.display.get_surface().get_size()
+    dialog_img_rect = selector_bg_img.get_rect()
+    x = (w - dialog_img_rect.width) // 2
+    y = (h - dialog_img_rect.height) // 2
+    screen.blit(dialogl_bg_img, (x, y))
