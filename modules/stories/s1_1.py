@@ -2,12 +2,13 @@ import pygame
 from ..common_funcs import draw_dialog, draw_selecter
 import json
 from ..constant import *
-from ..toolbar import move_redblue
+# from ..toolbar import move_redblue
 
 root = None
 screen = None
 background_img = None
 cursor_img = None
+tool_bar = None
 click_img = None
 act = 0
 s1_story = None
@@ -38,7 +39,7 @@ def s1_main():
                     if rect.collidepoint(mouse_pos):
                         print("selected is ", i)
                         selection = i
-                move_redblue()
+                tool_bar.increase_red()
             else:
                 act += 1
 
@@ -82,10 +83,10 @@ def s1_main():
     root.update()
     root.after(1000 // FPS, s1_main)
 
-def s1_entrance(parent_root, parent_screen, parent_cur):
+def s1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar):
     print("In s1_1")
     
-    global root, screen, background_img, cursor_img, s1_story, click_img
+    global root, screen, background_img, cursor_img, s1_story, click_img, tool_bar
     with open('data/story/s1.json', 'rb') as f:
         s1_story = json.load(f)
     # tk_root = shared['root']
@@ -93,6 +94,7 @@ def s1_entrance(parent_root, parent_screen, parent_cur):
     root = parent_root
     screen = parent_screen
     cursor_img = parent_cur
+    tool_bar = parent_tool_bar
     background_img = pygame.image.load('resource/mmap/1-1.bmp').convert()
     # click_img = pygame.image.load('resource/cursor/click.png').convert()
 

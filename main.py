@@ -31,7 +31,7 @@ root = tk.Tk()
 
 embed = tk.Frame(root, width=SCREEN_WIDTH, height=SCREEN_HEIGHT) #creates embed frame for pygame window
 config_menu(root)
-config_toolbar(root)
+tool_bar = config_toolbar(root)
 
 embed.pack()
 os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
@@ -342,7 +342,7 @@ def game():
     root.update()
     print("before root.after")
     if global_state['section'] == 1:
-        s1_entrance(root, screen, cursor_img)
+        s1_entrance(root, screen, cursor_img, tool_bar)
     else:    
         root.after(1000 // FPS, game)
     print("after root.after")
