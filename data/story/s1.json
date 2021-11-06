@@ -112,5 +112,111 @@
     "选择": {
         "人物": "曹操",
         "选项": "1. 正是吾心所愿。\n2. 似乎言之过早。"
-    }
+    },
+    "对话2-1": [
+        {
+            "speaker": "曹操",
+            "content": "既然生为男儿，\n乱世奸雄正是吾心所愿。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "原来如此，其实小老儿不过是胡言乱语，\n还请大人莫怪。",
+            "pos": "right",
+            "coordinates": "-10 -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "那么小老儿就此告别，祝将军旗开得胜。",
+            "pos": "right",
+            "coordinates": "-10 -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "......嗯。\n再会了，老丈。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "出发，赶往激战中的颖川。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "士兵",
+            "content": "是。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "士兵2",
+            "content": "是。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "原来自己相当奸雄？\n好好，曹大人......\n您就朝着自己的理想努力吧",
+            "pos": "right",
+            "coordinates": "-10 -10"
+        }
+    ],
+    "对话2-2": [
+        {
+            "speaker": "曹操",
+            "content": "......奸雄？\n现在就下定论，未免言之过早。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "原来如此，其实小老儿不过是胡言乱语，\n还请大人莫怪。",
+            "pos": "right",
+            "coordinates": "-10 -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "那么小老儿就此告别，祝将军旗开得胜。",
+            "pos": "right",
+            "coordinates": "-10 -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "......嗯。\n再会了，老丈。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "曹操",
+            "content": "出发，赶往激战中的颖川。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "士兵",
+            "content": "是。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "士兵2",
+            "content": "是。",
+            "pos": "left",
+            "coordinates": "10 -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "那年轻人的相貌，\n正是乱世之奸雄，治世之能臣。",
+            "pos": "right",
+            "coordinates": "-10 -10"
+        },
+        {
+            "speaker": "许子将",
+            "content": "不知他将来会如何，\n就让我们拭目以待吧。",
+            "pos": "right",
+            "coordinates": "-10 -10"
+        }
+    ]
 }

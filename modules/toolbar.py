@@ -386,10 +386,10 @@ def config_toolbar(root):
     toolbar.pack(side=tk.TOP, fill=tk.X)
     
     # Images must be declared as global, otherwise imega won't work
-    global exit_img, save_img, setup_img, char_img, tool_img, load_img
+    global exit_img, save_img, setup_img, char_img, tool_img, load_img, area_img, treasure_img
     exit_img = tk.PhotoImage(file='resource/icon/exit.png')
     exit_button= tk.Button(toolbar, image=exit_img, command=lambda: exit(root=root), width=25, height=25)
-    exit_button.pack(side=tk.LEFT)
+    exit_button.pack(side=tk.LEFT, pady=2)
     CreateToolTip(exit_button, "结束游戏")
 
     save_img = tk.PhotoImage(file='resource/icon/save.png')
@@ -424,6 +424,16 @@ def config_toolbar(root):
     tool_button.pack(side=tk.LEFT)
     CreateToolTip(tool_button, "持有道具一览")
 
+    area_img = tk.PhotoImage(file='resource/icon/地形.png')
+    area_button= tk.Button(toolbar2, image=area_img, command=lambda: tools(root=root), width=25, height=25)
+    area_button.pack(side=tk.LEFT)
+    CreateToolTip(tool_button, "地形情报一览")
+
+    treasure_img = tk.PhotoImage(file='resource/icon/宝物.png')
+    treasure_button= tk.Button(toolbar2, image=treasure_img, command=lambda: tools(root=root), width=25, height=25)
+    treasure_button.pack(side=tk.LEFT)
+    CreateToolTip(tool_button, "宝物图鉴")
+
     # about_img = tk.PhotoImage(file='resource/icon/about.png')
     global about_img
     img = Image.open('resource/icon/about.png')
@@ -432,3 +442,34 @@ def config_toolbar(root):
     about_button= tk.Button(toolbar2, image=about_img, command=lambda: about(root=root), width=25, height=25)
     about_button.pack(side=tk.LEFT)
     CreateToolTip(about_button, "关于")
+
+    toolbar3 = tk.Frame(toolbar)
+    toolbar3.pack(side=tk.LEFT, padx=20)
+    global textbar_img, redbird_img, bluebird_img, redbar_img, bluebar_img, bar_img3, bar_img4, bar_img5, bar_img6
+    textbar_img = tk.PhotoImage(file=f"resource/icon/text_bar.png")
+    img_label = tk.Label(toolbar3, image=textbar_img, relief=SUNKEN)
+    img_label.pack(side=tk.TOP)
+
+    redbird_img = tk.PhotoImage(file=f"resource/icon/奸雄.png")
+    red_label = tk.Label(toolbar3, image=redbird_img)
+    red_label.pack(side=tk.LEFT)
+
+    # redbar_img = tk.PhotoImage(file=f"resource/icon/redbar.png")
+    # for i in range(6):
+    img = Image.open('resource/icon/redbar.png')
+    img = img.resize((60, 8), Image.ANTIALIAS)
+    redbar_img = ImageTk.PhotoImage(img)
+    redbar_label = tk.Label(toolbar3, image=redbar_img, highlightthickness=0, borderwidth=0)
+    redbar_label.pack(side=tk.LEFT)
+    img = Image.open('resource/icon/bluebar.png')
+    img = img.resize((60, 8), Image.ANTIALIAS)
+    bluebar_img = ImageTk.PhotoImage(img)
+    bluebar_label = tk.Label(toolbar3, image=bluebar_img, highlightthickness=0, borderwidth=0)
+    bluebar_label.pack(side=tk.LEFT)
+
+    bluebird_img = tk.PhotoImage(file=f"resource/icon/忠臣.png")
+    blue_label = tk.Label(toolbar3, image=bluebird_img)
+    blue_label.pack(side=tk.RIGHT)
+
+def move_redblue():
+    print("move_redblue ")

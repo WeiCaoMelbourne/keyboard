@@ -2,6 +2,7 @@ import pygame
 from ..common_funcs import draw_dialog, draw_selecter
 import json
 from ..constant import *
+from ..toolbar import move_redblue
 
 root = None
 screen = None
@@ -31,10 +32,13 @@ def s1_main():
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if option_rects:
                 mouse_pos = pygame.mouse.get_pos()
+                selection = 0
                 for i, rect in enumerate(option_rects):
                     # print(rect)
                     if rect.collidepoint(mouse_pos):
                         print("selected is ", i)
+                        selection = i
+                move_redblue()
             else:
                 act += 1
 
