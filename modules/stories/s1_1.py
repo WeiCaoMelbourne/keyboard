@@ -33,13 +33,16 @@ def s1_main():
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if option_rects:
                 mouse_pos = pygame.mouse.get_pos()
-                selection = 0
+                selection = -1
                 for i, rect in enumerate(option_rects):
                     # print(rect)
                     if rect.collidepoint(mouse_pos):
                         print("selected is ", i)
                         selection = i
-                tool_bar.increase_red()
+                if selection == 0:
+                    tool_bar.increase_red()
+                elif selection == 1:
+                    tool_bar.increase_blue()
             else:
                 act += 1
 

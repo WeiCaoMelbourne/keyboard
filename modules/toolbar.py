@@ -384,6 +384,10 @@ def about(root):
 
 class ToolBar():
     def __init__(self, root, **kwargs):
+        self.red_value = 60
+        self.blue_value = 60
+
+        self.root = root
         toolbar = tk.Frame(root, height=30)
         toolbar.pack(side=tk.TOP, fill=tk.X)
         
@@ -454,39 +458,67 @@ class ToolBar():
         self.redbird_label = tk.Label(toolbar3, image=self.redbird_img)
         self.redbird_label.pack(side=tk.LEFT)
         img = Image.open('resource/icon/redbar.png')
-        img = img.resize((60, 8), Image.ANTIALIAS)
+        img = img.resize((self.red_value, 8), Image.ANTIALIAS)
         self.redbar_img = ImageTk.PhotoImage(img)
         self.redbar_label = tk.Label(toolbar3, image=self.redbar_img, highlightthickness=0, borderwidth=0)
         self.redbar_label.pack(side=tk.LEFT)
         img = Image.open('resource/icon/bluebar.png')
-        img = img.resize((60, 8), Image.ANTIALIAS)
+        img = img.resize((self.blue_value, 8), Image.ANTIALIAS)
         self.bluebar_img = ImageTk.PhotoImage(img)
         self.bluebar_label = tk.Label(toolbar3, image=self.bluebar_img, highlightthickness=0, borderwidth=0)
         self.bluebar_label.pack(side=tk.LEFT)
 
         self.bluebird_img = tk.PhotoImage(file=f"resource/icon/忠臣.png")
-        self.bluebrid_label = tk.Label(toolbar3, image=self.bluebird_img)
-        self.bluebrid_label.pack(side=tk.RIGHT)
+        self.bluebird_label = tk.Label(toolbar3, image=self.bluebird_img)
+        self.bluebird_label.pack(side=tk.RIGHT)
 
-    def increase_red(self):
-        print("increase_red ")
-        img = Image.open('resource/icon/redbar.png')
-        img = img.resize((80, 8), Image.ANTIALIAS)
-        self.redbar_img = ImageTk.PhotoImage(img)
-        for i in range(5):
-            self.redbird_label.configure(image=self.bluebird_img)
-            # time.sleep(0.1)
+        self.blink_img = tk.PhotoImage(file=f"resource/icon/blink.png")
+
+    def increase_red(self, act=5):
+        if act % 2 == 0:
+            self.redbird_label.configure(image=self.blink_img)
+        else:
             self.redbird_label.configure(image=self.redbird_img)
-            # time.sleep(0.1)
-        self.redbar_label.configure(image=self.redbar_img)
-        img = Image.open('resource/icon/bluebar.png')
-        img = img.resize((40, 8), Image.ANTIALIAS)
-        self.bluebar_img = ImageTk.PhotoImage(img)
-        # for i in range(5):
-        #     self.bluebrid_label.configure(image=self.redbird_img)
-        #     self.bluebrid_label.configure(image=self.bluebird_img)
-        self.bluebar_label.configure(image=self.bluebar_img)
-        # time.sleep(3)
+        
+        if act == 0:
+            self.redbird_label.configure(image=self.redbird_img)
+            self.red_value += 20
+            img = Image.open('resource/icon/redbar.png')
+            img = img.resize((self.red_value, 8), Image.ANTIALIAS)
+            self.redbar_img = ImageTk.PhotoImage(img)
+            self.redbar_label.configure(image=self.redbar_img)
+
+            self.blue_value -= 20
+            img = Image.open('resource/icon/bluebar.png')
+            img = img.resize((self.blue_value, 8), Image.ANTIALIAS)
+            self.bluebar_img = ImageTk.PhotoImage(img)
+            self.bluebar_label.configure(image=self.bluebar_img)
+
+        if act > 0:
+            self.root.after(100, self.increase_red, act - 1)
+
+    def increase_blue(self, act=5):
+        if act % 2 == 0:
+            self.bluebird_label.configure(image=self.blink_img)
+        else:
+            self.bluebird_label.configure(image=self.bluebird_img)
+        
+        if act == 0:
+            self.bluebird_label.configure(image=self.bluebird_img)
+            self.red_value -= 20
+            img = Image.open('resource/icon/redbar.png')
+            img = img.resize((self.red_value, 8), Image.ANTIALIAS)
+            self.redbar_img = ImageTk.PhotoImage(img)
+            self.redbar_label.configure(image=self.redbar_img)
+
+            self.blue_value += 20
+            img = Image.open('resource/icon/bluebar.png')
+            img = img.resize((self.blue_value, 8), Image.ANTIALIAS)
+            self.bluebar_img = ImageTk.PhotoImage(img)
+            self.bluebar_label.configure(image=self.bluebar_img)
+
+        if act > 0:
+            self.root.after(100, self.increase_blue, act - 1)
         
 def config_toolbar(root):
     return ToolBar(root)
