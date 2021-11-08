@@ -5,6 +5,8 @@ dialogr_bg_img = None
 dialogl_bg_img = None
 font_name = None
 selector_bg_img = None
+speakbubble_l_img = None
+speakbubble_r_img = None
 face_img_dict = {
     
 }
@@ -87,3 +89,18 @@ def draw_selecter(screen, speaker, options, selected=None):
             option_rects.append(rect)
 
     return option_rects
+
+def drawr_talkbubble(screen, rect):
+    global speakbubble_r_img
+    if speakbubble_r_img == None:
+        speakbubble_r_img = pygame.image.load('resource/mark/speakbubble_right.bmp').convert()
+        speakbubble_r_img.set_colorkey(COLOR_KEY)
+    screen.blit(speakbubble_r_img, (rect.x + rect.width - 5, rect.y - 20))
+
+def drawl_talkbubble(screen, rect):
+    global speakbubble_l_img
+    if speakbubble_l_img == None:
+        speakbubble_l_img = pygame.image.load('resource/mark/speakbubble_left.bmp').convert()
+        speakbubble_l_img.set_colorkey(COLOR_KEY)
+    screen.blit(speakbubble_l_img, (rect.x - 20, rect.y - 20))
+    # screen.blit(face_img_dict[speaker], (x + 10, y + 10))
