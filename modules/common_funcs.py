@@ -69,8 +69,8 @@ def draw_dialog(screen, title, speaker, text, x, y, direct="left"):
     else:
         drawr_dialog(screen, title, speaker, text, x, y)
 
-def draw_selecter(screen, speaker, options, selected=None):
-    # print("draw_selecter", selected)
+def draw_selecter(screen, speaker, options, hoveron=None):
+    # print("draw_selecter", hoveron)
     global selector_bg_img
     if selector_bg_img == None:
         selector_bg_img = pygame.image.load('resource/mark/select_dialog_bg.png').convert()
@@ -82,7 +82,7 @@ def draw_selecter(screen, speaker, options, selected=None):
     screen.blit(face_img_dict[speaker], (x + 10, y + 10))
     option_rects = []
     for i, t in enumerate(options):
-        if selected == i:
+        if hoveron == i:
             draw_text(screen, t, 16, (0, 0, 0), x + 110, y + 30 + i * 18, fill=True)
         else:
             rect = draw_text(screen, t, 16, (0, 0, 0), x + 110, y + 30 + i * 18)

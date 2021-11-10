@@ -342,7 +342,8 @@ def game():
     root.update()
     print("before root.after")
     if global_state['section'] == 1:
-        s1_entrance(root, screen, cursor_img, tool_bar)
+        s1_entrance(root, screen, cursor_img, tool_bar, global_state=global_state, exit_func=game)
+        print(global_state['section'])
     else:    
         root.after(1000 // FPS, game)
     print("after root.after")

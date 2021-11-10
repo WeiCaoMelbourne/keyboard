@@ -19,9 +19,10 @@
             "starty": -10
         },
         "许子将": {
+            "left-down-face": "resource/pmap/许子将.bmp",
             "right-up-face": "resource/pmap/许子将-2.bmp",
             "main-face": "right-up-face",
-            "startx": 180,
+            "startx": 220,
             "starty": 300
         }
     },
@@ -115,7 +116,6 @@
                 "v-direct": "up",
                 "end-pivot": "endx"
             }
-            
         },
         "4": {
             "类型": "对话",
@@ -187,6 +187,9 @@
         },
         "9": {
             "类型": "对话",
+            "许子将": {
+                "direction": "left-up"
+            },
             "发言": {
                 "人物": "士兵1",
                 "speaker": "士兵",
@@ -305,6 +308,326 @@
             "类型": "选择",
             "人物": "曹操",
             "选项": "1. 正是吾心所愿。\n2. 似乎言之过早。"
+        },
+        "21": {
+            "类型": "对话",
+            "发言": {
+                "人物": "曹操",
+                "speaker": "曹操",
+                "content": "......奸雄？\n现在就下定论，未免言之过早。",
+                "pos": "left",
+                "coordinates": "10 -10"
+            }
+        },
+        "22": {
+            "类型": "对话",
+            "许子将": {
+                "direction": "left-up",
+                "frame": 9
+            },
+            "发言": {
+                "人物": "许子将",
+                "speaker": "许子将",
+                "content": "原来如此，其实小老儿不过是胡言乱语，\n还请大人莫怪。",
+                "pos": "right",
+                "coordinates": "-10 -10"
+            }
+        },
+        "23": {
+            "类型": "对话",
+            "发言": {
+                "人物": "许子将",
+                "speaker": "许子将",
+                "content": "那么小老儿就此告别，祝将军旗开得胜。",
+                "pos": "right",
+                "coordinates": "-10 -10"
+            }
+        },
+        "24": {
+            "类型": "对话",
+            "许子将": {
+                "direction": "left-up"
+            },
+            "发言": {
+                "人物": "曹操",
+                "speaker": "曹操",
+                "content": "......嗯。\n再会了，老丈。",
+                "pos": "left",
+                "coordinates": "10 -10"
+            }
+        },
+        "25": {
+            "类型": "对话",
+            "曹操": {
+                "direction": "left-down"
+            },
+            "发言": {
+                "人物": "曹操",
+                "speaker": "曹操",
+                "content": "出发，赶往激战中的颖川。",
+                "pos": "left",
+                "coordinates": "10 -10"
+            }
+        },
+        "26": {
+            "类型": "对话",
+            "士兵1": {
+                "direction": "right-up"
+            },
+            "发言": {
+                "人物": "士兵1",
+                "speaker": "士兵",
+                "content": "是。",
+                "pos": "left",
+                "coordinates": "10 -10"
+            }
+        },
+        "27": {
+            "类型": "对话",
+            "发言": {
+                "人物": "士兵2",
+                "speaker": "士兵2",
+                "content": "是。",
+                "pos": "left",
+                "coordinates": "10 -10"
+            }
+        },
+        "28": {
+            "类型": "移动",
+            "benchmark": "曹操",
+            "曹操": {
+                "endx": 160,
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "士兵1": {
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "士兵2": {
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "许子将": {
+                "speedx": 2,
+                "speedy": 1.8,
+                "h-direct": "right",
+                "v-direct": "up"
+            }
+        },
+        "29": {
+            "类型": "对话",
+            "许子将": {
+                "direction": "left-down"
+            },
+            "发言": {
+                "人物": "许子将",
+                "speaker": "许子将",
+                "content": "那年轻人的相貌，\n正是乱世之奸雄，治世之能臣。",
+                "pos": "right",
+                "coordinates": "-10 -10"
+            }
+        },
+        "30": {
+            "类型": "对话",
+            "发言": {
+                "人物": "许子将",
+                "speaker": "许子将",
+                "content": "不知他将来会如何，\n就让我们拭目以待吧。",
+                "pos": "right",
+                "coordinates": "-10 -10"
+            }
+        },
+        "31": {
+            "类型": "对话",
+            "发言": {
+                "人物": "许子将",
+                "speaker": "许子将",
+                "content": "呵呵呵......",
+                "pos": "right",
+                "coordinates": "-10 -10"
+            }
+        },
+        "32": {
+            "类型": "移动",
+            "benchmark": "曹操",
+            "曹操": {
+                "endx": -150,
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "士兵1": {
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "士兵2": {
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "许子将": {
+                "speedx": 2,
+                "speedy": 1.8,
+                "h-direct": "right",
+                "v-direct": "up"
+            }
+        },
+        "33": {
+            "类型": "结束"
+        },
+        "101": {
+            "类型": "对话",
+            "发言": {
+                "人物": "曹操",
+                "speaker": "曹操",
+                "content": "既然生为男儿，\n乱世奸雄正是吾心所愿。",
+                "pos": "left",
+                "coordinates": "10 -10"
+            }
+        },
+        "102": {
+            "类型": "对话",
+            "许子将": {
+                "direction": "left-up",
+                "frame": 9
+            },
+            "发言": {
+                "人物": "许子将",
+                "speaker": "许子将",
+                "content": "原来如此，其实小老儿不过是胡言乱语，\n还请大人莫怪。",
+                "pos": "right",
+                "coordinates": "-10 -10"
+            }
+        },
+        "103": {
+            "类型": "对话",
+            "发言": {
+                "人物": "许子将",
+                "speaker": "许子将",
+                "content": "那么小老儿就此告别，祝将军旗开得胜。",
+                "pos": "right",
+                "coordinates": "-10 -10"
+            }
+        },
+        "104": {
+            "类型": "对话",
+            "许子将": {
+                "direction": "left-up"
+            },
+            "发言": {
+                "人物": "曹操",
+                "speaker": "曹操",
+                "content": "......嗯。\n再会了，老丈。",
+                "pos": "left",
+                "coordinates": "10 -10"
+            }
+        },
+        "105": {
+            "类型": "对话",
+            "曹操": {
+                "direction": "left-down"
+            },
+            "发言": {
+                "人物": "曹操",
+                "speaker": "曹操",
+                "content": "出发，赶往激战中的颖川。",
+                "pos": "left",
+                "coordinates": "10 -10"
+            }
+        },
+        "106": {
+            "类型": "对话",
+            "士兵1": {
+                "direction": "right-up"
+            },
+            "发言": {
+                "人物": "士兵1",
+                "speaker": "士兵",
+                "content": "是。",
+                "pos": "left",
+                "coordinates": "10 -10"
+            }
+        },
+        "107": {
+            "类型": "对话",
+            "发言": {
+                "人物": "士兵2",
+                "speaker": "士兵2",
+                "content": "是。",
+                "pos": "left",
+                "coordinates": "10 -10"
+            }
+        },
+        "108": {
+            "类型": "移动",
+            "benchmark": "曹操",
+            "曹操": {
+                "endx": 160,
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "士兵1": {
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "士兵2": {
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "许子将": {
+                "speedx": 2,
+                "speedy": 1.8,
+                "h-direct": "right",
+                "v-direct": "up"
+            }
+        },
+        "109": {
+            "类型": "对话",
+            "许子将": {
+                "direction": "left-down"
+            },
+            "发言": {
+                "人物": "许子将",
+                "speaker": "许子将",
+                "content": "原来自己相当奸雄？\n好好，曹大人......\n您就朝着自己的理想努力吧",
+                "pos": "right",
+                "coordinates": "-10 -10"
+            }
+        },
+        "110": {
+            "类型": "对话",
+            "发言": {
+                "人物": "许子将",
+                "speaker": "许子将",
+                "content": "呵呵呵......",
+                "pos": "right",
+                "coordinates": "-10 -10"
+            }
+        },
+        "111": {
+            "类型": "移动",
+            "benchmark": "曹操",
+            "曹操": {
+                "endx": -150,
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "士兵1": {
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "士兵2": {
+                "speedx": 2,
+                "speedy": 1.8
+            },
+            "许子将": {
+                "speedx": 2,
+                "speedy": 1.8,
+                "h-direct": "right",
+                "v-direct": "up"
+            }
+        },
+        "112": {
+            "类型": "结束"
         }
     }
 }
