@@ -98,6 +98,13 @@ def drawr_talkbubble(screen, rect):
     screen.blit(speakbubble_r_img, (rect.x + rect.width - 5, rect.y - 20))
 
 def drawl_talkbubble(screen, rect):
+    global speakbubble_r_img
+    if speakbubble_r_img == None:
+        speakbubble_r_img = pygame.image.load('resource/mark/speakbubble_left.bmp').convert()
+        speakbubble_r_img.set_colorkey(COLOR_KEY)
+    screen.blit(speakbubble_r_img, (rect.x - 20, rect.y - 20))
+
+def drawl_talkbubble(screen, rect):
     global speakbubble_l_img
     if speakbubble_l_img == None:
         speakbubble_l_img = pygame.image.load('resource/mark/speakbubble_left.bmp').convert()

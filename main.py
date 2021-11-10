@@ -29,10 +29,10 @@ root = tk.Tk()
 # exit_btn = None
 # exit_btn = tk.PhotoImage(file='resource/icon/exit.png')
 
-embed = tk.Frame(root, width=SCREEN_WIDTH, height=SCREEN_HEIGHT) #creates embed frame for pygame window
 config_menu(root)
 tool_bar = config_toolbar(root)
 
+embed = tk.Frame(root, width=SCREEN_WIDTH, height=SCREEN_HEIGHT) #creates embed frame for pygame window
 embed.pack()
 os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
 os.environ['SDL_VIDEODRIVER'] = 'windib'
@@ -235,7 +235,7 @@ def game():
             x=root.winfo_x()+root.winfo_width()//2-50, y=root.winfo_y()+root.winfo_height()//2, state=global_state)
         
         if start_win.choice == 'quit':
-            print("Quite")
+            print("Quit")
             screen.fill(COLOR_BLACK)
             screen.blit(end_img, (0, 0))
             pygame.display.update()
