@@ -261,7 +261,8 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
     cursor_img = parent_cur
     tool_bar = parent_tool_bar
     parent_func = exit_func
-    background_img = pygame.image.load('resource/mmap/1-1.bmp').convert()
+    background_img = pygame.image.load('resource/battlefield/1-1.bmp').convert()
+    print("bmap", background_img.get_rect())
     # click_img = pygame.image.load('resource/cursor/click.png').convert()
 
     all_sprites = pygame.sprite.Group()

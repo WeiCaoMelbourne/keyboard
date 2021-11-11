@@ -359,7 +359,8 @@
         "25": {
             "类型": "对话",
             "曹操": {
-                "direction": "left-down"
+                "direction": "left-down",
+                "frame": 20
             },
             "发言": {
                 "人物": "曹操",
@@ -373,6 +374,9 @@
             "类型": "对话",
             "士兵1": {
                 "direction": "right-up"
+            },
+            "曹操": {
+                "direction": "left-down"
             },
             "发言": {
                 "人物": "士兵1",
@@ -524,7 +528,8 @@
         "105": {
             "类型": "对话",
             "曹操": {
-                "direction": "left-down"
+                "direction": "left-down",
+                "frame": 20
             },
             "发言": {
                 "人物": "曹操",
@@ -538,6 +543,9 @@
             "类型": "对话",
             "士兵1": {
                 "direction": "right-up"
+            },
+            "曹操": {
+                "direction": "left-down"
             },
             "发言": {
                 "人物": "士兵1",
