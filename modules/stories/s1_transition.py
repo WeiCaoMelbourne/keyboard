@@ -3,7 +3,7 @@ from ..constant import *
 
 def s1_transition(parent_root, parent_screen, global_state, exit_func):
     
-    global_state["story"] = "f1"
+    global_state["story"] = "b1"
     background_img = pygame.image.load('resource/img/transition_grey.bmp').convert()
     background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
     parent_screen.blit(background_img, (0, 0))

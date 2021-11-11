@@ -43,6 +43,10 @@ os.environ['SDL_VIDEODRIVER'] = 'windib'
 # center main window. It must be called after packing all elements of this window
 root.eval('tk::PlaceWindow . center')
 
+pygame.init()    
+pygame.display.init()
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
 running = True
 # def quit_callback():
 #     global running
@@ -64,8 +68,6 @@ running = True
 def show_mainmenu():
     # messagebox.showinfo(title="Hello", message="What is it")
     win_pos = window_pos()
-    print(win_pos)
-    print(win_pos[0] + SCREEN_WIDTH / 2, win_pos[1] + SCREEN_WIDTH / 2)
     # main_manu.tk_popup(win_pos[0] + SCREEN_WIDTH // 2, 200, 0)
     # main_manu.tk_popup(win_pos[0] + SCREEN_WIDTH // 2, win_pos[1] + SCREEN_HEIGHT // 2, 0)
 
@@ -193,9 +195,7 @@ def draw_mousebox(screen, pos):
     outline_rect = pygame.Rect(x, y, WIDTH, HEIGHT)
     pygame.draw.rect(screen, COLOR_WHITE, outline_rect, 2)
 
-pygame.init()    
-pygame.display.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
 # screen.fill((0, 0, 0))
 
 all_sprites = pygame.sprite.Group()
@@ -204,8 +204,8 @@ all_sprites.add(c)
 
 fpsClock = pygame.time.Clock()
 
-background = pygame.Surface(screen.get_size())
-background.fill(pygame.Color('#456000'))
+# background = pygame.Surface(screen.get_size())
+# background.fill(pygame.Color('#456000'))
 
 background_img = pygame.image.load('resource/mmap/start.png').convert()
 background_img = pygame.transform.scale(background_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -225,7 +225,7 @@ cursor_img_rect = cursor_img.get_rect()
 
 # main loop here
 def game():
-    global running, background_img
+    global running, background_img, screen
     if running == False:
         root.quit()
     
@@ -343,16 +343,21 @@ def game():
 
     pygame.display.update()
     root.update()
-    print("before root.after")
+        # print("before root.after")
     if global_state['story'] == "s1":
         s1_entrance(root, screen, cursor_img, tool_bar, global_state=global_state, exit_func=game)
-        print("after s1_entrance", global_state['story'])
     elif global_state['story'] == "s1-transition":
         s1_transition(root, screen, global_state=global_state, exit_func=game)
-        print("after s1_transition", global_state['story'])
+    elif global_state['story'] == "b1":
+        # SCREEN_WIDTH = 960
+        # SCREEN_HEIGHT = 960
+        # embed.config(width=960, height=960)
+        embed.config(width=960, height=800)
+        screen = pygame.display.set_mode((960, 960))
+        b1_entrance(root, screen, cursor_img, tool_bar, global_state=global_state, exit_func=game)
     else:    
         root.after(1000 // FPS, game)
-    print("after root.after")
+    # print("after root.after")
 
 if __name__ == "__main__":
     root.config(cursor="none")
