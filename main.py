@@ -14,16 +14,19 @@ from modules.toolbar import *
 from modules.win_pos import *
 from modules.start_window import StartMainmenu
 from modules.stories.s1_1 import s1_entrance
+from modules.stories.s1_transition import s1_transition
+from modules.stories.b1_1 import b1_entrance
 from modules.constant import *
 
 global_state = {
     "starting": True,
-    "section": 1
+    "story": "s1"
 }
 
 char_img = pygame.image.load('resource/img/t1.png')
 
 root = tk.Tk()
+root.resizable(width=False, height=False)
 
 #pictures must be a global variable, otherwise it won't work
 # exit_btn = None
@@ -341,9 +344,12 @@ def game():
     pygame.display.update()
     root.update()
     print("before root.after")
-    if global_state['section'] == 1:
+    if global_state['story'] == "s1":
         s1_entrance(root, screen, cursor_img, tool_bar, global_state=global_state, exit_func=game)
-        print(global_state['section'])
+        print("after s1_entrance", global_state['story'])
+    elif global_state['story'] == "s1-transition":
+        s1_transition(root, screen, global_state=global_state, exit_func=game)
+        print("after s1_transition", global_state['story'])
     else:    
         root.after(1000 // FPS, game)
     print("after root.after")
