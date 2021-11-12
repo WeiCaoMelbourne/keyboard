@@ -1,5 +1,5 @@
 import pygame
-from ..common_funcs import draw_dialog, draw_selecter, drawr_talkbubble, drawl_talkbubble
+from ..common_funcs import draw_dialog, draw_selecter, bdraw_dialog
 import json
 from ..constant import *
 from ..win_pos import window_pos
@@ -12,15 +12,14 @@ FIELD_WIDTH = 960
 FIELD_HEIGHT = 960
 
 LEFTTOP_X = 0
-LEFTTOP_Y = 0
-
+LEFTTOP_Y = FIELD_UNIT_SIZE * -3    # Because the first dialog is at bottom, so make screen lower
 
 root = None
 screen = None
 background_img = None
 cursor_img = None
 tool_bar = None
-click_img = None
+# click_img = None
 act = 0
 s1_story = None
 option_rects = []
@@ -40,6 +39,11 @@ class Character(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.unit_img = pygame.image.load(s1_story["人物"][name]['unit_img']).convert()
+        if 'atk_img' in s1_story["人物"][name]:
+            self.atk_img = pygame.image.load(s1_story["人物"][name]['atk_img']).convert()
+        
+        if 'spc_img' in s1_story["人物"][name]:
+            self.spc_img = pygame.image.load(s1_story["人物"][name]['spc_img']).convert()
         
         if 'direction' in s1_story["人物"][name]:
             if s1_story["人物"][name]['direction'] == 'right':
@@ -71,6 +75,74 @@ class Character(pygame.sprite.Sprite):
         self.prev_tick = pygame.time.get_ticks()
         self.cur_pic = 0
         self.pic_direct = 1
+        self.act = 0
+        self.actframe_last = FIELD_ACT_FRAME_LAST
+        self.die_flick = 0
+
+    def play(self):
+        global timeline
+
+        # if no endx and no endy, do not touch this character
+        if self.name not in s1_story["时间轴"][str(timeline)]:
+            return
+
+        now = pygame.time.get_ticks()
+        # print(now, self.prev_tick)
+        if now - self.prev_tick > self.actframe_last:
+            self.act += 1
+            if self.act >= len(s1_story["时间轴"][str(timeline)][self.name]):
+                self.act = 0
+                if 'benchmark' in s1_story["时间轴"][str(timeline)] and self.name == s1_story["时间轴"][str(timeline)]["benchmark"] :
+                    timeline += 1
+                return
+            self.act_frame = 0
+            if 'frame' in s1_story["时间轴"][str(timeline)][self.name][self.act]:
+                self.act_frame = s1_story["时间轴"][str(timeline)][self.name][self.act]['frame'] - 1
+            if 'last' in s1_story["时间轴"][str(timeline)][self.name][self.act]:
+                self.actframe_last = s1_story["时间轴"][str(timeline)][self.name][self.act]['last']
+            else:
+                self.actframe_last = FIELD_ACT_FRAME_LAST
+            self.prev_tick = now
+        print(self.name, self.act_frame)
+        if s1_story["时间轴"][str(timeline)][self.name][self.act]['img'] == 'atk_img':
+            self.image = self.atk_img.subsurface(0, FIELD_ATK_UNIT_SIZE * self.act_frame, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
+        elif s1_story["时间轴"][str(timeline)][self.name][self.act]['img'] == 'spc_img':
+            self.image = self.spc_img.subsurface(0, FIELD_UNIT_SIZE * self.act_frame, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+        else:
+            self.image = self.unit_img.subsurface(0, FIELD_UNIT_SIZE * self.act_frame, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+
+        if 'flip' in s1_story["时间轴"][str(timeline)][self.name][self.act] and \
+            s1_story["时间轴"][str(timeline)][self.name][self.act]['flip']:
+            self.image = pygame.transform.flip(self.image, True, False)
+        # Looks like if it is PNG file, do not need to call set_colorkey every time; but for BMP, it does
+        self.image.set_colorkey(COLOR_KEY)
+
+    def die(self):
+        global timeline, all_sprites
+        
+        if self.name != s1_story["时间轴"][str(timeline)]['人物']:
+            return
+
+        now = pygame.time.get_ticks()
+        if now - self.prev_tick > FIELD_DIE_FLICK_LAST:
+            self.prev_tick = now
+            self.die_flick += 1
+            if self.die_flick >= 5:
+                all_sprites.remove(self)
+                del all_characters[self.name]
+                timeline += 1
+                return
+
+            frame = 0
+            if 'frame' in s1_story["时间轴"][str(timeline)]:
+                frame = s1_story["时间轴"][str(timeline)]['frame'] - 1
+
+            if self.die_flick % 2 == 0:
+                self.image = self.unit_img.subsurface(0, FIELD_UNIT_SIZE * frame, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                self.image.set_colorkey(COLOR_KEY)
+            else:
+                self.image = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE))
+                self.image.set_colorkey(COLOR_BLACK)
 
     def move(self):
         global timeline
@@ -136,36 +208,29 @@ class Character(pygame.sprite.Sprite):
         # Looks like if it is PNG file, do not need to call set_colorkey every time; but for BMP, it does
         self.image.set_colorkey(COLOR_KEY)
 
-    # def update(self):
-    #     global timeline
-    #     if s1_story["时间轴"][str(timeline)]["类型"] == '结束':
-    #          return
+    def update(self):
+        global timeline
+        if s1_story["时间轴"][str(timeline)]["类型"] == '结束':
+             return
 
-    #     if s1_story["时间轴"][str(timeline)]["类型"] == "移动":
-    #         self.move()
-    #     elif s1_story["时间轴"][str(timeline)]["类型"] == "对话":
-    #         for name in all_characters:
-    #             if name in s1_story["时间轴"][str(timeline)] and name == self.name:
-    #                 frame = 1
-    #                 if 'frame' in s1_story["时间轴"][str(timeline)][name]:
-    #                     frame = s1_story["时间轴"][str(timeline)][name]['frame']
-    #                 if s1_story["时间轴"][str(timeline)][name]['direction'] == 'right-up':
-    #                     self.image = self.rightup_img.subsurface(0, 64 * (frame - 1), 48, 64)
-    #                     self.image.set_colorkey(COLOR_KEY)
-    #                 elif s1_story["时间轴"][str(timeline)][name]['direction'] == 'left-up':
-    #                     self.image = self.rightup_img.subsurface(0, 64 * (frame - 1), 48, 64)
-    #                     self.image = pygame.transform.flip(self.image, True, False)
-    #                     self.image.set_colorkey(COLOR_KEY)
-    #                 elif s1_story["时间轴"][str(timeline)][name]['direction'] == 'right-down':
-    #                     self.image = self.leftdown_img.subsurface(0, 64 * (frame - 1), 48, 64)
-    #                     self.image = pygame.transform.flip(self.image, True, False)
-    #                     self.image.set_colorkey(COLOR_KEY)
-    #                 elif s1_story["时间轴"][str(timeline)][name]['direction'] == 'left-down':
-    #                     self.image = self.leftdown_img.subsurface(0, 64 * (frame - 1), 48, 64)
-    #                     self.image.set_colorkey(COLOR_KEY)
+        if s1_story["时间轴"][str(timeline)]["类型"] == "移动":
+            self.move()
+        elif s1_story["时间轴"][str(timeline)]["类型"] == "动画":
+            self.play()
+        elif s1_story["时间轴"][str(timeline)]["类型"] == "死亡":
+            self.die()
+        elif s1_story["时间轴"][str(timeline)]["类型"] == "对话":
+            for name in all_characters:
+                if name in s1_story["时间轴"][str(timeline)] and name == self.name:
+                    frame = 1
+                    if 'frame' in s1_story["时间轴"][str(timeline)][name]:
+                        frame = s1_story["时间轴"][str(timeline)][name]['frame']
+                    self.image = self.unit_img.subsurface(0, FIELD_UNIT_SIZE * (frame - 1), FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                    if 'flip' in s1_story["时间轴"][str(timeline)][name] and s1_story["时间轴"][str(timeline)][name]['flip']:
+                        self.image = pygame.transform.flip(self.image, True, False)
+                    self.image.set_colorkey(COLOR_KEY)
 
-
-def s1_main():
+def b1_main():
     global act, option_rects, timeline, selection, select_time, LEFTTOP_Y
 
     # if s1_story["时间轴"][str(timeline)]["类型"] == '结束':
@@ -237,34 +302,30 @@ def s1_main():
     all_sprites.update()
     all_sprites.draw(screen)
 
-    # # draw dialog must be under all_sprites.draw to be above them all
-    # if s1_story["时间轴"][str(timeline)]["类型"] == "对话":
-    #     x, y = s1_story["时间轴"][str(timeline)]["发言"]['coordinates'].split()
-    #     x = int(x)
-    #     y = int(y)
-    #     draw_dialog(screen, s1_story["时间轴"][str(timeline)]["发言"]['speaker'], s1_story["时间轴"][str(timeline)]["发言"]['speaker'], 
-    #         s1_story["时间轴"][str(timeline)]["发言"]['content'], x, y)
-    #     if '人物' in s1_story["时间轴"][str(timeline)]["发言"]:
-    #         if "bubble" in s1_story["时间轴"][str(timeline)]["发言"] and \
-    #             s1_story["时间轴"][str(timeline)]["发言"]["bubble"] == "left":
-    #             drawl_talkbubble(screen, all_characters[s1_story["时间轴"][str(timeline)]["发言"]['人物']].rect)
-    #         else:
-    #             drawr_talkbubble(screen, all_characters[s1_story["时间轴"][str(timeline)]["发言"]['人物']].rect)
-    # elif s1_story["时间轴"][str(timeline)]["类型"] == "选择":
-    #     mouse_pos = pygame.mouse.get_pos()
-    #     options = s1_story["时间轴"][str(timeline)]['选项'].split("\n")
-    #     selected = False
-    #     if option_rects:
-    #         for i, rect in enumerate(option_rects):
-    #             # print(rect)
-    #             if rect.collidepoint(mouse_pos):
-    #                 # print("mouse is in ", rect)
-    #                 draw_selecter(screen, s1_story["时间轴"][str(timeline)]['人物'], options, hoveron=i)
-    #                 selected = True
-    #     if not selected:
-    #         temp = draw_selecter(screen, s1_story["时间轴"][str(timeline)]['人物'], options)
-    #         if len(option_rects) == 0:
-    #             option_rects = temp
+    # draw dialog must be under all_sprites.draw to be above them all
+    if s1_story["时间轴"][str(timeline)]["类型"] == "对话":
+        # x, y = s1_story["时间轴"][str(timeline)]["发言"]['coordinates'].split()
+        # x = int(x)
+        # y = int(y)
+        # print()
+        rect = all_characters[s1_story["时间轴"][str(timeline)]["发言"]['人物']].rect
+        bdraw_dialog(screen, s1_story["时间轴"][str(timeline)]["发言"]['face'], s1_story["时间轴"][str(timeline)]["发言"]['face'], 
+            s1_story["时间轴"][str(timeline)]["发言"]['content'], rect.x, rect.y)
+    elif s1_story["时间轴"][str(timeline)]["类型"] == "选择":
+        mouse_pos = pygame.mouse.get_pos()
+        options = s1_story["时间轴"][str(timeline)]['选项'].split("\n")
+        selected = False
+        if option_rects:
+            for i, rect in enumerate(option_rects):
+                # print(rect)
+                if rect.collidepoint(mouse_pos):
+                    # print("mouse is in ", rect)
+                    draw_selecter(screen, s1_story["时间轴"][str(timeline)]['人物'], options, hoveron=i)
+                    selected = True
+        if not selected:
+            temp = draw_selecter(screen, s1_story["时间轴"][str(timeline)]['人物'], options)
+            if len(option_rects) == 0:
+                option_rects = temp
 
     cursor_img_rect = cursor_img.get_rect()
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -280,14 +341,14 @@ def s1_main():
     pygame.display.update()
     root.update()
 
-    root.after(1000 // FPS, s1_main)
+    root.after(1000 // FPS, b1_main)
 
 def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_state, exit_func):
     print("In b1_entrance", global_state)
     global_state['story'] = "s1-transition"
     # return
     
-    global root, screen, background_img, cursor_img, s1_story, click_img, tool_bar, all_sprites, timeline, parent_func, up_cursor
+    global root, screen, background_img, cursor_img, s1_story, tool_bar, all_sprites, timeline, parent_func, up_cursor
     with open('data/story/b1.json', 'rb') as f:
         s1_story = json.load(f)
     # tk_root = shared['root']
@@ -311,6 +372,12 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
     # change timeline to 1
     timeline = 0
 
+    # Initial screen
+    for sprite in all_sprites:
+        sprite.rect.y = sprite.original_y + LEFTTOP_Y
+    screen.blit(background_img, (LEFTTOP_X, LEFTTOP_Y))
+    all_sprites.draw(screen)
+
     pygame.display.update()
     parent_root.update()
     in_pos = window_pos()
@@ -318,5 +385,6 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
     win_y = (parent_root.winfo_screenheight() - parent_root.winfo_height()) // 2
     parent_root.geometry(f"+{win_x}+{win_y}")
 
-    parent_root.after(1000 // FPS, s1_main)
+    parent_root.after(500, b1_main)
+    # parent_root.after(1000 // FPS, b1_main)
 

@@ -1,5 +1,6 @@
 {
-	"人物": {
+    "背景图": "resource/battlefield/1-1.bmp",
+    "人物": {
         "黄巾军1": {
             "unit_img": "resource/unit_mov/黄巾军.bmp",
             "startx": 5,
@@ -74,18 +75,21 @@
         },
         "黄巾军11": {
             "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "atk_img": "resource/unit_atk/黄巾军.bmp",
             "startx": 12,
             "starty": 15,
             "direction": "down"
         },
         "黄巾军12": {
             "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "atk_img": "resource/unit_atk/黄巾军.bmp",
             "startx": 6,
             "starty": 16,
             "direction": "down"
         },
         "弓兵1": {
             "unit_img": "resource/unit_mov/弓兵.bmp",
+            "spc_img": "resource/unit_spc/弓兵.bmp",
             "startx": 7,
             "starty": 16,
             "frame": 10
@@ -98,6 +102,7 @@
         },
         "策士": {
             "unit_img": "resource/unit_mov/策士.bmp",
+            "spc_img": "resource/unit_spc/策士.bmp",
             "startx": 12,
             "starty": 16,
             "frame": 10
@@ -107,6 +112,183 @@
             "startx": 9,
             "starty": 18,
             "direction": "up"
+        }
+    },
+    "时间轴": {
+        "0" : {
+            "类型": "对话",
+            "黄巾军12": {
+                "direction": "right",
+                "frame": 5,
+                "flip": true
+            },
+            "发言": {
+                "人物": "黄巾军12",
+                "face": "黄巾军",
+                "content": "去死吧！",
+                "side": "right"
+            }
+        },
+        "1" : {
+            "类型": "动画",
+            "benchmark": "黄巾军12",
+            "黄巾军12": [
+                {
+                    "img": "atk_img",
+                    "frame": 8,
+                    "flip": true
+                },
+                {
+                    "img": "atk_img",
+                    "frame": 9,
+                    "flip": true
+                },
+                {
+                    "img": "atk_img",
+                    "frame": 10,
+                    "flip": true
+                },
+                {
+                    "img": "atk_img",
+                    "frame": 11,
+                    "flip": true,
+                    "last": 700
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 5,
+                    "flip": true
+                }
+            ],
+            "弓兵1": [
+                {
+                    "img": "unit_img",
+                    "frame": 10
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 10
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 10
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 10
+                },
+                {
+                    "img": "spc_img",
+                    "frame": 4,
+                    "last": 700
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 10
+                }
+            ]
+        },
+        "2" : {
+            "类型": "对话",
+            "弓兵1": {
+                "frame": 10
+            },
+            "发言": {
+                "人物": "弓兵1",
+                "face": "弓兵",
+                "content": "可，可恨......",
+                "side": "right"
+            }
+        },
+        "3" : {
+            "类型": "死亡",
+            "人物": "弓兵1",
+            "img": "unit_img",
+            "frame": 10
+        },
+        "4" : {
+            "类型": "对话",
+            "发言": {
+                "人物": "黄巾军11",
+                "face": "黄巾军2",
+                "content": "啊！",
+                "side": "right"
+            }
+        },
+        "5" : {
+            "类型": "动画",
+            "benchmark": "黄巾军11",
+            "黄巾军11": [
+                {
+                    "img": "atk_img",
+                    "frame": 1,
+                    "flip": true
+                },
+                {
+                    "img": "atk_img",
+                    "frame": 2,
+                    "flip": true
+                },
+                {
+                    "img": "atk_img",
+                    "frame": 3,
+                    "flip": true
+                },
+                {
+                    "img": "atk_img",
+                    "frame": 4,
+                    "flip": true,
+                    "last": 700
+                },
+                {
+                    "img": "unit_img"
+                }
+            ],
+            "策士": [
+                {
+                    "img": "unit_img",
+                    "frame": 10
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 10
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 10
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 10
+                },
+                {
+                    "img": "spc_img",
+                    "frame": 4,
+                    "last": 700
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 10
+                }
+            ]
+        },
+        "6" : {
+            "类型": "对话",
+            "策士": {
+                "frame": 10
+            },
+            "发言": {
+                "人物": "策士",
+                "face": "策士",
+                "content": "啊......",
+                "side": "right"
+            }
+        },
+        "7" : {
+            "类型": "死亡",
+            "人物": "策士",
+            "img": "unit_img",
+            "frame": 10
         }
     }
 }
