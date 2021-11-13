@@ -7,121 +7,129 @@
         "resource/unit_mov/策士.bmp",
         "resource/unit_mov/步兵.bmp"
     ],
+    "atk_imgs": [
+        "resource/unit_atk/黄巾军.bmp",
+        "resource/unit_atk/道士.bmp",
+        "resource/unit_atk/步兵.bmp"
+    ],
     "人物": {
         "黄巾军1": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "unit_img": 0,
             "startx": 5,
             "starty": 10,
             "direction": "down"
         },
         "黄巾军2": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "unit_img": 0,
             "startx": 5,
             "starty": 11,
             "direction": "down"
         },
         "黄巾军3": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "unit_img": 0,
             "startx": 8,
             "starty": 10,
             "direction": "down"
         },
         "黄巾军4": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "unit_img": 0,
             "startx": 7,
             "starty": 11,
             "direction": "down"
         },
         "张宝": {
-            "unit_img": "resource/unit_mov/道士.bmp",
+            "unit_img": 1,
+            "atk_img": 1,
             "startx": 9,
             "starty": 11,
             "direction": "down"
         },
         "张梁": {
-            "unit_img": "resource/unit_mov/道士.bmp",
+            "unit_img": 1,
+            "atk_img": 1,
             "startx": 10,
             "starty": 11,
             "direction": "down"
         },
         "黄巾军5": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "unit_img": 0,
             "startx": 12,
             "starty": 10,
             "direction": "down"
         },
         "黄巾军6": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "unit_img": 0,
             "startx": 12,
             "starty": 12,
             "direction": "down"
         },
         "黄巾军7": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "unit_img": 0,
             "startx": 9,
             "starty": 14,
             "direction": "down"
         },
         "黄巾军8": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "unit_img": 0,
             "startx": 9,
             "starty": 15,
             "direction": "down"
         },
         "黄巾军9": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "unit_img": 0,
             "startx": 10,
             "starty": 14,
             "direction": "down"
         },
         "黄巾军10": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
+            "unit_img": 0,
             "startx": 10,
             "starty": 15,
             "direction": "down"
         },
         "黄巾军11": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
-            "atk_img": "resource/unit_atk/黄巾军.bmp",
+            "unit_img": 0,
+            "atk_img": 0,
             "startx": 12,
             "starty": 15,
             "direction": "down"
         },
         "黄巾军12": {
-            "unit_img": "resource/unit_mov/黄巾军.bmp",
-            "atk_img": "resource/unit_atk/黄巾军.bmp",
+            "unit_img": 0,
+            "atk_img": 0,
             "startx": 6,
             "starty": 16,
             "direction": "down"
         },
         "弓兵1": {
-            "unit_img": "resource/unit_mov/弓兵.bmp",
+            "unit_img": 2,
             "spc_img": "resource/unit_spc/弓兵.bmp",
             "startx": 7,
             "starty": 16,
             "frame": 11
         },
         "弓兵2": {
-            "unit_img": "resource/unit_mov/弓兵.bmp",
+            "unit_img": 2,
             "startx": 12,
             "starty": 17,
             "frame": 11
         },
         "策士": {
-            "unit_img": "resource/unit_mov/策士.bmp",
+            "unit_img": 3,
             "spc_img": "resource/unit_spc/策士.bmp",
             "startx": 12,
             "starty": 16,
             "frame": 11
         },
         "步兵": {
-            "unit_img": "resource/unit_mov/步兵.bmp",
+            "unit_img": 4,
             "startx": 9,
             "starty": 18,
             "direction": "up"
         },
         "步兵2": {
-            "unit_img": "resource/unit_mov/步兵.bmp",
+            "unit_img": 4,
+            "atk_img": 2,
             "startx": 10,
             "starty": 17,
             "direction": "up"
@@ -446,26 +454,57 @@
             "benchmark": "张梁",
             "张梁": [
                 {
-                    "img": "unit_img",
-                    "frame": 10,
-                    "last": 700
+                    "img": "atk_img",
+                    "frame": 1
                 },
                 {
-                    "img": "unit_img",
-                    "frame": 11,
-                    "last": 700
+                    "img": "atk_img",
+                    "frame": 2
                 },
                 {
-                    "img": "unit_img",
-                    "frame": 10,
-                    "last": 700
+                    "img": "atk_img",
+                    "frame": 3
                 },
                 {
-                    "img": "unit_img",
-                    "frame": 11,
+                    "img": "atk_img",
+                    "frame": 4,
                     "last": 700
                 }
             ]
         },
+        "19" : {
+            "类型": "对话",
+            "张梁": {
+                "frame": 1
+            },
+            "发言": {
+                "人物": "张梁",
+                "speaker": "张梁",
+                "face": "张梁",
+                "content": "哼，迟早要打败他们的！\n可恶的官军，竟敢攻打这里！\n一定要让他们后悔。"
+            }
+        },
+        "20" : {
+            "类型": "通知",
+            "张宝": {
+                "frame": 1
+            },
+            "content": "第一回合",
+            "last": 1000
+        },
+        "21" : {
+            "类型": "对话",
+            "步兵2": {
+                "img": "atk_img",
+                "frame": 8
+            },
+            "发言": {
+                "人物": "步兵2",
+                "speaker": "步兵",
+                "face": "步兵2",
+                "content": "再坚持一会，\n让他们知道官军是不好惹的。",
+                "side": "right"
+            }
+        }
     }
 }

@@ -16,3 +16,5 @@ UNIT_MOV_LEFT_FRAME = 4     # This frame start from 0
 UNIT_MOV_RIGHT_FRAME = 4
 UNIT_MOV_DOWN_FRAME = 0
 UNIT_MOV_UP_FRAME = 2
+
+FONT_NAME_CHN = 'resource/font/FangZhengShuSong-GBK-1.ttf'

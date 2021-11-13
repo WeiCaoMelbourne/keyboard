@@ -29,7 +29,9 @@ timeline = 0
 selection = -1
 select_time = None
 parent_func = None
-up_cursor = None
+unit_imgs = []
+atk_imgs = []
+prev_update = None
 
 # Character on map
 class Character(pygame.sprite.Sprite):
@@ -38,9 +40,16 @@ class Character(pygame.sprite.Sprite):
         self.name = name
         pygame.sprite.Sprite.__init__(self)
 
-        self.unit_img = pygame.image.load(s1_story["人物"][name]['unit_img']).convert()
+        if isinstance(s1_story["人物"][name]['unit_img'], int):
+            self.unit_img = unit_imgs[s1_story["人物"][name]['unit_img']]
+        else:
+            self.unit_img = pygame.image.load(s1_story["人物"][name]['unit_img']).convert()
+            
         if 'atk_img' in s1_story["人物"][name]:
-            self.atk_img = pygame.image.load(s1_story["人物"][name]['atk_img']).convert()
+            if isinstance(s1_story["人物"][name]['atk_img'], int):
+                self.atk_img = atk_imgs[s1_story["人物"][name]['atk_img']]
+            else:
+                self.atk_img = pygame.image.load(s1_story["人物"][name]['atk_img']).convert()
         
         if 'spc_img' in s1_story["人物"][name]:
             self.spc_img = pygame.image.load(s1_story["人物"][name]['spc_img']).convert()
@@ -106,8 +115,6 @@ class Character(pygame.sprite.Sprite):
                 self.actframe_last = FIELD_ACT_FRAME_LAST
             self.prev_tick = now
             
-            
-        print(timeline, self.name, self.act_frame, self.act)
         if s1_story["时间轴"][str(timeline)][self.name][self.act]['img'] == 'atk_img':
             self.image = self.atk_img.subsurface(0, FIELD_ATK_UNIT_SIZE * self.act_frame, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
         elif s1_story["时间轴"][str(timeline)][self.name][self.act]['img'] == 'spc_img':
@@ -223,13 +230,19 @@ class Character(pygame.sprite.Sprite):
             self.play()
         elif s1_story["时间轴"][str(timeline)]["类型"] == "死亡":
             self.die()
-        elif s1_story["时间轴"][str(timeline)]["类型"] == "对话":
+        # elif s1_story["时间轴"][str(timeline)]["类型"] == "对话":
+        else:
             for name in all_characters:
                 if name in s1_story["时间轴"][str(timeline)] and name == self.name:
                     frame = 1
                     if 'frame' in s1_story["时间轴"][str(timeline)][name]:
                         frame = s1_story["时间轴"][str(timeline)][name]['frame']
                     self.image = self.unit_img.subsurface(0, FIELD_UNIT_SIZE * (frame - 1), FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                    if 'img' in s1_story["时间轴"][str(timeline)][name]:
+                        if s1_story["时间轴"][str(timeline)][name]['img'] == 'atk_img':
+                            self.image = self.atk_img.subsurface(0, FIELD_ATK_UNIT_SIZE * (frame - 1), FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
+                        elif s1_story["时间轴"][str(timeline)][name]['img'] == 'spc_img':
+                            self.image = self.spc_img.subsurface(0, FIELD_UNIT_SIZE * (frame - 1), FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
                     if 'flip' in s1_story["时间轴"][str(timeline)][name] and s1_story["时间轴"][str(timeline)][name]['flip']:
                         self.image = pygame.transform.flip(self.image, True, False)
                     self.image.set_colorkey(COLOR_KEY)
@@ -331,6 +344,23 @@ def b1_main():
             temp = draw_selecter(screen, s1_story["时间轴"][str(timeline)]['人物'], options)
             if len(option_rects) == 0:
                 option_rects = temp
+    elif s1_story["时间轴"][str(timeline)]["类型"] == "通知":
+        global prev_update
+        if prev_update == None:
+            prev_update = pygame.time.get_ticks()
+        font_name = FONT_NAME_CHN
+        font = pygame.font.Font(font_name, 46)
+        text_surface = font.render(s1_story["时间轴"][str(timeline)]["content"], True, COLOR_WHITE)
+        # print(text_surface.get_size())
+        text_rect = text_surface.get_rect()
+        w, h = pygame.display.get_surface().get_size()
+        text_rect.left = (w - text_rect.width) // 2
+        text_rect.top = (h - text_rect.height) // 2
+        screen.blit(text_surface, text_rect)
+        now = pygame.time.get_ticks()
+        if now - prev_update > s1_story["时间轴"][str(timeline)]["last"]:
+            timeline += 1
+            prev_update = None
 
     cursor_img_rect = cursor_img.get_rect()
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -353,7 +383,8 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
     global_state['story'] = "s1-transition"
     # return
     
-    global root, screen, background_img, cursor_img, s1_story, tool_bar, all_sprites, timeline, parent_func, up_cursor
+    global root, screen, background_img, cursor_img, s1_story, tool_bar, all_sprites, timeline, parent_func
+    global unit_imgs, atk_imgs
     with open('data/story/b1.json', 'rb') as f:
         s1_story = json.load(f)
     # tk_root = shared['root']
@@ -363,8 +394,18 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
     cursor_img = parent_cur
     tool_bar = parent_tool_bar
     parent_func = exit_func
-    background_img = pygame.image.load('resource/battlefield/1-1.bmp').convert()
-    up_cursor = pygame.image.load('resource/cursor/up.png').convert()
+
+    # load all unit images
+    for pic in s1_story['unit_imgs']:
+        tmp_img = pygame.image.load(pic).convert()
+        unit_imgs.append(tmp_img)
+
+    # load all attack images
+    for pic in s1_story['atk_imgs']:
+        tmp_img = pygame.image.load(pic).convert()
+        atk_imgs.append(tmp_img)
+
+    background_img = pygame.image.load(s1_story['背景图']).convert()
     # click_img = pygame.image.load('resource/cursor/click.png').convert()
 
     all_sprites = pygame.sprite.Group()

@@ -17,7 +17,7 @@ def draw_text(screen, text, size, color, x, y, fill=False):
     # print("draw_text", text, fill)
     global font_name
     if font_name == None:
-        font_name = 'resource/font/FangZhengShuSong-GBK-1.ttf'
+        font_name = FONT_NAME_CHN
     font = pygame.font.Font(font_name, size)
     text_surface = font.render(text, True, color)
     # print(text_surface.get_size())
@@ -68,7 +68,6 @@ def drawl_dialog(screen, title, face, text, x, y):
         draw_text(screen, t, 16, (0, 0, 0), x + 110, y + 30 + i * 18)
 
 def draw_dialog(screen, title, face, text, x, y, direct="left"):
-    print("draw_dialog......")
     if direct == "left":
         drawl_dialog(screen, title, face, text, x, y)
     else:
