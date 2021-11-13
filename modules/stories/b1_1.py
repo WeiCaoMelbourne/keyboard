@@ -32,6 +32,7 @@ parent_func = None
 unit_imgs = []
 atk_imgs = []
 prev_update = None
+troop_details = None
 
 # Character on map
 class Character(pygame.sprite.Sprite):
@@ -103,7 +104,6 @@ class Character(pygame.sprite.Sprite):
                 self.act = 0
                 if 'benchmark' in s1_story["时间轴"][str(timeline)] and self.name == s1_story["时间轴"][str(timeline)]["benchmark"]:
                     timeline += 1
-                print("break")
                 return
 
             self.act_frame = 0
@@ -156,68 +156,72 @@ class Character(pygame.sprite.Sprite):
                 self.image.set_colorkey(COLOR_BLACK)
 
     def move(self):
+        print("move", self.name)
         global timeline
 
-        # if no endx and no endy, do not touch this character
-        if self.name not in s1_story["时间轴"][str(timeline)]:
+        if self.name != s1_story["时间轴"][str(timeline)]['人物']:
             return
-
-        h_direct = 'left'
-        if 'h-direct' in s1_story["时间轴"][str(timeline)][self.name]:
-            h_direct = s1_story["时间轴"][str(timeline)][self.name]['h-direct']
-        v_direct = 'down'
-        if 'v-direct' in s1_story["时间轴"][str(timeline)][self.name]:
-            v_direct = s1_story["时间轴"][str(timeline)][self.name]['v-direct']
         
-        if 'benchmark' in s1_story["时间轴"][str(timeline)] and self.name == s1_story["时间轴"][str(timeline)]["benchmark"] :
-            end_pivot = 'endx'
-            if 'end-pivot' in s1_story["时间轴"][str(timeline)][self.name]:
-                end_pivot = s1_story["时间轴"][str(timeline)][self.name]['end-pivot']
+        s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 
+        s.fill(MOVE_BG_COLOR)    
+        screen.blit(s, (self.rect.x - FIELD_UNIT_SIZE, self.rect.y - FIELD_UNIT_SIZE))
 
-            if end_pivot == 'endx':
-                if h_direct == 'left':
-                    if self.rect.x < s1_story["时间轴"][str(timeline)][self.name]['endx']:
-                        timeline += 1
-                        return
-                else:
-                    if self.rect.x > s1_story["时间轴"][str(timeline)][self.name]['endx']:
-                        timeline += 1
+        # h_direct = 'left'
+        # if 'h-direct' in s1_story["时间轴"][str(timeline)][self.name]:
+        #     h_direct = s1_story["时间轴"][str(timeline)][self.name]['h-direct']
+        # v_direct = 'down'
+        # if 'v-direct' in s1_story["时间轴"][str(timeline)][self.name]:
+        #     v_direct = s1_story["时间轴"][str(timeline)][self.name]['v-direct']
+        
+        # if 'benchmark' in s1_story["时间轴"][str(timeline)] and self.name == s1_story["时间轴"][str(timeline)]["benchmark"] :
+        #     end_pivot = 'endx'
+        #     if 'end-pivot' in s1_story["时间轴"][str(timeline)][self.name]:
+        #         end_pivot = s1_story["时间轴"][str(timeline)][self.name]['end-pivot']
+
+        #     if end_pivot == 'endx':
+        #         if h_direct == 'left':
+        #             if self.rect.x < s1_story["时间轴"][str(timeline)][self.name]['endx']:
+        #                 timeline += 1
+        #                 return
+        #         else:
+        #             if self.rect.x > s1_story["时间轴"][str(timeline)][self.name]['endx']:
+        #                 timeline += 1
                         
-            else:
-                if v_direct == 'up':
-                    if self.rect.y < s1_story["时间轴"][str(timeline)][self.name]['endy']:
-                        timeline += 1
-                        return
-                else:
-                    if self.rect.y > s1_story["时间轴"][str(timeline)][self.name]['endy']:
-                        timeline += 1
-                        return    
+        #     else:
+        #         if v_direct == 'up':
+        #             if self.rect.y < s1_story["时间轴"][str(timeline)][self.name]['endy']:
+        #                 timeline += 1
+        #                 return
+        #         else:
+        #             if self.rect.y > s1_story["时间轴"][str(timeline)][self.name]['endy']:
+        #                 timeline += 1
+        #                 return    
         
-        # by default, h direct is left, v direct is down
-        if h_direct == 'left':
-            self.rect.x -= s1_story["时间轴"][str(timeline)][self.name]['speedx']
-        else:
-            self.rect.x += s1_story["时间轴"][str(timeline)][self.name]['speedx']
+        # # by default, h direct is left, v direct is down
+        # if h_direct == 'left':
+        #     self.rect.x -= s1_story["时间轴"][str(timeline)][self.name]['speedx']
+        # else:
+        #     self.rect.x += s1_story["时间轴"][str(timeline)][self.name]['speedx']
         
-        if v_direct == 'up':
-            self.rect.y -= s1_story["时间轴"][str(timeline)][self.name]['speedy']
-        else:
-            self.rect.y += s1_story["时间轴"][str(timeline)][self.name]['speedy']
+        # if v_direct == 'up':
+        #     self.rect.y -= s1_story["时间轴"][str(timeline)][self.name]['speedy']
+        # else:
+        #     self.rect.y += s1_story["时间轴"][str(timeline)][self.name]['speedy']
         
-        now = pygame.time.get_ticks()
-        # print(now, self.prev_tick)
-        if now - self.prev_tick > 70:
-            if self.cur_pic >= 2:
-                self.pic_direct *= -1
-            self.cur_pic += self.pic_direct
-            if self.cur_pic <= 0:
-                self.pic_direct *= -1
+        # now = pygame.time.get_ticks()
+        # # print(now, self.prev_tick)
+        # if now - self.prev_tick > 70:
+        #     if self.cur_pic >= 2:
+        #         self.pic_direct *= -1
+        #     self.cur_pic += self.pic_direct
+        #     if self.cur_pic <= 0:
+        #         self.pic_direct *= -1
             
-            self.prev_tick = now
+        #     self.prev_tick = now
 
-        self.image = self.main_image.subsurface(0, 64 * self.cur_pic, 48, 64)
-        # Looks like if it is PNG file, do not need to call set_colorkey every time; but for BMP, it does
-        self.image.set_colorkey(COLOR_KEY)
+        # self.image = self.main_image.subsurface(0, 64 * self.cur_pic, 48, 64)
+        # # Looks like if it is PNG file, do not need to call set_colorkey every time; but for BMP, it does
+        # self.image.set_colorkey(COLOR_KEY)
 
     def update(self):
         global timeline
@@ -383,10 +387,13 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
     global_state['story'] = "s1-transition"
     # return
     
-    global root, screen, background_img, cursor_img, s1_story, tool_bar, all_sprites, timeline, parent_func
+    global root, screen, background_img, cursor_img, s1_story, tool_bar, all_sprites, timeline, parent_func, troop_details
     global unit_imgs, atk_imgs
     with open('data/story/b1.json', 'rb') as f:
         s1_story = json.load(f)
+                    
+    with open('data/troop-details.json', 'rb') as f:
+        troop_details = json.load(f)
     # tk_root = shared['root']
     
     root = parent_root
