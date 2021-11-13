@@ -1,5 +1,12 @@
 {
     "背景图": "resource/battlefield/1-1.bmp",
+    "unit_imgs": [
+        "resource/unit_mov/黄巾军.bmp",
+        "resource/unit_mov/道士.bmp",
+        "resource/unit_mov/弓兵.bmp",
+        "resource/unit_mov/策士.bmp",
+        "resource/unit_mov/步兵.bmp"
+    ],
     "人物": {
         "黄巾军1": {
             "unit_img": "resource/unit_mov/黄巾军.bmp",
@@ -25,13 +32,13 @@
             "starty": 11,
             "direction": "down"
         },
-        "道士1": {
+        "张宝": {
             "unit_img": "resource/unit_mov/道士.bmp",
             "startx": 9,
             "starty": 11,
             "direction": "down"
         },
-        "道士2": {
+        "张梁": {
             "unit_img": "resource/unit_mov/道士.bmp",
             "startx": 10,
             "starty": 11,
@@ -92,25 +99,31 @@
             "spc_img": "resource/unit_spc/弓兵.bmp",
             "startx": 7,
             "starty": 16,
-            "frame": 10
+            "frame": 11
         },
         "弓兵2": {
             "unit_img": "resource/unit_mov/弓兵.bmp",
             "startx": 12,
             "starty": 17,
-            "frame": 10
+            "frame": 11
         },
         "策士": {
             "unit_img": "resource/unit_mov/策士.bmp",
             "spc_img": "resource/unit_spc/策士.bmp",
             "startx": 12,
             "starty": 16,
-            "frame": 10
+            "frame": 11
         },
         "步兵": {
             "unit_img": "resource/unit_mov/步兵.bmp",
             "startx": 9,
             "starty": 18,
+            "direction": "up"
+        },
+        "步兵2": {
+            "unit_img": "resource/unit_mov/步兵.bmp",
+            "startx": 10,
+            "starty": 17,
             "direction": "up"
         }
     },
@@ -163,19 +176,19 @@
             "弓兵1": [
                 {
                     "img": "unit_img",
-                    "frame": 10
+                    "frame": 11
                 },
                 {
                     "img": "unit_img",
-                    "frame": 10
+                    "frame": 11
                 },
                 {
                     "img": "unit_img",
-                    "frame": 10
+                    "frame": 11
                 },
                 {
                     "img": "unit_img",
-                    "frame": 10
+                    "frame": 11
                 },
                 {
                     "img": "spc_img",
@@ -184,7 +197,7 @@
                 },
                 {
                     "img": "unit_img",
-                    "frame": 10
+                    "frame": 11
                 }
             ]
         },
@@ -289,6 +302,170 @@
             "人物": "策士",
             "img": "unit_img",
             "frame": 10
-        }
+        },
+        "8" : {
+            "类型": "动画",
+            "benchmark": "弓兵2",
+            "弓兵2": [
+                {
+                    "img": "unit_img",
+                    "frame": 10,
+                    "last": 700
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 11,
+                    "last": 700
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 10,
+                    "last": 700
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 11,
+                    "last": 700
+                }
+            ]
+        },
+        "9" : {
+            "类型": "对话",
+            "弓兵2": {
+                "frame": 11
+            },
+            "发言": {
+                "人物": "弓兵2",
+                "speaker": "弓兵",
+                "face": "弓兵2",
+                "content": "呼，呼，哈...支持不住了！\n再这样下去，我们会全军覆没的。",
+                "side": "right"
+            }
+        },
+        "10" : {
+            "类型": "对话",
+            "步兵2": {
+                "frame": 5,
+                "flip": true
+            },
+            "发言": {
+                "人物": "步兵2",
+                "speaker": "步兵",
+                "face": "步兵2",
+                "content": "可恶，黄巾军的人越来越多。"
+            }
+        },
+        "11" : {
+            "类型": "对话",
+            "发言": {
+                "人物": "步兵2",
+                "speaker": "步兵",
+                "face": "步兵2",
+                "content": "再过一会，骑兵队会来支援，\n无论如何都要顶住。",
+                "side": "right"
+            }
+        },
+        "12" : {
+            "类型": "对话",
+            "步兵": {
+                "frame": 5,
+                "flip": true
+            },
+            "发言": {
+                "人物": "步兵",
+                "face": "步兵",
+                "content": "可是依我看，\n还是保住自己的性命要紧。"
+            }
+        },
+        "13" : {
+            "类型": "对话",
+            "步兵": {
+                "frame": 3
+            },
+            "发言": {
+                "人物": "步兵",
+                "face": "步兵",
+                "content": "何况咱们这里是战况最激励的颖川，\n我看腐败的朝廷是不会派兵来送死的。"
+            }
+        },
+        "14" : {
+            "类型": "对话",
+            "步兵2": {
+                "frame": 5
+            },
+            "发言": {
+                "人物": "步兵2",
+                "speaker": "步兵",
+                "face": "步兵2",
+                "content": "话虽如此，不过援军的骑兵队长是曹操，\n听说他是个厉害角色。",
+                "side": "right"
+            }
+        },
+        "15" : {
+            "类型": "对话",
+            "步兵2": {
+                "frame": 3
+            },
+            "发言": {
+                "人物": "步兵2",
+                "speaker": "步兵",
+                "face": "步兵2",
+                "content": "就信他这次吧，\n如今也只能等他来了。",
+                "side": "right"
+            }
+        },
+        "16" : {
+            "类型": "对话",
+            "弓兵2": {
+                "frame": 11
+            },
+            "发言": {
+                "人物": "弓兵2",
+                "speaker": "弓兵",
+                "face": "弓兵2",
+                "content": "快，快点来吧。",
+                "side": "right"
+            }
+        },
+        "17" : {
+            "类型": "对话",
+            "张宝": {
+                "frame": 5,
+                "flip": true
+            },
+            "发言": {
+                "人物": "张宝",
+                "speaker": "张宝",
+                "face": "张宝",
+                "content": "对方可真顽强。",
+                "side": "right"
+            }
+        },
+        "18" : {
+            "类型": "动画",
+            "benchmark": "张梁",
+            "张梁": [
+                {
+                    "img": "unit_img",
+                    "frame": 10,
+                    "last": 700
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 11,
+                    "last": 700
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 10,
+                    "last": 700
+                },
+                {
+                    "img": "unit_img",
+                    "frame": 11,
+                    "last": 700
+                }
+            ]
+        },
     }
 }

@@ -60,7 +60,7 @@ class Character(pygame.sprite.Sprite):
             self.image = self.unit_img.subsurface(0, UNIT_MOV_DOWN_FRAME, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
         
         if 'frame' in s1_story["人物"][name]:
-            frame = s1_story["人物"][name]['frame']
+            frame = s1_story["人物"][name]['frame'] - 1
             self.image = self.unit_img.subsurface(0, frame * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
 
         self.image.set_colorkey(COLOR_KEY)
@@ -75,7 +75,7 @@ class Character(pygame.sprite.Sprite):
         self.prev_tick = pygame.time.get_ticks()
         self.cur_pic = 0
         self.pic_direct = 1
-        self.act = 0
+        self.act = -1
         self.actframe_last = FIELD_ACT_FRAME_LAST
         self.die_flick = 0
 
@@ -92,9 +92,11 @@ class Character(pygame.sprite.Sprite):
             self.act += 1
             if self.act >= len(s1_story["时间轴"][str(timeline)][self.name]):
                 self.act = 0
-                if 'benchmark' in s1_story["时间轴"][str(timeline)] and self.name == s1_story["时间轴"][str(timeline)]["benchmark"] :
+                if 'benchmark' in s1_story["时间轴"][str(timeline)] and self.name == s1_story["时间轴"][str(timeline)]["benchmark"]:
                     timeline += 1
+                print("break")
                 return
+
             self.act_frame = 0
             if 'frame' in s1_story["时间轴"][str(timeline)][self.name][self.act]:
                 self.act_frame = s1_story["时间轴"][str(timeline)][self.name][self.act]['frame'] - 1
@@ -103,7 +105,9 @@ class Character(pygame.sprite.Sprite):
             else:
                 self.actframe_last = FIELD_ACT_FRAME_LAST
             self.prev_tick = now
-        print(self.name, self.act_frame)
+            
+            
+        print(timeline, self.name, self.act_frame, self.act)
         if s1_story["时间轴"][str(timeline)][self.name][self.act]['img'] == 'atk_img':
             self.image = self.atk_img.subsurface(0, FIELD_ATK_UNIT_SIZE * self.act_frame, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
         elif s1_story["时间轴"][str(timeline)][self.name][self.act]['img'] == 'spc_img':
@@ -253,9 +257,7 @@ def b1_main():
             # if event.state & pygame.APPINPUTFOCUS == pygame.APPINPUTFOCUS:
             #     print ('input focus ' + ('gained' if event.gain else 'lost'))
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            print("cliecked, ", timeline, s1_story["时间轴"][str(timeline)]["类型"])
             if option_rects and s1_story["时间轴"][str(timeline)]["类型"] == "选择" and selection < 0:
-                print("there are still option dialog")
                 mouse_pos = pygame.mouse.get_pos()
                 selection = -1
                 for i, rect in enumerate(option_rects):
@@ -270,7 +272,6 @@ def b1_main():
                     option_rects = []
                     tool_bar.increase_blue()
             elif s1_story["时间轴"][str(timeline)]["类型"] == "对话":
-                print("clicked")
                 timeline += 1
 
     # background_img.scroll(30, 30)
@@ -309,8 +310,12 @@ def b1_main():
         # y = int(y)
         # print()
         rect = all_characters[s1_story["时间轴"][str(timeline)]["发言"]['人物']].rect
-        bdraw_dialog(screen, s1_story["时间轴"][str(timeline)]["发言"]['face'], s1_story["时间轴"][str(timeline)]["发言"]['face'], 
-            s1_story["时间轴"][str(timeline)]["发言"]['content'], rect.x, rect.y)
+        face = s1_story["时间轴"][str(timeline)]["发言"]['face']
+        speaker = face
+        content = s1_story["时间轴"][str(timeline)]["发言"]['content']
+        if 'speaker' in s1_story["时间轴"][str(timeline)]["发言"]:
+            speaker = s1_story["时间轴"][str(timeline)]["发言"]['speaker']
+        bdraw_dialog(screen, speaker, face, content, rect.x, rect.y)
     elif s1_story["时间轴"][str(timeline)]["类型"] == "选择":
         mouse_pos = pygame.mouse.get_pos()
         options = s1_story["时间轴"][str(timeline)]['选项'].split("\n")
@@ -380,10 +385,11 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
 
     pygame.display.update()
     parent_root.update()
-    in_pos = window_pos()
-    win_x = (parent_root.winfo_screenwidth() - parent_root.winfo_width()) // 2
-    win_y = (parent_root.winfo_screenheight() - parent_root.winfo_height()) // 2
-    parent_root.geometry(f"+{win_x}+{win_y}")
+    # in_pos = window_pos()
+    # win_x = (parent_root.winfo_screenwidth() - parent_root.winfo_width()) // 2
+    # win_y = (parent_root.winfo_screenheight() - parent_root.winfo_height()) // 2
+    # parent_root.geometry(f"+{win_x}+{win_y}")
+    parent_root.eval('tk::PlaceWindow . center')
 
     parent_root.after(500, b1_main)
     # parent_root.after(1000 // FPS, b1_main)
