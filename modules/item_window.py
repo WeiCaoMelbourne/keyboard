@@ -72,7 +72,7 @@ class ItemWindow():
 
         labelframe3 = tk.LabelFrame(self.root, text="可装备的部队", width=90, height=280)
         labelframe3.place(x=ROW1_X+205, y=COL1_Y-8)
-        for index, troop in enumerate(all_troops['selectable-catetories']):
+        for index, troop in enumerate(all_troops):
             if troop in all_items[item]['equipable']:
                 text_color = "black"
             else:
