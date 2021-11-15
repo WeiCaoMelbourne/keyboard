@@ -17,7 +17,7 @@ def draw_text(screen, text, size, color, x, y, fill=False):
     # print("draw_text", text, fill)
     global font_name
     if font_name == None:
-        font_name = FONT_NAME_CHN
+        font_name = FONT_SONGTI
     font = pygame.font.Font(font_name, size)
     text_surface = font.render(text, True, color)
     # print(text_surface.get_size())
@@ -58,7 +58,6 @@ def drawr_dialog(screen, title, face, text, x, y):
 
 def drawl_dialog(screen, title, face, text, x, y):
     (x, y) = prepare_dialog(face, x, y)
-    print("drawl_talkbubble here", x, y)
     
     screen.blit(dialogl_bg_img, (x, y))
     screen.blit(face_img_dict[face], (x + 10, y + 10))
@@ -152,3 +151,35 @@ def bdraw_dialog(screen, title, face, text, x, y, direct="left"):
         bdrawl_dialog(screen, title, face, text, x, y)
     else:
         bdrawr_dialog(screen, title, face, text, x, y)
+
+def draw_mousebox(screen, pos):
+    # print("draw_mousebox", pos)
+    x = FIELD_UNIT_SIZE * (pos[0] // FIELD_UNIT_SIZE)
+    y = FIELD_UNIT_SIZE * (pos[1] // FIELD_UNIT_SIZE)
+    # x = FIELD_UNIT_SIZE * ((pos[0] - FIELD_UNIT_SIZE / 2) // FIELD_UNIT_SIZE)
+    # y = FIELD_UNIT_SIZE * ((pos[1] - FIELD_UNIT_SIZE / 2) // FIELD_UNIT_SIZE)
+    # print(x, y)
+    outline_rect = pygame.Rect(x, y, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+    pygame.draw.rect(screen, COLOR_WHITE, outline_rect, 2)
+
+def draw_mbinfo(screen, pos, type, terrain_details):
+    outline_rect = pygame.Rect(0, 0, 150, 100)
+    # s = pygame.Surface((150, 100)) 
+    s = pygame.Surface((150, 100), pygame.SRCALPHA) 
+    s.fill(MBINFO_BG_COLOR)    
+    pygame.draw.rect(s, COLOR_SILVER, outline_rect, 1)
+
+    global font_name
+    if font_name == None:
+        font_name = FONT_HEITI
+    font = pygame.font.Font(font_name, 17)
+    text_surface = font.render(type, True, COLOR_WHITE_OPAQUE)
+    block_img = pygame.image.load(f'resource/mblock/{type}.bmp').convert()
+    # print(text_surface.get_size())
+    s.blit(block_img, (10, 10))
+    text_rect = text_surface.get_rect()
+    text_rect.left = 70
+    text_rect.top = 10
+    s.blit(text_surface, text_rect)
+
+    screen.blit(s, pos)

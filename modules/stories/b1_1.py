@@ -1,8 +1,10 @@
 import pygame
-from ..common_funcs import draw_dialog, draw_selecter, bdraw_dialog
+from ..common_funcs import draw_dialog, draw_selecter, bdraw_dialog, draw_mousebox, draw_mbinfo
 import json
 from ..constant import *
 from ..win_pos import window_pos
+import csv
+import codecs
 # from ..toolbar import move_redblue
 
 FIELD_SCREEN_WIDTH = 960
@@ -33,6 +35,9 @@ unit_imgs = []
 atk_imgs = []
 prev_update = None
 troop_details = None
+terrain_details = None
+mbinfo_switch = False
+mbinfo_pos = None
 
 # Character on map
 class Character(pygame.sprite.Sprite):
@@ -156,7 +161,7 @@ class Character(pygame.sprite.Sprite):
                 self.image.set_colorkey(COLOR_BLACK)
 
     def move(self):
-        print("move", self.name)
+        # print("move", self.name)
         global timeline
 
         if self.name != s1_story["时间轴"][str(timeline)]['人物']:
@@ -252,7 +257,7 @@ class Character(pygame.sprite.Sprite):
                     self.image.set_colorkey(COLOR_KEY)
 
 def b1_main():
-    global act, option_rects, timeline, selection, select_time, LEFTTOP_Y
+    global act, option_rects, timeline, selection, select_time, LEFTTOP_Y, mbinfo_switch, mbinfo_pos
 
     # if s1_story["时间轴"][str(timeline)]["类型"] == '结束':
     #     all_sprites.empty()
@@ -274,8 +279,8 @@ def b1_main():
             # if event.state & pygame.APPINPUTFOCUS == pygame.APPINPUTFOCUS:
             #     print ('input focus ' + ('gained' if event.gain else 'lost'))
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
             if option_rects and s1_story["时间轴"][str(timeline)]["类型"] == "选择" and selection < 0:
-                mouse_pos = pygame.mouse.get_pos()
                 selection = -1
                 for i, rect in enumerate(option_rects):
                     if rect.collidepoint(mouse_pos):
@@ -290,6 +295,9 @@ def b1_main():
                     tool_bar.increase_blue()
             elif s1_story["时间轴"][str(timeline)]["类型"] == "对话":
                 timeline += 1
+            else:   #display map block info
+                mbinfo_switch = not mbinfo_switch
+                mbinfo_pos = (mouse_pos[0] - FIELD_UNIT_SIZE, mouse_pos[1] - FIELD_UNIT_SIZE)
 
     # background_img.scroll(30, 30)
     mouse_pos = pygame.mouse.get_pos()
@@ -301,6 +309,13 @@ def b1_main():
         # screen.blit(vertical_cursor, cursor_img_rect)
 
     screen.blit(background_img, (LEFTTOP_X, LEFTTOP_Y))
+    draw_mousebox(screen, mouse_pos)
+    if mbinfo_switch:
+        draw_mbinfo(screen, mbinfo_pos, '草原', terrain_details)
+        # s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 
+        # s.fill(MOVE_BG_COLOR)    
+        # screen.blit(s, mbinfo_pos)
+
     # screen.blit(background_img, (LEFTTOP_X, LEFTTOP_Y), pygame.Rect(0, 0, FIELD_SCREEN_WIDTH, FIELD_SCREEN_HEIGHT))
     # print(timeline)
     # Use this logic to display next dialog after increase_red/increase_blue finishes
@@ -352,7 +367,7 @@ def b1_main():
         global prev_update
         if prev_update == None:
             prev_update = pygame.time.get_ticks()
-        font_name = FONT_NAME_CHN
+        font_name = FONT_SONGTI
         font = pygame.font.Font(font_name, 46)
         text_surface = font.render(s1_story["时间轴"][str(timeline)]["content"], True, COLOR_WHITE)
         # print(text_surface.get_size())
@@ -387,13 +402,25 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
     global_state['story'] = "s1-transition"
     # return
     
-    global root, screen, background_img, cursor_img, s1_story, tool_bar, all_sprites, timeline, parent_func, troop_details
+    global root, screen, background_img, cursor_img, s1_story, tool_bar, all_sprites, timeline, parent_func
+    global troop_details, terrain_details
     global unit_imgs, atk_imgs
     with open('data/story/b1.json', 'rb') as f:
         s1_story = json.load(f)
                     
     with open('data/troop-details.json', 'rb') as f:
         troop_details = json.load(f)
+
+    with open('data/terrain-details.json', 'rb') as f:
+        terrain_details = json.load(f)
+
+    with codecs.open('data/story/b1-mblock.csv', "r", "utf-8") as csvfile:
+        mblocks_info = list(csv.reader(csvfile, delimiter=','))
+    # print(data)
+    # if data[0][0] == '平原':
+    #     print("correct")
+    # else:
+    #     print("incorrect")
     # tk_root = shared['root']
     
     root = parent_root
