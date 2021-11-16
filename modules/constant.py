@@ -5,7 +5,7 @@ COLOR_BLUE = (0, 0, 255)
 COLOR_GREEN = (0, 255, 0)
 COLOR_SILVER = (192, 192, 192)
 MOVE_BG_COLOR = (0, 255, 0, 64)
-MBINFO_BG_COLOR = (0, 0, 0, 64)
+MBINFO_BG_COLOR = (0, 0, 0, 110)
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 400
 FPS = 100
@@ -17,6 +17,9 @@ FIELD_ATK_UNIT_SIZE = 64    # on field, for unit_atk pic, it is 64 * 64
 FIELD_ACT_FRAME_LAST = 70   # on field, when playing act, every frame last 70 minisecond by default
 FIELD_DIE_FLICK_LAST = 700
 
+MBINFO_DIALOG_WIDTH = 220
+MBINFO_DIALOG_HEIGHT = 140
+
 UNIT_MOV_LEFT_FRAME = 4     # This frame start from 0
 UNIT_MOV_RIGHT_FRAME = 4
 UNIT_MOV_DOWN_FRAME = 0
@@ -25,3 +28,5 @@ UNIT_MOV_UP_FRAME = 2
 FONT_SONGTI = 'resource/font/FangZhengShuSong-GBK-1.ttf'
 # FONT_NAME_CHN = 'resource/font/FangZhengHeiTI.ttf'
 FONT_HEITI = 'resource/font/FangZhengZhengCuHeiTi.ttf'
+
+TROOP_TYPE_NUM = 13         # 13 troop types

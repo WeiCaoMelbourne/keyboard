@@ -257,7 +257,7 @@ class Character(pygame.sprite.Sprite):
                     self.image.set_colorkey(COLOR_KEY)
 
 def b1_main():
-    global act, option_rects, timeline, selection, select_time, LEFTTOP_Y, mbinfo_switch, mbinfo_pos
+    global act, option_rects, timeline, selection, select_time, LEFTTOP_Y, mbinfo_switch, mbinfo_pos, mb_type
 
     # if s1_story["时间轴"][str(timeline)]["类型"] == '结束':
     #     all_sprites.empty()
@@ -298,7 +298,10 @@ def b1_main():
             else:   #display map block info
                 mbinfo_switch = not mbinfo_switch
                 mbinfo_pos = (mouse_pos[0] - FIELD_UNIT_SIZE, mouse_pos[1] - FIELD_UNIT_SIZE)
-
+                # global mblocks_info
+                # print(mblocks_info)
+                # print(mouse_pos, (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE, (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE)
+                mb_type = mblocks_info[(mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE][(mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE]
     # background_img.scroll(30, 30)
     mouse_pos = pygame.mouse.get_pos()
     # print(mouse_pos)
@@ -309,9 +312,7 @@ def b1_main():
         # screen.blit(vertical_cursor, cursor_img_rect)
 
     screen.blit(background_img, (LEFTTOP_X, LEFTTOP_Y))
-    draw_mousebox(screen, mouse_pos)
-    if mbinfo_switch:
-        draw_mbinfo(screen, mbinfo_pos, '草原', terrain_details)
+        # draw_mbinfo(screen, adjusted_pos, mb_type, terrain_details)
         # s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 
         # s.fill(MOVE_BG_COLOR)    
         # screen.blit(s, mbinfo_pos)
@@ -335,6 +336,10 @@ def b1_main():
     all_sprites.update()
     all_sprites.draw(screen)
 
+    draw_mousebox(screen, mouse_pos)
+    if mbinfo_switch:
+        draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
+    
     # draw dialog must be under all_sprites.draw to be above them all
     if s1_story["时间轴"][str(timeline)]["类型"] == "对话":
         # x, y = s1_story["时间轴"][str(timeline)]["发言"]['coordinates'].split()
@@ -403,7 +408,7 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
     # return
     
     global root, screen, background_img, cursor_img, s1_story, tool_bar, all_sprites, timeline, parent_func
-    global troop_details, terrain_details
+    global troop_details, terrain_details, mblocks_info
     global unit_imgs, atk_imgs
     with open('data/story/b1.json', 'rb') as f:
         s1_story = json.load(f)
