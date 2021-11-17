@@ -17,123 +17,142 @@
             "unit_img": 0,
             "startx": 5,
             "starty": 10,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军2": {
             "unit_img": 0,
             "startx": 5,
             "starty": 11,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军3": {
             "unit_img": 0,
             "startx": 8,
             "starty": 10,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军4": {
             "unit_img": 0,
             "startx": 7,
             "starty": 11,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "张宝": {
             "unit_img": 1,
             "atk_img": 1,
             "startx": 9,
             "starty": 11,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "张梁": {
             "unit_img": 1,
             "atk_img": 1,
             "startx": 10,
             "starty": 11,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军5": {
             "unit_img": 0,
             "startx": 12,
             "starty": 10,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军6": {
             "unit_img": 0,
             "startx": 12,
             "starty": 12,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军7": {
             "unit_img": 0,
             "startx": 9,
             "starty": 14,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军8": {
             "unit_img": 0,
             "startx": 9,
             "starty": 15,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军9": {
             "unit_img": 0,
             "startx": 10,
             "starty": 14,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军10": {
             "unit_img": 0,
             "startx": 10,
             "starty": 15,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军11": {
             "unit_img": 0,
             "atk_img": 0,
             "startx": 12,
             "starty": 15,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "黄巾军12": {
             "unit_img": 0,
             "atk_img": 0,
             "startx": 6,
             "starty": 16,
-            "direction": "down"
+            "direction": "down",
+            "group": 1
         },
         "弓兵1": {
             "unit_img": 2,
             "spc_img": "resource/unit_spc/弓兵.bmp",
             "startx": 7,
             "starty": 16,
-            "frame": 11
+            "frame": 10,
+            "group": 2
         },
         "弓兵2": {
             "unit_img": 2,
             "type": "弓兵",
             "startx": 12,
             "starty": 17,
-            "frame": 11
+            "frame": 10,
+            "group": 2
         },
         "策士": {
             "unit_img": 3,
             "spc_img": "resource/unit_spc/策士.bmp",
             "startx": 12,
             "starty": 16,
-            "frame": 11
+            "frame": 10,
+            "group": 2
         },
         "步兵": {
             "unit_img": 4,
             "startx": 9,
             "starty": 18,
-            "direction": "up"
+            "direction": "up",
+            "group": 2
         },
         "步兵2": {
             "unit_img": 4,
             "atk_img": 2,
             "startx": 10,
             "starty": 17,
-            "direction": "up"
+            "direction": "up",
+            "group": 2
         }
     },
     "时间轴": {
@@ -508,7 +527,7 @@
             }
         },
         "0" : {
-            "类型": "移动",
+            "类型": "敌方攻击",
             "人物": "弓兵2",
             "endx": 12,
             "endy": 17

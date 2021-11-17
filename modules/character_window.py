@@ -17,7 +17,10 @@ class CharacterWindow():
 
         self.parent = parent
         self.item_win = None
-        self.root = tk.Toplevel(parent.root)
+        if parent and hasattr(parent, 'root'):
+            self.root = tk.Toplevel(parent.root)
+        else:
+            self.root = tk.Toplevel(parent)
         # self.root.grab_set()
         # self.root.grab_set_global()
 
@@ -49,6 +52,7 @@ class CharacterWindow():
             # about_info = f.readlines()
 
         self.char_info = all_chars[kwargs['brief'][0]]
+        print(kwargs['brief'])
         print(self.char_info)
         img = Image.open(self.char_info['pic'])
         img = img.resize((70, 70), Image.ANTIALIAS)

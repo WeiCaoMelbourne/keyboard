@@ -352,7 +352,7 @@ def game():
         # SCREEN_WIDTH = 960
         # SCREEN_HEIGHT = 960
         # embed.config(width=960, height=960)
-        embed.config(width=960, height=800)
+        embed.config(width=960, height=816)
         screen = pygame.display.set_mode((960, 960))
         b1_entrance(root, screen, cursor_img, tool_bar, global_state=global_state, exit_func=game)
     else:    

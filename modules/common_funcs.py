@@ -340,13 +340,24 @@ def draw_mbinfo(screen, pos, type, terrain_details):
     screen_rect = screen.get_rect()
     start_x = pos[0]
     start_y = pos[1]
-    if start_x + MBINFO_DIALOG_WIDTH + 50 > screen_rect.width:
-        start_x = screen_rect.width - MBINFO_DIALOG_WIDTH - 50
-    elif start_x <= FIELD_UNIT_SIZE:
-        start_x = FIELD_UNIT_SIZE
+    if start_x < screen_rect.width // 2:
+        start_x += FIELD_UNIT_SIZE * 2
+    else:
+        start_x -= MBINFO_DIALOG_WIDTH - FIELD_UNIT_SIZE
+    # if start_x + MBINFO_DIALOG_WIDTH + 50 > screen_rect.width:
+    #     start_x = screen_rect.width - MBINFO_DIALOG_WIDTH - 50
+    # elif start_x <= FIELD_UNIT_SIZE:
+    #     start_x = FIELD_UNIT_SIZE
 
     if start_y <= FIELD_UNIT_SIZE:
         start_y = FIELD_UNIT_SIZE
     elif start_y + MBINFO_DIALOG_HEIGHT + 200 > screen_rect.height:
-        start_y = screen_rect.height - MBINFO_DIALOG_HEIGHT - 200
+        start_y -= MBINFO_DIALOG_HEIGHT - 2 * FIELD_UNIT_SIZE
+    else:
+        start_y += FIELD_UNIT_SIZE
+
+    # if start_y <= FIELD_UNIT_SIZE:
+    #     start_y = FIELD_UNIT_SIZE
+    # elif start_y + MBINFO_DIALOG_HEIGHT + 200 > screen_rect.height:
+    #     start_y = screen_rect.height - MBINFO_DIALOG_HEIGHT - 200
     screen.blit(s, (start_x, start_y))

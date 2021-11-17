@@ -16,6 +16,7 @@ FIELD_UNIT_SIZE = 48        # on field, each character is 48 * 48
 FIELD_ATK_UNIT_SIZE = 64    # on field, for unit_atk pic, it is 64 * 64
 FIELD_ACT_FRAME_LAST = 70   # on field, when playing act, every frame last 70 minisecond by default
 FIELD_DIE_FLICK_LAST = 700
+FIELD_POLL_LAST = 400
 
 MBINFO_DIALOG_WIDTH = 220
 MBINFO_DIALOG_HEIGHT = 140
@@ -24,6 +25,10 @@ UNIT_MOV_LEFT_FRAME = 4     # This frame start from 0
 UNIT_MOV_RIGHT_FRAME = 4
 UNIT_MOV_DOWN_FRAME = 0
 UNIT_MOV_UP_FRAME = 2
+
+FIELD_TROOP_US = 0          # On battle field, our troop
+FIELD_TROOP_ENEMY = 1       # Enemy
+FIELD_TROOP_ALLY = 2       # AllY
 
 FONT_SONGTI = 'resource/font/FangZhengShuSong-GBK-1.ttf'
 # FONT_NAME_CHN = 'resource/font/FangZhengHeiTI.ttf'

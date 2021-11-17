@@ -1,4 +1,6 @@
 import pygame
+
+from modules.toolbar import characters
 from ..common_funcs import draw_dialog, draw_selecter, bdraw_dialog, draw_mousebox, draw_mbinfo
 import json
 from ..constant import *
@@ -6,9 +8,10 @@ from ..win_pos import window_pos
 import csv
 import codecs
 # from ..toolbar import move_redblue
+from ..character_window import CharacterWindow
 
 FIELD_SCREEN_WIDTH = 960
-FIELD_SCREEN_HEIGHT = 800
+FIELD_SCREEN_HEIGHT = 816
 
 FIELD_WIDTH = 960
 FIELD_HEIGHT = 960
@@ -74,10 +77,16 @@ class Character(pygame.sprite.Sprite):
             # print(name, self.leftdown_img, self.rightup_img)
             self.image = self.unit_img.subsurface(0, UNIT_MOV_DOWN_FRAME, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
         
+        self.frame = 1
         if 'frame' in s1_story["人物"][name]:
-            frame = s1_story["人物"][name]['frame'] - 1
-            self.image = self.unit_img.subsurface(0, frame * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+            self.frame = s1_story["人物"][name]['frame']
+            frame_index = s1_story["人物"][name]['frame'] - 1
+            self.image = self.unit_img.subsurface(0, frame_index * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
 
+        self.troop_group = FIELD_TROOP_ENEMY
+        if 'group' in s1_story["人物"][name]:
+            self.troop_group = s1_story["人物"][name]['group']
+        
         self.image.set_colorkey(COLOR_KEY)
         self.rect = pygame.Rect(0, 0, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
         self.rect.width = FIELD_UNIT_SIZE
@@ -228,8 +237,23 @@ class Character(pygame.sprite.Sprite):
         # # Looks like if it is PNG file, do not need to call set_colorkey every time; but for BMP, it does
         # self.image.set_colorkey(COLOR_KEY)
 
+    def poll(self):
+        now = pygame.time.get_ticks()
+        if now - self.prev_tick > FIELD_POLL_LAST:
+            self.prev_tick = now
+            if self.frame % 2 == 0:
+                self.frame -= 1
+            else:
+                self.frame += 1
+            print(self.name, self.frame)
+            self.image = self.unit_img.subsurface(0, (self.frame - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+            self.image.set_colorkey(COLOR_KEY)
+
     def update(self):
         global timeline
+        if timeline == 999:
+            return self.poll()
+
         if s1_story["时间轴"][str(timeline)]["类型"] == '结束':
              return
 
@@ -278,7 +302,7 @@ def b1_main():
             #     print ('mouse focus ' + ('gained' if event.gain else 'lost'))
             # if event.state & pygame.APPINPUTFOCUS == pygame.APPINPUTFOCUS:
             #     print ('input focus ' + ('gained' if event.gain else 'lost'))
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
             if option_rects and s1_story["时间轴"][str(timeline)]["类型"] == "选择" and selection < 0:
                 selection = -1
@@ -296,19 +320,43 @@ def b1_main():
             elif s1_story["时间轴"][str(timeline)]["类型"] == "对话":
                 timeline += 1
             else:   #display map block info
-                mbinfo_switch = not mbinfo_switch
-                mbinfo_pos = (mouse_pos[0] - FIELD_UNIT_SIZE, mouse_pos[1] - FIELD_UNIT_SIZE)
-                # global mblocks_info
-                # print(mblocks_info)
-                # print(mouse_pos, (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE, (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE)
-                mb_type = mblocks_info[(mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE][(mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE]
+                char_selected = False
+                for name, obj in all_characters.items():
+                    if obj.rect.collidepoint(mouse_pos):
+                        char_selected = True
+                        break
+
+                if not char_selected:
+                    mbinfo_switch = not mbinfo_switch
+                    mbinfo_pos = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE, 
+                       FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
+                    # global mblocks_info
+                    # print(mblocks_info)
+                    # print(mouse_pos, (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE, (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE)
+                    mb_type = mblocks_info[(mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE][(mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE]
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:    # right clicked
+            mouse_pos = pygame.mouse.get_pos()
+            # rect = all_characters[s1_story["时间轴"][str(timeline)]["发言"]['人物']].rect
+            for name, obj in all_characters.items():
+                # print(c)
+                if obj.rect.collidepoint(mouse_pos):
+                    print("right cliecked on", name)
+                    CharacterWindow(parent=root, 
+                        x=root.winfo_x() + root.winfo_width(), y=root.winfo_y(), brief="曹操")
+            # options = s1_story["时间轴"][str(timeline)]['选项'].split("\n")
+            # selected = False
+            # if option_rects:
+            #     for i, rect in enumerate(option_rects):
+            #         # print(rect)
+            #         if rect.collidepoint(mouse_pos):
+
     # background_img.scroll(30, 30)
     mouse_pos = pygame.mouse.get_pos()
     # print(mouse_pos)
-    if mouse_pos[1] >= FIELD_SCREEN_HEIGHT - MOVE_UNIT and LEFTTOP_Y * -1 + FIELD_SCREEN_HEIGHT + MOVE_UNIT < FIELD_HEIGHT:
-        LEFTTOP_Y -= MOVE_UNIT
-    elif mouse_pos[1] < MOVE_UNIT and LEFTTOP_Y < 0:
-        LEFTTOP_Y += MOVE_UNIT
+    if mouse_pos[1] >= FIELD_SCREEN_HEIGHT - FIELD_UNIT_SIZE and LEFTTOP_Y * -1 + FIELD_SCREEN_HEIGHT < FIELD_HEIGHT:
+        LEFTTOP_Y -= FIELD_UNIT_SIZE
+    elif mouse_pos[1] < FIELD_UNIT_SIZE and LEFTTOP_Y < 0:
+        LEFTTOP_Y += FIELD_UNIT_SIZE
         # screen.blit(vertical_cursor, cursor_img_rect)
 
     screen.blit(background_img, (LEFTTOP_X, LEFTTOP_Y))
@@ -341,7 +389,7 @@ def b1_main():
         draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
     
     # draw dialog must be under all_sprites.draw to be above them all
-    if s1_story["时间轴"][str(timeline)]["类型"] == "对话":
+    if str(timeline) in s1_story["时间轴"] and s1_story["时间轴"][str(timeline)]["类型"] == "对话":
         # x, y = s1_story["时间轴"][str(timeline)]["发言"]['coordinates'].split()
         # x = int(x)
         # y = int(y)
@@ -353,7 +401,7 @@ def b1_main():
         if 'speaker' in s1_story["时间轴"][str(timeline)]["发言"]:
             speaker = s1_story["时间轴"][str(timeline)]["发言"]['speaker']
         bdraw_dialog(screen, speaker, face, content, rect.x, rect.y)
-    elif s1_story["时间轴"][str(timeline)]["类型"] == "选择":
+    elif str(timeline) in s1_story["时间轴"] and s1_story["时间轴"][str(timeline)]["类型"] == "选择":
         mouse_pos = pygame.mouse.get_pos()
         options = s1_story["时间轴"][str(timeline)]['选项'].split("\n")
         selected = False
@@ -368,7 +416,7 @@ def b1_main():
             temp = draw_selecter(screen, s1_story["时间轴"][str(timeline)]['人物'], options)
             if len(option_rects) == 0:
                 option_rects = temp
-    elif s1_story["时间轴"][str(timeline)]["类型"] == "通知":
+    elif str(timeline) in s1_story["时间轴"] and s1_story["时间轴"][str(timeline)]["类型"] == "通知":
         global prev_update
         if prev_update == None:
             prev_update = pygame.time.get_ticks()
@@ -449,12 +497,13 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
 
     all_sprites = pygame.sprite.Group()
     for name in s1_story['人物']:
-        all_characters[name] =  Character(name=name)
+        all_characters[name] = Character(name=name)
         all_sprites.add(all_characters[name])
 
     # print(all_characters["曹操"].rect)
 
-    # change timeline to 1
+    # 999 for testing only
+    # timeline = 999
     timeline = 0
 
     # Initial screen
