@@ -162,6 +162,134 @@ def draw_mousebox(screen, pos):
     outline_rect = pygame.Rect(x, y, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
     pygame.draw.rect(screen, COLOR_WHITE, outline_rect, 2)
 
+
+def draw_miinfo(screen, pos):
+    s = pygame.Surface((MBINFO_DIALOG_WIDTH, MBINFO_DIALOG_HEIGHT), pygame.SRCALPHA) 
+    # s.fill(COLOR_BLACK)    
+    s.fill(MBINFO_BG_COLOR)    
+    # outline_rect = pygame.Rect(0, 0, 150, 100)
+    # pygame.draw.rect(s, COLOR_SILVER, outline_rect, 1)
+    pygame.draw.line(s, COLOR_SILVER, (0, 0), (MBINFO_DIALOG_WIDTH, 0), 1)
+    pygame.draw.line(s, COLOR_SILVER, (0, 0), (0, MBINFO_DIALOG_HEIGHT), 1)
+    pygame.draw.line(s, COLOR_BLACK, (0, MBINFO_DIALOG_HEIGHT - 1), (MBINFO_DIALOG_WIDTH, MBINFO_DIALOG_HEIGHT - 1), 1)
+    pygame.draw.line(s, COLOR_BLACK, (MBINFO_DIALOG_WIDTH - 1, 0), (MBINFO_DIALOG_WIDTH - 1, MBINFO_DIALOG_HEIGHT), 1)
+
+    font = pygame.font.Font(FONT_HEITI, 17)
+    font_song = pygame.font.Font(FONT_SONGTI, 17)
+    font_jersey = pygame.font.Font(FONT_JERSEY, 17)
+    font_sys = pygame.font.SysFont("Arial", 17, bold=True)
+    text_surface = font.render("刘备", True, COLOR_WHITE)
+    text_rect = text_surface.get_rect()
+    text_rect.left = 5
+    text_rect.top = 5
+    s.blit(text_surface, text_rect)
+
+    text_surface = font.render("群雄  等级", True, COLOR_WHITE_OPAQUE)
+    text_rect2 = text_surface.get_rect()
+    text_rect2.left = 90
+    text_rect2.top = 5
+    s.blit(text_surface, text_rect2)
+    text_surface = font_sys.render("7", True, COLOR_WHITE_OPAQUE)
+    text_rect3 = text_surface.get_rect()
+    text_rect3.left = text_rect2.left + text_rect2.width + 5
+    text_rect3.top = text_rect2.top
+    s.blit(text_surface, text_rect3)
+
+    tmp_img = pygame.image.load(f'resource/mark/HP.bmp').convert()
+    tmp_img.set_colorkey(COLOR_KEY)
+    s.blit(tmp_img, (20, 30))
+    tmp_img = pygame.image.load(f'resource/mark/HP_bar.bmp').convert()
+    tmp_img = pygame.transform.scale(tmp_img, (136, 8))
+    tmp_img.set_colorkey(COLOR_KEY)
+    s.blit(tmp_img, (50, 40))
+    text_surface = font_sys.render("130", True, COLOR_WHITE)
+    text_rect = text_surface.get_rect()
+    text_rect.left = 110 - text_rect.width - 5
+    text_rect.top = 30
+    s.blit(text_surface, text_rect)
+    text_surface = font_sys.render("/ 130", True, COLOR_WHITE)
+    text_rect = text_surface.get_rect()
+    text_rect.left = 110
+    text_rect.top = 30
+    s.blit(text_surface, text_rect)
+    # text_surface = font_sys.render("130 / 130", True, COLOR_WHITE)
+    # text_rect = text_surface.get_rect()
+    # text_rect.left = 79
+    # text_rect.top = 29
+    # s.blit(text_surface, text_rect)
+
+    tmp_img = pygame.image.load(f'resource/mark/MP.bmp').convert()
+    tmp_img.set_colorkey(COLOR_KEY)
+    s.blit(tmp_img, (20, 55))
+    tmp_img = pygame.image.load(f'resource/mark/MP_bar.bmp').convert()
+    tmp_img = pygame.transform.scale(tmp_img, (136, 8))
+    tmp_img.set_colorkey(COLOR_KEY)
+    s.blit(tmp_img, (50, 65))
+    text_surface = font_sys.render("36", True, COLOR_WHITE)
+    text_rect = text_surface.get_rect()
+    text_rect.left = 110 - text_rect.width - 5
+    text_rect.top = 55
+    s.blit(text_surface, text_rect)
+    text_surface = font_sys.render("/ 36", True, COLOR_WHITE)
+    text_rect = text_surface.get_rect()
+    text_rect.left = 110
+    text_rect.top = 55
+    s.blit(text_surface, text_rect)
+    # text_surface = font_sys.render("36 / 36", True, COLOR_WHITE)
+    # text_rect = text_surface.get_rect()
+    # text_rect.left = 79
+    # text_rect.top = 54
+    # s.blit(text_surface, text_rect)
+
+
+    # text_surface = font.render("7", True, COLOR_WHITE_OPAQUE)
+    # text_rect = text_surface.get_rect()
+    # text_rect.left = 135
+    # text_rect.top = 5
+    # s.blit(text_surface, text_rect)
+
+    text_surface = font.render("友军", True, COLOR_ORINGE)
+    text_rect = text_surface.get_rect()
+    text_rect.left = 20
+    text_rect.top = 80
+    s.blit(text_surface, text_rect)
+
+    text_surface = font.render("平原", True, COLOR_FONT_GREEN)
+    text_rect = text_surface.get_rect()
+    text_rect.left = 100
+    text_rect.top = 80
+    s.blit(text_surface, text_rect)
+
+    text_surface = font_sys.render("100%", True, COLOR_WHITE)
+    text_rect = text_surface.get_rect()
+    text_rect.left = 150
+    text_rect.top = 80
+    s.blit(text_surface, text_rect)
+
+    screen_rect = screen.get_rect()
+    start_x = pos[0]
+    start_y = pos[1]
+    if start_x < screen_rect.width // 2:
+        start_x += FIELD_UNIT_SIZE * 1
+    else:
+        start_x -= MBINFO_DIALOG_WIDTH
+    # if start_x + MBINFO_DIALOG_WIDTH + 50 > screen_rect.width:
+    #     start_x = screen_rect.width - MBINFO_DIALOG_WIDTH - 50
+    # elif start_x <= FIELD_UNIT_SIZE:
+    #     start_x = FIELD_UNIT_SIZE
+
+    if start_y <= FIELD_UNIT_SIZE:
+        start_y = FIELD_UNIT_SIZE
+    elif start_y + MBINFO_DIALOG_HEIGHT + 200 > screen_rect.height:
+        start_y -= MBINFO_DIALOG_HEIGHT - FIELD_UNIT_SIZE
+
+    # if start_y <= FIELD_UNIT_SIZE:
+    #     start_y = FIELD_UNIT_SIZE
+    # elif start_y + MBINFO_DIALOG_HEIGHT + 200 > screen_rect.height:
+    #     start_y = screen_rect.height - MBINFO_DIALOG_HEIGHT - 200
+    screen.blit(s, (start_x, start_y))
+
+
 mb_type = None
 buff_str = None
 debuff_str = None

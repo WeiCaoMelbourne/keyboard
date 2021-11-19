@@ -1,7 +1,7 @@
 import pygame
 
 from modules.toolbar import characters
-from ..common_funcs import draw_dialog, draw_selecter, bdraw_dialog, draw_mousebox, draw_mbinfo
+from ..common_funcs import draw_dialog, draw_selecter, bdraw_dialog, draw_mousebox, draw_mbinfo, draw_miinfo
 import json
 from ..constant import *
 from ..win_pos import window_pos
@@ -387,6 +387,14 @@ def b1_main():
     draw_mousebox(screen, mouse_pos)
     if mbinfo_switch:
         draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
+
+    for name, obj in all_characters.items():
+        # print(c)
+        if obj.rect.collidepoint(mouse_pos):
+            # print("right cliecked on", name)
+            adjusted = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE), 
+                FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE))
+            draw_miinfo(screen, adjusted)
     
     # draw dialog must be under all_sprites.draw to be above them all
     if str(timeline) in s1_story["时间轴"] and s1_story["时间轴"][str(timeline)]["类型"] == "对话":

@@ -18,7 +18,12 @@
             "startx": 5,
             "starty": 10,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "type": "黄巾军",
+            "category": "步兵",
+            "HP": 130,
+            "MP": 56,
+            "LV": 7
         },
         "黄巾军2": {
             "unit_img": 0,

@@ -1,0 +1,9 @@
+{
+    "黄巾军": {
+        "catetory": "步兵",
+        "HP": 100,
+        "MP": 36,
+        "HP_factor": 5,
+        "MP_facotr": 2
+    }
+}

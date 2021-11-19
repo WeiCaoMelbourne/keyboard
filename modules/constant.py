@@ -3,9 +3,12 @@ COLOR_WHITE_OPAQUE = (255, 255, 255, 255)
 COLOR_BLACK = (0, 0, 0)
 COLOR_BLUE = (0, 0, 255)
 COLOR_GREEN = (0, 255, 0)
+COLOR_FONT_GREEN = (128, 240, 128)
+COLOR_PURPLE = (100, 98, 88)
 COLOR_SILVER = (192, 192, 192)
+COLOR_ORINGE = (240, 144, 32)
 MOVE_BG_COLOR = (0, 255, 0, 64)
-MBINFO_BG_COLOR = (0, 0, 0, 110)
+MBINFO_BG_COLOR = (0, 0, 0, 140)
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 400
 FPS = 100
@@ -18,8 +21,8 @@ FIELD_ACT_FRAME_LAST = 70   # on field, when playing act, every frame last 70 mi
 FIELD_DIE_FLICK_LAST = 700
 FIELD_POLL_LAST = 400
 
-MBINFO_DIALOG_WIDTH = 220
-MBINFO_DIALOG_HEIGHT = 140
+MBINFO_DIALOG_WIDTH = 200
+MBINFO_DIALOG_HEIGHT = 105
 
 UNIT_MOV_LEFT_FRAME = 4     # This frame start from 0
 UNIT_MOV_RIGHT_FRAME = 4
@@ -33,5 +36,6 @@ FIELD_TROOP_ALLY = 2       # AllY
 FONT_SONGTI = 'resource/font/FangZhengShuSong-GBK-1.ttf'
 # FONT_NAME_CHN = 'resource/font/FangZhengHeiTI.ttf'
 FONT_HEITI = 'resource/font/FangZhengZhengCuHeiTi.ttf'
+FONT_JERSEY = 'resource/font/JerseyM54-aLX9.ttf'
 
 TROOP_TYPE_NUM = 13         # 13 troop types
