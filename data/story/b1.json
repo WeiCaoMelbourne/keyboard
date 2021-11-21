@@ -14,37 +14,60 @@
     ],
     "人物": {
         "黄巾军1": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "startx": 5,
             "starty": 10,
             "direction": "down",
             "group": 1,
-            "type": "黄巾军",
+            "character": "黄巾军",
             "category": "步兵",
-            "HP": 130,
-            "MP": 56,
-            "LV": 7
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "黄巾军2": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "startx": 5,
             "starty": 11,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "黄巾军3": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "startx": 8,
             "starty": 10,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "黄巾军4": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "startx": 7,
             "starty": 11,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "张宝": {
             "unit_img": 1,
@@ -52,7 +75,12 @@
             "startx": 9,
             "starty": 11,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "张宝",
+            "category": "道士",
+            "HP": 130,
+            "MP": 56,
+            "level": 7
         },
         "张梁": {
             "unit_img": 1,
@@ -60,81 +88,156 @@
             "startx": 10,
             "starty": 11,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "张梁",
+            "category": "道士",
+            "HP": 130,
+            "MP": 56,
+            "level": 7
         },
         "黄巾军5": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "startx": 12,
             "starty": 10,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "黄巾军6": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "startx": 12,
             "starty": 12,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "黄巾军7": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "startx": 9,
             "starty": 14,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "黄巾军8": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "startx": 9,
             "starty": 15,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "黄巾军9": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "startx": 10,
             "starty": 14,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "黄巾军10": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "startx": 10,
             "starty": 15,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "黄巾军11": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "atk_img": 0,
             "startx": 12,
             "starty": 15,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "黄巾军12": {
+            "display-name": "黄巾军",
             "unit_img": 0,
             "atk_img": 0,
             "startx": 6,
             "starty": 16,
             "direction": "down",
-            "group": 1
+            "group": 1,
+            "character": "黄巾军",
+            "category": "步兵",
+            "category-level": "黄巾军",
+            "HP": 90,
+            "MP": 5,
+            "level": 1
         },
         "弓兵1": {
+            "display-name": "弓兵",
             "unit_img": 2,
             "spc_img": "resource/unit_spc/弓兵.bmp",
             "startx": 7,
             "starty": 16,
             "frame": 10,
-            "group": 2
+            "group": 2,
+            "character": "弓步兵",
+            "category": "弓兵",
+            "category-level": "弓步兵",
+            "HP": 130,
+            "MP": 56,
+            "level": 7
         },
         "弓兵2": {
+            "display-name": "弓兵",
             "unit_img": 2,
             "type": "弓兵",
             "startx": 12,
             "starty": 17,
             "frame": 10,
-            "group": 2
+            "group": 2,
+            "character": "弓步兵",
+            "category": "弓兵",
+            "category-level": "弓步兵",
+            "HP": 130,
+            "MP": 56,
+            "level": 7
         },
         "策士": {
             "unit_img": 3,
@@ -142,22 +245,41 @@
             "startx": 12,
             "starty": 16,
             "frame": 10,
-            "group": 2
+            "group": 2,
+            "character": "策士",
+            "category": "策士",
+            "category-level": "策士",
+            "HP": 130,
+            "MP": 56,
+            "level": 7
         },
         "步兵": {
             "unit_img": 4,
             "startx": 9,
             "starty": 18,
             "direction": "up",
-            "group": 2
+            "group": 2,
+            "character": "步兵",
+            "category": "步兵",
+            "category-level": "策士",
+            "HP": 130,
+            "MP": 56,
+            "level": 7
         },
         "步兵2": {
+            "display-name": "步兵",
             "unit_img": 4,
             "atk_img": 2,
             "startx": 10,
             "starty": 17,
             "direction": "up",
-            "group": 2
+            "group": 2,
+            "character": "步兵",
+            "category": "步兵",
+            "category-level": "轻步兵",
+            "HP": 130,
+            "MP": 56,
+            "level": 7
         }
     },
     "时间轴": {

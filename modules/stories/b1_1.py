@@ -45,8 +45,37 @@ mbinfo_pos = None
 # Character on map
 class Character(pygame.sprite.Sprite):
     def  __init__(self, name):
-        initial_data = s1_story["人物"][name]
+        # s1_story["人物"][name] = s1_story["人物"][name]
         self.name = name
+        self.display_name = name
+        if 'display-name' in s1_story["人物"][name]:
+            self.display_name = s1_story["人物"][name]['display-name']
+        self.level = 5
+        if 'level' in s1_story["人物"][name]:
+            self.level = s1_story["人物"][name]['level']
+
+        self.HP = 100
+        if 'HP' in s1_story["人物"][name]:
+            self.HP = s1_story["人物"][name]['HP']
+            self.full_HP = self.HP
+        self.MP = 30
+        if 'MP' in s1_story["人物"][name]:
+            self.MP = s1_story["人物"][name]['MP']
+            self.full_MP = self.MP
+        if s1_story["人物"][name]['character'] in heros_info:
+            hero = s1_story["人物"][name]['character']
+            HP_factor = heros_info[hero]['HP-factor']
+            self.full_HP = heros_info[hero]['HP'] + HP_factor * (self.level - 1)
+            MP_factor = heros_info[hero]['MP-factor']
+            self.full_MP = heros_info[hero]['MP'] + MP_factor * (self.level - 1)
+        
+        if 'category' in s1_story["人物"][name]:
+            self.category = s1_story["人物"][name]['category']
+            self.category_level = self.category
+        if 'category-level' in s1_story["人物"][name]:
+            self.category_level = s1_story["人物"][name]['category-level']
+        if 'group' in s1_story["人物"][name]:
+            self.group = s1_story["人物"][name]['group']
         pygame.sprite.Sprite.__init__(self)
 
         if isinstance(s1_story["人物"][name]['unit_img'], int):
@@ -91,8 +120,8 @@ class Character(pygame.sprite.Sprite):
         self.rect = pygame.Rect(0, 0, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
         self.rect.width = FIELD_UNIT_SIZE
         self.rect.height = FIELD_UNIT_SIZE
-        self.rect.x = initial_data['startx'] * FIELD_UNIT_SIZE
-        self.rect.y = initial_data['starty'] * FIELD_UNIT_SIZE
+        self.rect.x = s1_story["人物"][name]['startx'] * FIELD_UNIT_SIZE
+        self.rect.y = s1_story["人物"][name]['starty'] * FIELD_UNIT_SIZE
         self.original_x = self.rect.x
         self.original_y = self.rect.y
 
@@ -388,13 +417,15 @@ def b1_main():
     if mbinfo_switch:
         draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
 
-    for name, obj in all_characters.items():
+    for name, instance in all_characters.items():
         # print(c)
-        if obj.rect.collidepoint(mouse_pos):
+        if instance.rect.collidepoint(mouse_pos):
             # print("right cliecked on", name)
             adjusted = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE), 
                 FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE))
-            draw_miinfo(screen, adjusted)
+            block_type = mblocks_info[(mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE][(mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE]
+            effect = terrain_details[block_type]['能力效果'][instance.category]
+            draw_miinfo(screen, adjusted, instance, block_type, effect)
     
     # draw dialog must be under all_sprites.draw to be above them all
     if str(timeline) in s1_story["时间轴"] and s1_story["时间轴"][str(timeline)]["类型"] == "对话":
@@ -464,7 +495,7 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
     # return
     
     global root, screen, background_img, cursor_img, s1_story, tool_bar, all_sprites, timeline, parent_func
-    global troop_details, terrain_details, mblocks_info
+    global troop_details, terrain_details, mblocks_info, heros_info
     global unit_imgs, atk_imgs
     with open('data/story/b1.json', 'rb') as f:
         s1_story = json.load(f)
@@ -477,6 +508,9 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
 
     with codecs.open('data/story/b1-mblock.csv', "r", "utf-8") as csvfile:
         mblocks_info = list(csv.reader(csvfile, delimiter=','))
+
+    with open('data/characters.json', 'rb') as f:
+        heros_info = json.load(f)
     # print(data)
     # if data[0][0] == '平原':
     #     print("correct")
