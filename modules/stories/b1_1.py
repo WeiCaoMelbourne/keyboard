@@ -1,7 +1,8 @@
 import pygame
 
 from modules.toolbar import characters
-from ..common_funcs import draw_dialog, draw_selecter, bdraw_dialog, draw_mousebox, draw_mbinfo, draw_miinfo
+from ..common_funcs import draw_selecter, bdraw_dialog, draw_mousebox, draw_mbinfo, draw_miinfo
+from ..make_movearre import make_movearea, draw_movearea
 import json
 from ..constant import *
 from ..win_pos import window_pos
@@ -41,6 +42,7 @@ troop_details = None
 terrain_details = None
 mbinfo_switch = False
 mbinfo_pos = None
+cur_instance = None
 
 # Character on map
 class Character(pygame.sprite.Sprite):
@@ -122,6 +124,8 @@ class Character(pygame.sprite.Sprite):
         self.rect.height = FIELD_UNIT_SIZE
         self.rect.x = s1_story["人物"][name]['startx'] * FIELD_UNIT_SIZE
         self.rect.y = s1_story["人物"][name]['starty'] * FIELD_UNIT_SIZE
+        self.col = s1_story["人物"][name]['startx']
+        self.row = s1_story["人物"][name]['starty']
         self.original_x = self.rect.x
         self.original_y = self.rect.y
 
@@ -310,7 +314,8 @@ class Character(pygame.sprite.Sprite):
                     self.image.set_colorkey(COLOR_KEY)
 
 def b1_main():
-    global act, option_rects, timeline, selection, select_time, LEFTTOP_Y, mbinfo_switch, mbinfo_pos, mb_type
+    global act, option_rects, timeline, selection, select_time, LEFTTOP_Y, \
+        mbinfo_switch, mbinfo_pos, mb_type, cur_instance, moveable_area
 
     # if s1_story["时间轴"][str(timeline)]["类型"] == '结束':
     #     all_sprites.empty()
@@ -348,21 +353,33 @@ def b1_main():
                     tool_bar.increase_blue()
             elif s1_story["时间轴"][str(timeline)]["类型"] == "对话":
                 timeline += 1
-            else:   #display map block info
-                char_selected = False
-                for name, obj in all_characters.items():
-                    if obj.rect.collidepoint(mouse_pos):
-                        char_selected = True
+            else:   
+                clicked_on_char = False
+                for name, instance in all_characters.items():
+                    # print(c)
+                    if instance.rect.collidepoint(mouse_pos):
+                        clicked_on_char = True
+                        cur_instance = instance
+                        # draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), 6, terrain_details, mblocks_info)
+                        moveable_area = make_movearea(cur_instance, 6, terrain_details, mblocks_info)
                         break
+                        
+                #display map block info
+                if not clicked_on_char:
+                    char_selected = False
+                    for name, obj in all_characters.items():
+                        if obj.rect.collidepoint(mouse_pos):
+                            char_selected = True
+                            break
 
-                if not char_selected:
-                    mbinfo_switch = not mbinfo_switch
-                    mbinfo_pos = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE, 
-                       FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
-                    # global mblocks_info
-                    # print(mblocks_info)
-                    # print(mouse_pos, (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE, (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE)
-                    mb_type = mblocks_info[(mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE][(mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE]
+                    if not char_selected:
+                        mbinfo_switch = not mbinfo_switch
+                        mbinfo_pos = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE, 
+                        FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
+                        # global mblocks_info
+                        # print(mblocks_info)
+                        # print(mouse_pos, (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE, (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE)
+                        mb_type = mblocks_info[(mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE][(mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE]
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:    # right clicked
             mouse_pos = pygame.mouse.get_pos()
             # rect = all_characters[s1_story["时间轴"][str(timeline)]["发言"]['人物']].rect
@@ -416,6 +433,9 @@ def b1_main():
     draw_mousebox(screen, mouse_pos)
     if mbinfo_switch:
         draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
+
+    if cur_instance:
+        draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), 5, moveable_area)
 
     for name, instance in all_characters.items():
         # print(c)

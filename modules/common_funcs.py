@@ -1,5 +1,7 @@
 import pygame
 from .constant import *
+import codecs
+import csv
 
 dialogr_bg_img = None
 dialogl_bg_img = None
@@ -162,17 +164,16 @@ def draw_mousebox(screen, pos):
     outline_rect = pygame.Rect(x, y, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
     pygame.draw.rect(screen, COLOR_WHITE, outline_rect, 2)
 
-
 def draw_miinfo(screen, pos, character, block_type, effect):
-    s = pygame.Surface((MBINFO_DIALOG_WIDTH, MBINFO_DIALOG_HEIGHT), pygame.SRCALPHA) 
+    s = pygame.Surface((MIINFO_DIALOG_WIDTH, MIINFO_DIALOG_HEIGHT), pygame.SRCALPHA) 
     # s.fill(COLOR_BLACK)    
     s.fill(MBINFO_BG_COLOR)    
     # outline_rect = pygame.Rect(0, 0, 150, 100)
     # pygame.draw.rect(s, COLOR_SILVER, outline_rect, 1)
-    pygame.draw.line(s, COLOR_SILVER, (0, 0), (MBINFO_DIALOG_WIDTH, 0), 1)
-    pygame.draw.line(s, COLOR_SILVER, (0, 0), (0, MBINFO_DIALOG_HEIGHT), 1)
-    pygame.draw.line(s, COLOR_BLACK, (0, MBINFO_DIALOG_HEIGHT - 1), (MBINFO_DIALOG_WIDTH, MBINFO_DIALOG_HEIGHT - 1), 1)
-    pygame.draw.line(s, COLOR_BLACK, (MBINFO_DIALOG_WIDTH - 1, 0), (MBINFO_DIALOG_WIDTH - 1, MBINFO_DIALOG_HEIGHT), 1)
+    pygame.draw.line(s, COLOR_SILVER, (0, 0), (MIINFO_DIALOG_WIDTH, 0), 1)
+    pygame.draw.line(s, COLOR_SILVER, (0, 0), (0, MIINFO_DIALOG_HEIGHT), 1)
+    pygame.draw.line(s, COLOR_BLACK, (0, MIINFO_DIALOG_HEIGHT - 1), (MIINFO_DIALOG_WIDTH, MIINFO_DIALOG_HEIGHT - 1), 1)
+    pygame.draw.line(s, COLOR_BLACK, (MIINFO_DIALOG_WIDTH - 1, 0), (MIINFO_DIALOG_WIDTH - 1, MIINFO_DIALOG_HEIGHT), 1)
 
     font = pygame.font.Font(FONT_HEITI, 17)
     font_song = pygame.font.Font(FONT_SONGTI, 17)
@@ -285,8 +286,8 @@ def draw_miinfo(screen, pos, character, block_type, effect):
 
     if start_y <= FIELD_UNIT_SIZE:
         start_y = FIELD_UNIT_SIZE
-    elif start_y + MBINFO_DIALOG_HEIGHT + 200 > screen_rect.height:
-        start_y -= MBINFO_DIALOG_HEIGHT - FIELD_UNIT_SIZE
+    elif start_y + MIINFO_DIALOG_HEIGHT + 200 > screen_rect.height:
+        start_y -= MIINFO_DIALOG_HEIGHT - FIELD_UNIT_SIZE
 
     # if start_y <= FIELD_UNIT_SIZE:
     #     start_y = FIELD_UNIT_SIZE
@@ -494,3 +495,113 @@ def draw_mbinfo(screen, pos, type, terrain_details):
     # elif start_y + MBINFO_DIALOG_HEIGHT + 200 > screen_rect.height:
     #     start_y = screen_rect.height - MBINFO_DIALOG_HEIGHT - 200
     screen.blit(s, (start_x, start_y))
+
+def make_movearea(screen, instance, shift, move_power, terrain_details, mblocks_info):
+    dimension = move_power * 2 + 1 
+    mp_table = [[99 for x in range(dimension)] for y in range(dimension)]  # For every block, move power needed
+    # center = (move_power, move_power)
+    center = move_power
+
+    # for radius in range(1, move_power):
+    #     # left up area
+    #     for i in range(0, radius + 1):
+
+
+        # # left
+        # if instance.x - radius >= 0:
+        #     mbtype = mblocks_info[instance.y][instance.x - radius]
+        #     mp_table[center][center - radius] = terrain_details[mbtype]['移动效果'][instance.category]
+
+        # # right
+        # if instance.x + radius < len(mblocks_info[0]):
+        #     mbtype = mblocks_info[instance.y][instance.x + radius]
+        #     mp_table[center][center + radius] = terrain_details[mbtype]['移动效果'][instance.category]
+
+        # # up
+        # if instance.y - radius >= 0:
+        #     mbtype = mblocks_info[instance.y - radius][instance.x]
+        #     mp_table[center - radius][center] = terrain_details[mbtype]['移动效果'][instance.category]
+
+        # # down
+        # if instance.y + radius < len(mblocks_info):
+        #     mbtype = mblocks_info[instance.y + radius][instance.x]
+        #     mp_table[center + radius][center] = terrain_details[mbtype]['移动效果'][instance.category]
+
+        # # from 8 differnt directions
+        # for i in range(0, radius): 
+        #     # start from left to top
+        #     mbtype = mblocks_info[instance.y][instance.x - radius - i]
+        #     mp_needed = terrain_details[mbtype]['移动效果'][instance.category]
+        #     if mp_needed < mp_table[center][center - radius - i + 1]:
+
+            
+
+            
+        
+        # for top in range(0, radius):
+        #     mbtype = mblocks_info[instance.y - radius][instance.x - radius + top]
+            
+
+
+    for row in range(0, move_power):
+        for col in  range(0, move_power):
+            if col == 0 and row == 0:
+                continue
+            
+            if instance.y - col >= 0 and instance.y - col < len(mblocks_info) \
+                and instance.x - row >= 0 and instance.x - row < len(mblocks_info[0]):
+                mbtype = mblocks_info[instance.y - col][instance.x - row]
+                dp_value = 999
+                if row > 0 and mp_table[center - row + 1][center - col] < dp_value:
+                    dp_value = mp_table[center - row + 1][center - col]
+                if col > 0 and mp_table[center - row][center - col + 1] < dp_value:
+                    dp_value = mp_table[center - row][center - col + 1]
+            
+            block_consume = terrain_details[mbtype]['移动效果'][instance.category]
+            mp_table[center - row][center - col] = dp_value + block_consume
+            
+            if instance.y - col >= 0 and instance.y - col < len(mblocks_info) \
+                and instance.x + row >= 0 and instance.x + row < len(mblocks_info[0]):
+                mbtype = mblocks_info[instance.y - col][instance.x + row]
+                dp_value = 999
+                if row > 0 and mp_table[center + row - 1][center - col] < dp_value:
+                    dp_value = mp_table[center + row - 1][center - col]
+                if col > 0 and mp_table[center + row][center - col - 1] < dp_value:
+                    dp_value = mp_table[center + row][center - col - 1]
+                
+                block_consume = terrain_details[mbtype]['移动效果'][instance.category]
+                mp_table[center + row][center - col] = dp_value + block_consume
+
+            if instance.y + col >= 0 and instance.y + col < len(mblocks_info) \
+                and instance.x - row >= 0 and instance.x - row < len(mblocks_info[0]):
+                mbtype = mblocks_info[instance.y + col][instance.x - row]
+                dp_value = 999
+                if row > 0 and mp_table[center - row - 1][center + col] < dp_value:
+                    dp_value = mp_table[center - row - 1][center + col]
+                if col > 0 and mp_table[center - row][center + col - 1] < dp_value:
+                    dp_value = mp_table[center - row][center + col - 1]
+                
+                block_consume = terrain_details[mbtype]['移动效果'][instance.category]
+                mp_table[center - row][center + col] = dp_value + block_consume
+
+            if instance.y + col >= 0 and instance.y + col < len(mblocks_info) \
+                and instance.x + row >= 0 and instance.x + row < len(mblocks_info[0]):
+                mbtype = mblocks_info[instance.y + col][instance.x + row]
+                dp_value = 999
+                if row > 0 and mp_table[center + row - 1][center + col] < dp_value:
+                    dp_value = mp_table[center + row - 1][center + col]
+                if col > 0 and mp_table[center + row][center + col - 1] < dp_value:
+                    dp_value = mp_table[center + row][center + col - 1]
+                
+                block_consume = terrain_details[mbtype]['移动效果'][instance.category]
+                mp_table[center + row][center + col] = dp_value + block_consume
+
+    print(mp_table)
+    return mp_table
+            
+
+
+
+            # s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 
+            # s.fill(MOVE_BG_COLOR)
+            # screen.blit(s, ((instance.x + row)* FIELD_UNIT_SIZE + shift[0], (instance.y + col) * FIELD_UNIT_SIZE + shift[1]))
