@@ -42,3 +42,5 @@ FONT_HEITI = 'resource/font/FangZhengZhengCuHeiTi.ttf'
 FONT_JERSEY = 'resource/font/JerseyM54-aLX9.ttf'
 
 TROOP_TYPE_NUM = 13         # 13 troop types
+
+DEFAULT_MOVE_POWER = 4

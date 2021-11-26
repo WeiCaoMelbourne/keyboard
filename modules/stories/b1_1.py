@@ -70,6 +70,10 @@ class Character(pygame.sprite.Sprite):
             self.full_HP = heros_info[hero]['HP'] + HP_factor * (self.level - 1)
             MP_factor = heros_info[hero]['MP-factor']
             self.full_MP = heros_info[hero]['MP'] + MP_factor * (self.level - 1)
+
+        self.move_power = DEFAULT_MOVE_POWER
+        if 'troop' in s1_story["人物"][name] and s1_story["人物"][name]['troop'] in troop_details:
+            self.move_power = troop_details[s1_story["人物"][name]['troop']]['移动']
         
         if 'category' in s1_story["人物"][name]:
             self.category = s1_story["人物"][name]['category']
@@ -361,7 +365,7 @@ def b1_main():
                         clicked_on_char = True
                         cur_instance = instance
                         # draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), 6, terrain_details, mblocks_info)
-                        moveable_area = make_movearea(cur_instance, 6, terrain_details, mblocks_info)
+                        moveable_area = make_movearea(cur_instance, cur_instance.move_power, terrain_details, mblocks_info)
                         break
                         
                 #display map block info
@@ -435,7 +439,7 @@ def b1_main():
         draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
 
     if cur_instance:
-        draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), 5, moveable_area)
+        draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), cur_instance.move_power, moveable_area)
 
     for name, instance in all_characters.items():
         # print(c)

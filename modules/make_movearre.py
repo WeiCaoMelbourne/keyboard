@@ -73,10 +73,11 @@ def make_movearea(instance, move_power, terrain_details, mblocks_info):
 
     while len(BSF_q) > 0:
         current = BSF_q.pop(0)
-        print("visiting", current)
-        mbtype = mblocks_info[instance.row + (current[0] - center)][instance.col + (current[1] - center)]
-        current_mp = terrain_details[mbtype]['移动效果'][instance.category]
-        mp_table[current[0]][current[1]] = current_mp + get_min_adjacent(current, side_length, mp_table)
+        if instance.row + (current[0] - center) < len(mblocks_info) and \
+            instance.col + (current[1] - center) < len(mblocks_info[0]):
+            mbtype = mblocks_info[instance.row + (current[0] - center)][instance.col + (current[1] - center)]
+            current_mp = terrain_details[mbtype]['移动效果'][instance.category]
+            mp_table[current[0]][current[1]] = current_mp + get_min_adjacent(current, side_length, mp_table)
         add_adjacent_to_queue(current, side_length, visited, BSF_q, queued)
         visited[current[0]][current[1]] = 1
     # print(mp_table)
@@ -88,9 +89,11 @@ def make_movearea(instance, move_power, terrain_details, mblocks_info):
             if row == center and col == center:
                 continue
 
-            mbtype = mblocks_info[instance.row + (row - center)][instance.col + (col - center)]
-            current_mp = terrain_details[mbtype]['移动效果'][instance.category]
-            mp_table[row][col] = current_mp + get_min_adjacent((row, col), side_length, mp_table)
+            if instance.row + (current[0] - center) < len(mblocks_info) and \
+                instance.col + (current[1] - center) < len(mblocks_info[0]):
+                mbtype = mblocks_info[instance.row + (row - center)][instance.col + (col - center)]
+                current_mp = terrain_details[mbtype]['移动效果'][instance.category]
+                mp_table[row][col] = current_mp + get_min_adjacent((row, col), side_length, mp_table)
     print(mp_table)
     return mp_table
 

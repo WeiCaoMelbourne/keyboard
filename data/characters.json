@@ -23,7 +23,8 @@
         "部队种类": "君主",
         "部队等级": "群雄",
         "troop-catetory": "君主",
-        "troop-level": "群雄"
+        "troop-level": "群雄",
+        "move-power": 6
     },
     "黄巾军": {
         "pic": "resource/characters/caocao/61.jpg",
@@ -46,6 +47,7 @@
         "HP": 90,
         "MP": 5,
         "HP-factor": 5,
-        "MP-factor": 2
+        "MP-factor": 2,
+        "move-power": 5
     }
 }
