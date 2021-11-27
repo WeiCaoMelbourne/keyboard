@@ -54,17 +54,87 @@ def add_adjacent_to_queue(pos, side_length, visited, BSF_q, queued):
         # print("right down", adj_pos)
         queued[adj_pos[0]][adj_pos[1]] = 1
         BSF_q.append(adj_pos)
-    
-def make_movearea(instance, move_power, terrain_details, mblocks_info):
-    side_length = move_power * 2 + 1 
+
+# For all the enemies, up/down/left/right are speicals. can stay in it, but cannot cross it
+def pre_enemies(instance, side_length, center, mp_table, visited, all_characters):
+    for row in range(0, side_length):
+        for col in range(0, side_length):
+            if row == center and col == center:
+                continue
+
+            for name, c in all_characters.items():
+                if c.row == instance.row + (row - center) and c.col == instance.col + (col - center):
+                    if c.troop_group != instance.troop_group:   # From different side
+                        # print("Found", name)
+                        # print(c.row, c.col, row, col)
+                        mp_table[row][col] = 999
+                        visited[row][col] = 1
+                        if row > 0:
+                            mp_table[row - 1][col] = 999
+                            visited[row - 1][col] = 1
+                        if col > 0:
+                            mp_table[row][col - 1] = 999
+                            visited[row][col - 1] = 1
+                        if row + 1 < len(mp_table):
+                            mp_table[row + 1][col] = 999
+                            visited[row + 1][col] = 1
+                        if col + 1 < len(mp_table[0]):
+                            mp_table[row][col + 1] = 999
+                            visited[row][col + 1] = 1
+
+def post_enemies(instance, side_length, center, mp_table, terrain_details, mblocks_info):
+    for radius in range(instance.move_power, 0, -1):
+        for row in range(0, side_length):
+            for col in range(0, side_length):
+                if abs(row - center) != radius and abs(col - center) != radius:
+                    continue
+
+                if row == center and col == center:
+                    continue
+                
+                if  mp_table[row][col] == 999:
+                    mbtype = mblocks_info[instance.row + (row - center)][instance.col + (col - center)]
+                    current_mp = terrain_details[mbtype]['移动效果'][instance.category]
+                    mp_table[row][col] = current_mp + get_min_adjacent((row, col), side_length, mp_table)
+
+    # for row in range(0, side_length):
+    #     for col in range(0, side_length):
+    #         if row == center and col == center:
+    #             continue
+            
+    #         if  mp_table[row][col] == 999:
+    #             mbtype = mblocks_info[instance.row + (row - center)][instance.col + (col - center)]
+    #             current_mp = terrain_details[mbtype]['移动效果'][instance.category]
+    #             mp_table[row][col] = current_mp + get_min_adjacent((row, col), side_length, mp_table)
+
+            # for name, c in all_characters.items():
+            #     if c.row == instance.row + (row - center) and c.col == instance.col + (col - center):
+            #         # print("Found", name)
+            #         # print(c.row, c.col, row, col)
+            #         if c.group != instance.group:   # From different side
+            #             if row > 0:
+            #                 mp_table[row - 1][col] = 999
+            #             if col > 0:
+            #                 mp_table[row][col - 1] = 999
+            #             if row + 1 < len(mp_table):
+            #                 mp_table[row + 1][col] = 999
+            #             if col + 1 < len(mp_table[0]):
+            #                 mp_table[row][col + 1] = 999
+                        
+
+def make_movearea(instance, terrain_details, mblocks_info, all_characters):
+    side_length = instance.move_power * 2 + 1 
     mp_table = [[99 for x in range(side_length)] for y in range(side_length)]  # For every block, move power needed
-    center = move_power
-    mp_table[center][center] = 0
+    center = instance.move_power
     visited = [[0 for x in range(side_length)] for y in range(side_length)]
-    visited[center][center] = 1
     queued = [[0 for x in range(side_length)] for y in range(side_length)]
     queued[center][center] = 1
     
+    pre_enemies(instance, side_length, center, mp_table, visited, all_characters)
+    mp_table[center][center] = 0
+    visited[center][center] = 1     
+    
+    print(mp_table)
     BSF_q = []
     BSF_q.append((center - 1, center))  # (row, col)
     BSF_q.append((center + 1, center))
@@ -80,24 +150,43 @@ def make_movearea(instance, move_power, terrain_details, mblocks_info):
             mp_table[current[0]][current[1]] = current_mp + get_min_adjacent(current, side_length, mp_table)
         add_adjacent_to_queue(current, side_length, visited, BSF_q, queued)
         visited[current[0]][current[1]] = 1
-    # print(mp_table)
+    print(mp_table)
 
     # after while loop, do another loop to cover the blocks that cannot be correctly
     # handled in while
-    for row in range(0, side_length):
-        for col in range(0, side_length):
-            if row == center and col == center:
-                continue
+    for radius in range(instance.move_power, 0, -1):
+        for row in range(0, side_length):
+            for col in range(0, side_length):
+                if abs(row - center) != radius and abs(col - center) != radius:
+                    continue
 
-            if instance.row + (current[0] - center) < len(mblocks_info) and \
-                instance.col + (current[1] - center) < len(mblocks_info[0]):
-                mbtype = mblocks_info[instance.row + (row - center)][instance.col + (col - center)]
-                current_mp = terrain_details[mbtype]['移动效果'][instance.category]
-                mp_table[row][col] = current_mp + get_min_adjacent((row, col), side_length, mp_table)
+                if row == center and col == center:
+                    continue
+
+                occupied = False
+                for name, c in all_characters.items():
+                    if c.row == instance.row + (row - center) and c.col == instance.col + (col - center):
+                        # if c.troop_group == instance.troop_group:   # Friends
+                        mp_table[row][col] = 99
+                        occupied = True
+
+                if occupied:
+                    continue
+
+                if mp_table[row][col] == 999:
+                    continue
+
+                if instance.row + (row - center) < len(mblocks_info) and \
+                    instance.col + (col - center) < len(mblocks_info[0]):
+                    mbtype = mblocks_info[instance.row + (row - center)][instance.col + (col - center)]
+                    current_mp = terrain_details[mbtype]['移动效果'][instance.category]
+                    mp_table[row][col] = current_mp + get_min_adjacent((row, col), side_length, mp_table)
+    print(mp_table)
+    post_enemies(instance, side_length, center, mp_table, terrain_details, mblocks_info)
     print(mp_table)
     return mp_table
 
-def draw_movearea(screen, instance, shift, move_power, mp_table):
+def draw_movearea(screen, instance, shift, mp_table):
     # with codecs.open('data/troop-category-levels.csv', "r", "utf-8") as csvfile:
     #     categorylevel_info = list(csv.reader(csvfile, delimiter=','))
 
@@ -111,7 +200,7 @@ def draw_movearea(screen, instance, shift, move_power, mp_table):
     center = side_length // 2
     for row in range(0, side_length):
         for col in  range(0, side_length):
-            if mp_table[row][col] > move_power or mp_table[row][col] <= 0:
+            if mp_table[row][col] > instance.move_power or mp_table[row][col] <= 0:
                 continue
             
             s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 

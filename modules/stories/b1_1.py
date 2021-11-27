@@ -365,7 +365,7 @@ def b1_main():
                         clicked_on_char = True
                         cur_instance = instance
                         # draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), 6, terrain_details, mblocks_info)
-                        moveable_area = make_movearea(cur_instance, cur_instance.move_power, terrain_details, mblocks_info)
+                        moveable_area = make_movearea(cur_instance, terrain_details, mblocks_info, all_characters)
                         break
                         
                 #display map block info
@@ -439,7 +439,7 @@ def b1_main():
         draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
 
     if cur_instance:
-        draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), cur_instance.move_power, moveable_area)
+        draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), moveable_area)
 
     for name, instance in all_characters.items():
         # print(c)

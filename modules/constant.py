@@ -34,7 +34,7 @@ UNIT_MOV_UP_FRAME = 2
 
 FIELD_TROOP_US = 0          # On battle field, our troop
 FIELD_TROOP_ENEMY = 1       # Enemy
-FIELD_TROOP_ALLY = 2       # AllY
+# FIELD_TROOP_ALLY = 2       # AllY
 
 FONT_SONGTI = 'resource/font/FangZhengShuSong-GBK-1.ttf'
 # FONT_NAME_CHN = 'resource/font/FangZhengHeiTI.ttf'
