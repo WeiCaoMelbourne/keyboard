@@ -97,7 +97,6 @@
             "group": 1,
             "character": "张梁",
             "category": "道士",
-            "troop": "道士",
             "category-level": "道士",
             "HP": 130,
             "MP": 56,
@@ -243,7 +242,6 @@
         "弓兵2": {
             "display-name": "弓兵",
             "unit_img": 2,
-            "type": "弓兵",
             "startx": 12,
             "starty": 17,
             "frame": 10,
@@ -277,7 +275,7 @@
             "group": 2,
             "character": "步兵",
             "category": "步兵",
-            "category-level": "策士",
+            "category-level": "轻步兵",
             "HP": 130,
             "MP": 56,
             "level": 7

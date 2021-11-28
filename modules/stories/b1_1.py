@@ -2,7 +2,7 @@ import pygame
 
 from modules.toolbar import characters
 from ..common_funcs import draw_selecter, bdraw_dialog, draw_mousebox, draw_mbinfo, draw_miinfo
-from ..make_movearre import make_movearea, draw_movearea
+from ..battlefield_action import make_movearea, draw_movearea, draw_attack
 import json
 from ..constant import *
 from ..win_pos import window_pos
@@ -71,10 +71,6 @@ class Character(pygame.sprite.Sprite):
             MP_factor = heros_info[hero]['MP-factor']
             self.full_MP = heros_info[hero]['MP'] + MP_factor * (self.level - 1)
 
-        self.move_power = DEFAULT_MOVE_POWER
-        if 'troop' in s1_story["人物"][name] and s1_story["人物"][name]['troop'] in troop_details:
-            self.move_power = troop_details[s1_story["人物"][name]['troop']]['移动']
-        
         if 'category' in s1_story["人物"][name]:
             self.category = s1_story["人物"][name]['category']
             self.category_level = self.category
@@ -82,6 +78,16 @@ class Character(pygame.sprite.Sprite):
             self.category_level = s1_story["人物"][name]['category-level']
         if 'group' in s1_story["人物"][name]:
             self.group = s1_story["人物"][name]['group']
+        
+        self.move_power = DEFAULT_MOVE_POWER
+        self.hit_area = DEFAULT_HIT_AREA
+        troop = self.category_level
+        if 'troop' in s1_story["人物"][name]:
+            troop = s1_story["人物"][name]['troop']
+        if troop in troop_details:
+            self.move_power = troop_details[troop]['移动']
+            self.hit_area = troop_details[troop]['攻击范围']
+        
         pygame.sprite.Sprite.__init__(self)
 
         if isinstance(s1_story["人物"][name]['unit_img'], int):
@@ -431,15 +437,16 @@ def b1_main():
         sprite.rect.y = sprite.original_y + LEFTTOP_Y
         # print(sprite.original_y, LEFTTOP_Y)
         
-    all_sprites.update()
-    all_sprites.draw(screen)
-
     draw_mousebox(screen, mouse_pos)
     if mbinfo_switch:
         draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
 
     if cur_instance:
         draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), moveable_area)
+        draw_attack(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y))
+
+    all_sprites.update()
+    all_sprites.draw(screen)
 
     for name, instance in all_characters.items():
         # print(c)

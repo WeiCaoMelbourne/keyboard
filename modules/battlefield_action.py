@@ -134,7 +134,7 @@ def make_movearea(instance, terrain_details, mblocks_info, all_characters):
     mp_table[center][center] = 0
     visited[center][center] = 1     
     
-    print(mp_table)
+    # print(mp_table)
     BSF_q = []
     BSF_q.append((center - 1, center))  # (row, col)
     BSF_q.append((center + 1, center))
@@ -150,7 +150,7 @@ def make_movearea(instance, terrain_details, mblocks_info, all_characters):
             mp_table[current[0]][current[1]] = current_mp + get_min_adjacent(current, side_length, mp_table)
         add_adjacent_to_queue(current, side_length, visited, BSF_q, queued)
         visited[current[0]][current[1]] = 1
-    print(mp_table)
+    # print(mp_table)
 
     # after while loop, do another loop to cover the blocks that cannot be correctly
     # handled in while
@@ -206,3 +206,47 @@ def draw_movearea(screen, instance, shift, mp_table):
             s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 
             s.fill(MOVE_BG_COLOR)
             screen.blit(s, ((instance.col - center + col)* FIELD_UNIT_SIZE + shift[0], (instance.row - center + row) * FIELD_UNIT_SIZE + shift[1]))
+
+
+hitsqure_img = None
+def draw_hitsqure(screen, pos):
+    global hitsqure_img
+    if hitsqure_img == None:
+        hitsqure_img = pygame.image.load(f'resource/hitarea/square.png').convert()
+    # tmp_img.set_colorkey(COLOR_KEY)
+    screen.blit(hitsqure_img, pos)
+
+def draw_attack(screen, instance, shift):
+    # s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 
+    # s.fill(HITAREA_BG_COLOR)
+    # screen.blit(s, ((instance.col + 1)* FIELD_UNIT_SIZE + shift[0], (instance.row + 1) * FIELD_UNIT_SIZE + shift[1]))
+    # rect = pygame.Rect((instance.col + 1)* FIELD_UNIT_SIZE + shift[0], (instance.row + 1) * FIELD_UNIT_SIZE + shift[1], FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+    # pygame.draw.rect(screen, HITAREA_BG_COLOR, rect, 10)
+
+    # pygame.draw.line(screen, HITAREA_BG_COLOR, 
+    #     ((instance.col + 1)* FIELD_UNIT_SIZE + shift[0], (instance.row + 1) * FIELD_UNIT_SIZE + shift[1]), 
+    #     ((instance.col + 2)* FIELD_UNIT_SIZE + shift[0], (instance.row + 1) * FIELD_UNIT_SIZE + shift[1]))
+
+    # tmp_img = pygame.image.load(f'resource/hitarea/square.png').convert()
+    # # tmp_img.set_colorkey(COLOR_KEY)
+    # screen.blit(tmp_img, ((instance.col + 1)* FIELD_UNIT_SIZE + shift[0], (instance.row + 1) * FIELD_UNIT_SIZE + shift[1]))
+    if instance.hit_area == 'A':
+        draw_hitsqure(screen, ((instance.col + 1)* FIELD_UNIT_SIZE + shift[0], (instance.row) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col - 1)* FIELD_UNIT_SIZE + shift[0], (instance.row) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col)* FIELD_UNIT_SIZE + shift[0], (instance.row + 1) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col)* FIELD_UNIT_SIZE + shift[0], (instance.row - 1) * FIELD_UNIT_SIZE + shift[1]))
+    elif instance.hit_area == 'B':
+        draw_hitsqure(screen, ((instance.col + 1)* FIELD_UNIT_SIZE + shift[0], (instance.row + 1) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col + 1)* FIELD_UNIT_SIZE + shift[0], (instance.row) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col + 1)* FIELD_UNIT_SIZE + shift[0], (instance.row - 1) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col)* FIELD_UNIT_SIZE + shift[0], (instance.row + 1) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col)* FIELD_UNIT_SIZE + shift[0], (instance.row - 1) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col - 1)* FIELD_UNIT_SIZE + shift[0], (instance.row + 1) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col - 1)* FIELD_UNIT_SIZE + shift[0], (instance.row) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col - 1)* FIELD_UNIT_SIZE + shift[0], (instance.row - 1) * FIELD_UNIT_SIZE + shift[1]))
+    elif instance.hit_area == 'E':
+        draw_hitsqure(screen, ((instance.col + 2)* FIELD_UNIT_SIZE + shift[0], (instance.row) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col - 2)* FIELD_UNIT_SIZE + shift[0], (instance.row) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col)* FIELD_UNIT_SIZE + shift[0], (instance.row + 2) * FIELD_UNIT_SIZE + shift[1]))
+        draw_hitsqure(screen, ((instance.col)* FIELD_UNIT_SIZE + shift[0], (instance.row - 2) * FIELD_UNIT_SIZE + shift[1]))
+    
