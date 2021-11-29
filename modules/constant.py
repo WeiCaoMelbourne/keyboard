@@ -49,3 +49,5 @@ TROOP_TYPE_NUM = 13         # 13 troop types
 
 DEFAULT_MOVE_POWER = 4
 DEFAULT_HIT_AREA = 'A'
+
+MP_BAR_COLOR = '#ccd5ae'

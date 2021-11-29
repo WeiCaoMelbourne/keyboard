@@ -467,7 +467,6 @@ class ToolBar():
         self.bluebar_img = ImageTk.PhotoImage(img)
         self.bluebar_label = tk.Label(toolbar3, image=self.bluebar_img, highlightthickness=0, borderwidth=0)
         self.bluebar_label.pack(side=tk.LEFT)
-
         self.bluebird_img = tk.PhotoImage(file=f"resource/icon/忠臣.png")
         self.bluebird_label = tk.Label(toolbar3, image=self.bluebird_img)
         self.bluebird_label.pack(side=tk.RIGHT)

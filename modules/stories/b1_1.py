@@ -10,6 +10,7 @@ import csv
 import codecs
 # from ..toolbar import move_redblue
 from ..character_window import CharacterWindow
+from ..battlefield_menu import BattlefieldMenu, MPSelector
 
 FIELD_SCREEN_WIDTH = 960
 FIELD_SCREEN_HEIGHT = 816
@@ -61,6 +62,7 @@ class Character(pygame.sprite.Sprite):
             self.HP = s1_story["人物"][name]['HP']
             self.full_HP = self.HP
         self.MP = 30
+        self.magic_powers = None
         if 'MP' in s1_story["人物"][name]:
             self.MP = s1_story["人物"][name]['MP']
             self.full_MP = self.MP
@@ -70,6 +72,7 @@ class Character(pygame.sprite.Sprite):
             self.full_HP = heros_info[hero]['HP'] + HP_factor * (self.level - 1)
             MP_factor = heros_info[hero]['MP-factor']
             self.full_MP = heros_info[hero]['MP'] + MP_factor * (self.level - 1)
+            self.magic_powers = heros_info[hero]['策略']
 
         if 'category' in s1_story["人物"][name]:
             self.category = s1_story["人物"][name]['category']
@@ -346,6 +349,22 @@ def b1_main():
             #     print ('mouse focus ' + ('gained' if event.gain else 'lost'))
             # if event.state & pygame.APPINPUTFOCUS == pygame.APPINPUTFOCUS:
             #     print ('input focus ' + ('gained' if event.gain else 'lost'))
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and cur_instance:
+            print("start menu")
+            start_win = BattlefieldMenu(root, cur_instance, x=root.winfo_x() + (cur_instance.col + 2) * FIELD_UNIT_SIZE + LEFTTOP_X, 
+                y=root.winfo_y() + (cur_instance.row + 1) * FIELD_UNIT_SIZE + LEFTTOP_Y)
+            print(start_win.choice)
+            if start_win.choice == '策略':
+                mp_selector = MPSelector(root, cur_instance, x=root.winfo_x() + (cur_instance.col + 2) * FIELD_UNIT_SIZE + LEFTTOP_X, 
+                    y=root.winfo_y() + (cur_instance.row + 1) * FIELD_UNIT_SIZE + LEFTTOP_Y)
+            
+            # if start_win.choice == 'quit':
+            #     print("Quit")
+            #     screen.fill(COLOR_BLACK)
+            #     screen.blit(end_img, (0, 0))
+            #     pygame.display.update()
+            #     pygame.time.wait(2000)
+            #     root.quit()
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
             if option_rects and s1_story["时间轴"][str(timeline)]["类型"] == "选择" and selection < 0:
@@ -404,7 +423,8 @@ def b1_main():
             # if option_rects:
             #     for i, rect in enumerate(option_rects):
             #         # print(rect)
-            #         if rect.collidepoint(mouse_pos):
+            #         if rect.collidepoint(mouse_pos)
+        
 
     # background_img.scroll(30, 30)
     mouse_pos = pygame.mouse.get_pos()

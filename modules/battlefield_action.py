@@ -181,9 +181,9 @@ def make_movearea(instance, terrain_details, mblocks_info, all_characters):
                     mbtype = mblocks_info[instance.row + (row - center)][instance.col + (col - center)]
                     current_mp = terrain_details[mbtype]['移动效果'][instance.category]
                     mp_table[row][col] = current_mp + get_min_adjacent((row, col), side_length, mp_table)
-    print(mp_table)
+    # print(mp_table)
     post_enemies(instance, side_length, center, mp_table, terrain_details, mblocks_info)
-    print(mp_table)
+    # print(mp_table)
     return mp_table
 
 def draw_movearea(screen, instance, shift, mp_table):
