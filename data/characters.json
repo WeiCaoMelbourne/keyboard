@@ -24,13 +24,44 @@
         "部队等级": "群雄",
         "troop-catetory": "君主",
         "troop-level": "群雄",
-        "move-power": 6
+        "move-power": 6,
+        "HP": 90,
+        "MP": 5,
+        "HP-factor": 5,
+        "MP-factor": 2,
+        "move-power": 5
+    },
+    "张宝": {
+        "pic": "resource/characters/张宝.bmp",
+        "status": "正常",
+        "武力": 42,
+        "敏捷": 72,
+        "智力": 80,
+        "运气": 62,
+        "统率": 62,
+        "列传": "张角之弟。与其兄张角一起起兵造反，发动了黄巾之乱。自称为地公将军，用其兄传授的妖术指挥贼兵作战。后来被部下严政刺杀。",
+        "武器": "倚天剑",
+        "护具": "白银铠",
+        "辅助": "",
+        "策略": {
+            "钝兵": 6,
+            "虚脱": 6,
+            "毒烟": 8
+        },
+        "部队种类": "君主",
+        "部队等级": "群雄",
+        "troop-catetory": "君主",
+        "troop-level": "群雄",
+        "move-power": 6,
+        "HP": 90,
+        "MP": 40,
+        "HP-factor": 5,
+        "MP-factor": 2,
+        "move-power": 5
     },
     "黄巾军": {
         "pic": "resource/characters/caocao/61.jpg",
         "status": "正常",
-        "strategies": [
-        ],
         "武力": 86,
         "敏捷": 82,
         "智力": 96,

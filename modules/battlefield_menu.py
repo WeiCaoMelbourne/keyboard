@@ -107,8 +107,8 @@ class BattlefieldMenu():
     
 class MPSelector():
     def __init__(self, parent, instance, **kwargs):
-        WIDTH = 220
-        HEIGHT = 120
+        WIDTH = 210
+        HEIGHT = 245
 
         self.parent = parent
         self.choice = None
@@ -144,7 +144,7 @@ class MPSelector():
         # img_label = tk.Label(sub_frame2, image=item_img3)
         # # img_label.image = item_img
         # img_label.pack(side=tk.LEFT)
-        label_area = tk.Label(sub_frame2, text="曹操", width=4)
+        label_area = tk.Label(sub_frame2, text=f"{instance.name}", width=4)
         label_area.pack(side=tk.LEFT, padx=4)
         label_area = tk.Label(sub_frame2, text="MP", width=4)
         label_area.pack(side=tk.LEFT, padx=2)
@@ -158,7 +158,7 @@ class MPSelector():
                                 {"sticky": "w"})],
                 'sticky': 'nswe'})])
         style.configure("MPProgressbar", background=MP_BAR_COLOR)
-        style.configure("MPProgressbar", text="20/100")
+        style.configure("MPProgressbar", text=f"{instance.MP}/{instance.full_MP}")
         mp_bar = ttk.Progressbar(sub_frame2, style='MPProgressbar', maximum=100)
         mp_bar['value'] = 50
         mp_bar.pack(side=tk.LEFT)
@@ -184,7 +184,7 @@ class MPSelector():
             )
         columns = ('#1', '#2')
         style.configure('Treeview.Item', indicatorsize=-4)
-        self.mptree = ttk.Treeview(self.root, columns=columns, height=14)
+        self.mptree = ttk.Treeview(self.root, columns=columns, height=8)
         # self.mptree = ttk.Treeview(frame5, columns=columns, height=13, padding=[-15,0,0,0])
         self.mptree.tag_configure('odd', background='gainsboro')
         self.mptree.heading('#0', text='')
@@ -195,6 +195,7 @@ class MPSelector():
         self.mptree.column("#2", width=50, stretch=False)
 
         self.mptree.bind('<Button-1>', self.treeview_mousedown)
+        self.mptree.bind("<ButtonPress-1>", self.treeview_clicked)
         self.mptree.bind("<Motion>", lambda e: "break")   # Do not change cursor when it moves to separator
         
         sb = tk.Scrollbar(self.root, orient=tk.VERTICAL)
@@ -205,7 +206,7 @@ class MPSelector():
         
         values_list = [(key, value) for key, value in instance.magic_powers.items()]
         for index, values in enumerate(values_list):
-            mp_img = ImageTk.PhotoImage(file=f'resource/mp/{values[0]}.png')
+            mp_img = ImageTk.PhotoImage(file=f'resource/mp/{values[0]}.bmp')
             # use setattr to make this img variable last
             setattr(self, 'mp_img' + str(index), mp_img)
             if index % 2 == 0:
@@ -235,3 +236,30 @@ class MPSelector():
         # self.state['starting'] = False
         self.root.destroy()
         self.choice = "new"
+
+    # Do not allow column resize
+    def treeview_mousedown(self, event):
+        if self.mptree.identify_region(event.x, event.y) == "separator":
+            # must return "break", otherwise it won't work
+            return "break"
+
+    def treeview_clicked(self, event):
+        item = self.mptree.identify('item', event.x, event.y)
+        char_info = self.mptree.item(item, "value")
+        print(char_info)
+        if not char_info:
+            #In this case, it it clicking header to sort, so do not display window
+            return
+
+
+        # # print("you clicked on", char_info)
+        # if self.childWin:
+        #     self.childWin.root.lift()
+        #     print("Already exists")
+        #     pass
+        # else:
+        #     self.childWin = CharacterWindow(parent=self, 
+        #         x=self.root.winfo_x() + self.root.winfo_width(), y=self.root.winfo_y(), brief=char_info)
+        #     self.childWin.root.lift()
+        #     self.childWin.root.attributes('-topmost',True)
+        #     self.childWin.root.after_idle(self.childWin.root.attributes, '-topmost', False)

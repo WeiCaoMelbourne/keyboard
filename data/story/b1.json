@@ -85,8 +85,8 @@
             "category": "道士",
             "category-level": "道士",
             "HP": 130,
-            "MP": 56,
-            "level": 7
+            "MP": 48,
+            "level": 5
         },
         "张梁": {
             "unit_img": 1,
@@ -100,7 +100,7 @@
             "category-level": "道士",
             "HP": 130,
             "MP": 56,
-            "level": 7
+            "level": 5
         },
         "黄巾军5": {
             "display-name": "黄巾军",
