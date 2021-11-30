@@ -395,6 +395,8 @@ def b1_main():
                         cur_instance = instance
                         # draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), 6, terrain_details, mblocks_info)
                         moveable_area = make_movearea(cur_instance, terrain_details, mblocks_info, all_characters)
+                        # next_cycle['target_cycle'] = cycle_tick + 1
+                        next_cycle["action"] = 'DISPLAY_MOVE_AREA'
                         break
                         
                 #display map block info
@@ -465,7 +467,7 @@ def b1_main():
     if mbinfo_switch:
         draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
 
-    if cur_instance and next_cycle['target_cycle'] <= cycle_tick and next_cycle['action'] != 'DISPLAY_INSTANCE_MENU':
+    if cur_instance and next_cycle['action'] == "DISPLAY_MOVE_AREA":
         draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), moveable_area)
         draw_attack(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y))
 
@@ -541,23 +543,26 @@ def b1_main():
         screen.blit(cursor_img, cursor_img_rect)
 
     if next_cycle['target_cycle'] <= cycle_tick and next_cycle['action'] == 'DISPLAY_INSTANCE_MENU':
-        print("start menu")
-        start_win = BattlefieldMenu(root, cur_instance, x=root.winfo_x() + (cur_instance.col + 2) * FIELD_UNIT_SIZE + LEFTTOP_X, 
+        # print("start menu")
+        bf_menu = BattlefieldMenu(root, cur_instance, x=root.winfo_x() + (cur_instance.col + 2) * FIELD_UNIT_SIZE + LEFTTOP_X, 
             y=root.winfo_y() + (cur_instance.row + 1) * FIELD_UNIT_SIZE + LEFTTOP_Y)
-        print(start_win.choice)
-        if start_win.choice == '策略':
+        # print(start_win.choice)
+        if bf_menu.choice == '策略':
             next_cycle['target_cycle'] = cycle_tick + 1
             next_cycle["action"] = 'DISPLAY_MP_SELECTOR'
-        else:
+        elif bf_menu.choice == 'quit':
+            print("getting quit")
             next_cycle['target_cycle'] = 0
             next_cycle["action"] = ''
+            mbinfo_switch = None
+            cur_instance = None
 
     if next_cycle['target_cycle'] <= cycle_tick and next_cycle['action'] == 'DISPLAY_MP_SELECTOR':
         mp_selector = MPSelector(root, cur_instance, x=root.winfo_x() + (cur_instance.col + 2) * FIELD_UNIT_SIZE + LEFTTOP_X, 
             y=root.winfo_y() + (cur_instance.row + 1) * FIELD_UNIT_SIZE + LEFTTOP_Y)
         if mp_selector.choice == 'quit':
-            next_cycle['target_cycle'] = 0
-            next_cycle["action"] = ''
+            next_cycle['target_cycle'] = cycle_tick + 1
+            next_cycle["action"] = 'DISPLAY_INSTANCE_MENU'
     
     pygame.display.update()
     root.update()
