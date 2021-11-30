@@ -45,7 +45,7 @@ mbinfo_switch = False
 mbinfo_pos = None
 cur_instance = None
 
-next_cycle = {
+next_action = {
     'target_cycle' : 0,
     'action': ""
 }
@@ -333,7 +333,7 @@ class Character(pygame.sprite.Sprite):
 
 def b1_main():
     global act, option_rects, timeline, selection, select_time, LEFTTOP_Y, \
-        mbinfo_switch, mbinfo_pos, mb_type, cur_instance, moveable_area, next_cycle
+        mbinfo_switch, mbinfo_pos, mb_type, cur_instance, moveable_area, next_action
 
     cycle_tick = pygame.time.get_ticks()
     # if s1_story["时间轴"][str(timeline)]["类型"] == '结束':
@@ -351,13 +351,20 @@ def b1_main():
                 root.config(cursor="arrow")
             else:
                 root.config(cursor="none")
-            # if event.next_cycle & pygame.APPMOUSEFOCUS == pygame.APPMOUSEFOCUS:
+            # if event.next_action & pygame.APPMOUSEFOCUS == pygame.APPMOUSEFOCUS:
             #     print ('mouse focus ' + ('gained' if event.gain else 'lost'))
-            # if event.next_cycle & pygame.APPINPUTFOCUS == pygame.APPINPUTFOCUS:
+            # if event.next_action & pygame.APPINPUTFOCUS == pygame.APPINPUTFOCUS:
             #     print ('input focus ' + ('gained' if event.gain else 'lost'))
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and cur_instance:
-            next_cycle['target_cycle'] = cycle_tick + 1
-            next_cycle['action'] = 'DISPLAY_INSTANCE_MENU'
+        # elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and cur_instance:
+        #     for name, instance in all_characters.items():
+        #         # print(c)
+        #         if instance.rect.collidepoint(mouse_pos):
+        #             if instance == cur_instance:
+        #                 next_action['target_cycle'] = cycle_tick + 1
+        #                 next_action['action'] = 'DISPLAY_INSTANCE_MENU'
+        #                 break
+
+            
             
                 # mp_selector = MPSelector(root, cur_instance, x=root.winfo_x() + (cur_instance.col + 2) * FIELD_UNIT_SIZE + LEFTTOP_X, 
                 #     y=root.winfo_y() + (cur_instance.row + 1) * FIELD_UNIT_SIZE + LEFTTOP_Y)
@@ -391,12 +398,17 @@ def b1_main():
                 for name, instance in all_characters.items():
                     # print(c)
                     if instance.rect.collidepoint(mouse_pos):
+                        if cur_instance and cur_instance == instance:
+                            next_action['target_cycle'] = cycle_tick + 1
+                            next_action['action'] = 'DISPLAY_INSTANCE_MENU'
+                            break
+
                         clicked_on_char = True
                         cur_instance = instance
                         # draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), 6, terrain_details, mblocks_info)
                         moveable_area = make_movearea(cur_instance, terrain_details, mblocks_info, all_characters)
-                        # next_cycle['target_cycle'] = cycle_tick + 1
-                        next_cycle["action"] = 'DISPLAY_MOVE_AREA'
+                        # next_action['target_cycle'] = cycle_tick + 1
+                        next_action["action"] = 'DISPLAY_MOVE_AREA'
                         break
                         
                 #display map block info
@@ -411,11 +423,15 @@ def b1_main():
                         mbinfo_switch = not mbinfo_switch
                         mbinfo_pos = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE, 
                         FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
-                        # global mblocks_info
-                        # print(mblocks_info)
-                        # print(mouse_pos, (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE, (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE)
                         mb_type = mblocks_info[(mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE][(mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE]
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:    # right clicked
+            print("right clicked")
+            # if next_action['action'] == '':
+            #     next_action['target_cycle'] = 0
+            #     next_action["action"] = ''
+            #     mbinfo_switch = None
+            #     cur_instance = None
+
             mouse_pos = pygame.mouse.get_pos()
             # rect = all_characters[s1_story["时间轴"][str(timeline)]["发言"]['人物']].rect
             for name, obj in all_characters.items():
@@ -467,7 +483,7 @@ def b1_main():
     if mbinfo_switch:
         draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
 
-    if cur_instance and next_cycle['action'] == "DISPLAY_MOVE_AREA":
+    if cur_instance and next_action['action'] == "DISPLAY_MOVE_AREA":
         draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), moveable_area)
         draw_attack(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y))
 
@@ -530,7 +546,7 @@ def b1_main():
             timeline += 1
             prev_update = None
 
-    if next_cycle['action'] != 'DISPLAY_INSTANCE_MENU':
+    if next_action['action'] != 'DISPLAY_INSTANCE_MENU':
         cursor_img_rect = cursor_img.get_rect()
         mouse_x, mouse_y = pygame.mouse.get_pos()
         cursor_img_rect.x = mouse_x
@@ -542,27 +558,27 @@ def b1_main():
         #     screen.blit(cursor_img, cursor_img_rect)
         screen.blit(cursor_img, cursor_img_rect)
 
-    if next_cycle['target_cycle'] <= cycle_tick and next_cycle['action'] == 'DISPLAY_INSTANCE_MENU':
+    if next_action['target_cycle'] <= cycle_tick and next_action['action'] == 'DISPLAY_INSTANCE_MENU':
         # print("start menu")
         bf_menu = BattlefieldMenu(root, cur_instance, x=root.winfo_x() + (cur_instance.col + 2) * FIELD_UNIT_SIZE + LEFTTOP_X, 
             y=root.winfo_y() + (cur_instance.row + 1) * FIELD_UNIT_SIZE + LEFTTOP_Y)
         # print(start_win.choice)
         if bf_menu.choice == '策略':
-            next_cycle['target_cycle'] = cycle_tick + 1
-            next_cycle["action"] = 'DISPLAY_MP_SELECTOR'
+            next_action['target_cycle'] = cycle_tick + 1
+            next_action["action"] = 'DISPLAY_MP_SELECTOR'
         elif bf_menu.choice == 'quit':
             print("getting quit")
-            next_cycle['target_cycle'] = 0
-            next_cycle["action"] = ''
+            next_action['target_cycle'] = 0
+            next_action["action"] = ''
             mbinfo_switch = None
             cur_instance = None
 
-    if next_cycle['target_cycle'] <= cycle_tick and next_cycle['action'] == 'DISPLAY_MP_SELECTOR':
+    if next_action['target_cycle'] <= cycle_tick and next_action['action'] == 'DISPLAY_MP_SELECTOR':
         mp_selector = MPSelector(root, cur_instance, x=root.winfo_x() + (cur_instance.col + 2) * FIELD_UNIT_SIZE + LEFTTOP_X, 
             y=root.winfo_y() + (cur_instance.row + 1) * FIELD_UNIT_SIZE + LEFTTOP_Y)
         if mp_selector.choice == 'quit':
-            next_cycle['target_cycle'] = cycle_tick + 1
-            next_cycle["action"] = 'DISPLAY_INSTANCE_MENU'
+            next_action['target_cycle'] = cycle_tick + 1
+            next_action["action"] = 'DISPLAY_INSTANCE_MENU'
     
     pygame.display.update()
     root.update()

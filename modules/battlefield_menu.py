@@ -14,6 +14,8 @@ class BattlefieldMenu():
 
         self.root = tk.Toplevel(parent)
 
+        self.root.bind('<Button-3>', self.rightclicked)
+
         # self.icon1 = tk.PhotoImage(file='resource/mark/Cmdicon_100.bmp')
         # self.icon1 = tk.PhotoImage(file='resource/icon/exit.png')
         # self.icon1 = ImageTk.PhotoImage(file='resource/mark/Cmdicon_100.bmp')
@@ -90,6 +92,12 @@ class BattlefieldMenu():
         
         parent.wait_window(self.root)
 
+    def rightclicked(self, event):
+        # self.state['starting'] = False
+        print("right clicked")
+        self.root.destroy()
+        self.choice = "quit"
+
     def ok(self):
         # self.state['starting'] = False
         self.root.destroy()
@@ -114,6 +122,7 @@ class MPSelector():
         self.choice = None
 
         self.root = tk.Toplevel(parent)
+        self.root.bind('<Button-3>', self.rightclicked)
 
         # self.icon1 = tk.PhotoImage(file='resource/mark/Cmdicon_100.bmp')
         # self.icon1 = tk.PhotoImage(file='resource/icon/exit.png')
@@ -221,6 +230,11 @@ class MPSelector():
         okBtn.pack(side=tk.BOTTOM, ipady=2, pady=2, anchor=tk.SE)
         
         parent.wait_window(self.root)
+
+    def rightclicked(self, event):
+        # self.state['starting'] = False
+        self.root.destroy()
+        self.choice = "quit"
 
     def ok(self):
         # self.state['starting'] = False
