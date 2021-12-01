@@ -11,6 +11,7 @@ import codecs
 # from ..toolbar import move_redblue
 from ..character_window import CharacterWindow
 from ..battlefield_menu import BattlefieldMenu, MPSelector
+import logging
 
 FIELD_SCREEN_WIDTH = 960
 FIELD_SCREEN_HEIGHT = 816
@@ -49,6 +50,8 @@ next_action = {
     'target_cycle' : 0,
     'action': ""
 }
+
+logger = logging.getLogger('main')
 
 # Character on map
 class Character(pygame.sprite.Sprite):
@@ -425,7 +428,6 @@ def b1_main():
                         FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
                         mb_type = mblocks_info[(mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE][(mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE]
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:    # right clicked
-            print("right clicked")
             # if next_action['action'] == '':
             #     next_action['target_cycle'] = 0
             #     next_action["action"] = ''
@@ -585,8 +587,12 @@ def b1_main():
 
     root.after(1000 // FPS, b1_main)
 
+# import modules.log
+
+
 def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_state, exit_func):
-    print("In b1_entrance", global_state)
+    logger.debug("In b1_entrance", global_state)
+
     global_state['story'] = "s1-transition"
     # return
     

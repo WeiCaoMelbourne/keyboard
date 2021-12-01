@@ -17,6 +17,16 @@ from modules.stories.s1_1 import s1_entrance
 from modules.stories.s1_transition import s1_transition
 from modules.stories.b1_1 import b1_entrance
 from modules.constant import *
+import logging
+
+logger = logging.getLogger('main')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(filename)s:%(lineno)d | %(message)s', '%Y-%m-%d %H:%M:%S')
+ch.setFormatter(formatter)
+
+logger.addHandler(ch)
 
 global_state = {
     "starting": True,
@@ -271,7 +281,7 @@ def game():
     # print(pygame.time.get_ticks())
     # last_update = pygame.time.get_ticks()
     for event in pygame.event.get():
-        print("evnet", event)
+        # print("evnet", event)
         if event.type == pygame.QUIT:
             running = False
 
@@ -359,10 +369,14 @@ def game():
         root.after(1000 // FPS, game)
     # print("after root.after")
 
+# from modules.log import *
+# logger = None
 if __name__ == "__main__":
+    logger.debug("start...")
+
     root.config(cursor="none")
     root.update()   # call this update to display background before showing main menu
     root.after(0, game)
-    print("here it is...........................")
+    logger.debug("here it is...........................")
     root.mainloop()
     pygame.quit()
