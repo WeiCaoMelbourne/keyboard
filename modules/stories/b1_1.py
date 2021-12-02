@@ -401,40 +401,46 @@ def b1_main():
             else:
                 if cur_action['action'] == "DISPLAY_MOVE_AREA":
                     # sequential click, decide move target
-                    clicked_pos = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE, 
-                        FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
-                    clicked_row = (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE
-                    clicked_col = (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE
-                    row = cur_instance.move_power + (clicked_row - cur_instance.row)
-                    col = cur_instance.move_power + (clicked_col - cur_instance.col)
-                    # print(clicked_row, clicked_col)
-                    # print(cur_instance.row, cur_instance.col)
-                    # print(moveable_area)
-                    if row < 0 or row > cur_instance.move_power * 2 or \
-                        col < 0 or col > cur_instance.move_power * 2:
-                        # draw_bfinfo(screen, "不是移动范围")
-                        # cur_action['target_cycle'] = cycle_tick + 1
-                        cur_action['action'] = 'DISPLAY_INFO'
-                        cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
-                        cur_action['text'] = "不是移动范围"
-                        cur_action['start_click'] = cycle_tick
-                    elif moveable_area[row][col] > cur_instance.move_power:
-                        cur_action['action'] = 'DISPLAY_INFO'
-                        cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
-                        cur_action['text'] = "不是移动范围"
-                        cur_action['start_click'] = cycle_tick
-                        # draw_bfinfo(screen, "不是移动范围")
-                elif cur_action['action'] == "":
-                    # first click on a character or on map
-                    clicked_on_char = False
+
+                    clicked_on_same = False
                     for name, instance in all_characters.items():
                         # print(c)
                         if instance.rect.collidepoint(mouse_pos):
                             if cur_instance and cur_instance == instance:
                                 cur_action['target_cycle'] = cycle_tick + 1
                                 cur_action['action'] = 'DISPLAY_INSTANCE_MENU'
+                                clicked_on_same = True
                                 break
 
+                    if not clicked_on_same:
+                        clicked_pos = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE, 
+                            FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
+                        clicked_row = (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE
+                        clicked_col = (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE
+                        row = cur_instance.move_power + (clicked_row - cur_instance.row)
+                        col = cur_instance.move_power + (clicked_col - cur_instance.col)
+                        # print(clicked_row, clicked_col)
+                        # print(cur_instance.row, cur_instance.col)
+                        # print(moveable_area)
+                        if row < 0 or row > cur_instance.move_power * 2 or \
+                            col < 0 or col > cur_instance.move_power * 2:
+                            # draw_bfinfo(screen, "不是移动范围")
+                            # cur_action['target_cycle'] = cycle_tick + 1
+                            cur_action['action'] = 'DISPLAY_INFO_DIALOG'
+                            cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
+                            cur_action['text'] = "不是移动范围"
+                            cur_action['start_click'] = cycle_tick
+                        elif moveable_area[row][col] > cur_instance.move_power:
+                            cur_action['action'] = 'DISPLAY_INFO_DIALOG'
+                            cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
+                            cur_action['text'] = "不是移动范围"
+                            cur_action['start_click'] = cycle_tick
+                        # draw_bfinfo(screen, "不是移动范围")
+                else:
+                    # first click on a character or on map
+                    clicked_on_char = False
+                    for name, instance in all_characters.items():
+                        if instance.rect.collidepoint(mouse_pos):
                             clicked_on_char = True
                             cur_instance = instance
                             # draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), 6, terrain_details, mblocks_info)
@@ -533,20 +539,21 @@ def b1_main():
         draw_attack(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y))
 
     # print(cur_action['action'])
-    if cur_action['action'] == "DISPLAY_INFO":
+    if cur_action['action'] == "DISPLAY_INFO_DIALOG":
         draw_bfinfo(screen, cur_action['text'])
         if cycle_tick - cur_action['start_click'] > FIELD_INFO_LAST:
             cur_action['action'] = cur_action["prev_action"]
 
-    for name, instance in all_characters.items():
-        # print(c)
-        if instance.rect.collidepoint(mouse_pos):
-            # print("right cliecked on", name)
-            adjusted = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE), 
-                FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE))
-            block_type = mblocks_info[(mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE][(mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE]
-            effect = terrain_details[block_type]['能力效果'][instance.category]
-            draw_miinfo(screen, adjusted, instance, block_type, effect)
+    if cur_action['action'] != "DISPLAY_MOVE_AREA" and cur_action['action'] != "DISPLAY_INSTANCE_MENU":
+        for name, instance in all_characters.items():
+            # print(c)
+            if instance.rect.collidepoint(mouse_pos):
+                # print("right cliecked on", name)
+                adjusted = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE), 
+                    FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE))
+                block_type = mblocks_info[(mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE][(mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE]
+                effect = terrain_details[block_type]['能力效果'][instance.category]
+                draw_miinfo(screen, adjusted, instance, block_type, effect)
     
     # draw dialog must be under all_sprites.draw to be above them all
     if str(timeline) in s1_story["时间轴"] and s1_story["时间轴"][str(timeline)]["类型"] == "对话":
@@ -615,7 +622,6 @@ def b1_main():
             cur_action['target_cycle'] = cycle_tick + 1
             cur_action["action"] = 'DISPLAY_MP_SELECTOR'
         elif bf_menu.choice == 'quit':
-            print("getting quit")
             cur_action['target_cycle'] = 0
             cur_action["action"] = ''
             mbinfo_switch = None

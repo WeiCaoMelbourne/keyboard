@@ -27,6 +27,7 @@ class BattlefieldMenu():
         # main_manu.tk_popup(win_pos[0] + SCREEN_WIDTH // 2, 200, 0)
         # main_manu.tk_popup(win_pos[0] + SCREEN_WIDTH // 2, win_pos[1] + SCREEN_HEIGHT // 2, 0)
 
+        self.root.geometry(f"{WIDTH}x{HEIGHT}+{kwargs['x']}+{kwargs['y']}")
         self.root.overrideredirect(True)
         self.root.config(border=3, relief=RAISED)
         self.root.lift()
@@ -34,7 +35,6 @@ class BattlefieldMenu():
         self.root.after_idle(self.root.attributes, '-topmost', False)
         self.root.grab_set_global()
         
-        self.root.geometry(f"{WIDTH}x{HEIGHT}+{kwargs['x']}+{kwargs['y']}")
 
         # bt1 = tk.Button(self.root, text='攻击', command=self.new_game)
         # bt1.image = self.icon1
