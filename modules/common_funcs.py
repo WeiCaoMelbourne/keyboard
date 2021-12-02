@@ -317,7 +317,6 @@ def draw_mbinfo(screen, pos, type, terrain_details):
 
     global mb_type, buff_str, debuff_str, buff_str2, debuff_str2, block_img
     if mb_type != type:
-        print("Refresh mbtype")
         mb_type = type
         buffs = {"+20": [], "+10": []}
         debufs = {"-20": [], "-10": []}
@@ -396,7 +395,10 @@ def draw_mbinfo(screen, pos, type, terrain_details):
     #     print("")
     #     font_name = FONT_HEITI
     font = pygame.font.Font(FONT_HEITI, 17)
-    text_surface = font.render(type, True, COLOR_WHITE_OPAQUE)
+    if terrain_details[type]['移动效果']['步兵'] == 99 and terrain_details[type]['移动效果']['骑兵'] == 99:
+        text_surface = font.render(type + "  无法移动", True, COLOR_WHITE_OPAQUE)
+    else:
+        text_surface = font.render(type, True, COLOR_WHITE_OPAQUE)
     text_rect = text_surface.get_rect()
     text_rect.left = 60
     text_rect.top = 5

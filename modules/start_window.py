@@ -15,6 +15,7 @@ class StartMainmenu():
         self.choice = None
 
         self.root = tk.Toplevel(parent)
+        self.root.geometry(f"{WIDTH}x{HEIGHT}+{kwargs['x']}+{kwargs['y']}")
 
         # messagebox.showinfo(title="Hello", message="What is it")
         # win_pos = window_pos()
@@ -30,7 +31,6 @@ class StartMainmenu():
         self.root.after_idle(self.root.attributes, '-topmost', False)
         self.root.grab_set_global()
         
-        self.root.geometry(f"{WIDTH}x{HEIGHT}+{kwargs['x']}+{kwargs['y']}")
 
         titlebar = tk.Label(self.root, text=f"{config['title']}", anchor="center")
         titlebar.pack(fill=tk.X, padx=15, pady=5)
