@@ -2,6 +2,7 @@ COLOR_WHITE = (255, 255, 255)
 COLOR_WHITE_OPAQUE = (255, 255, 255, 255)
 COLOR_BLACK = (0, 0, 0)
 COLOR_BLUE = (0, 0, 255)
+COLOR_DARK_BLUE = (0, 16, 112)
 COLOR_GREEN = (0, 255, 0)
 COLOR_FONT_GREEN = (128, 240, 128)
 COLOR_PURPLE = (100, 98, 88)
@@ -24,6 +25,7 @@ FIELD_UNIT_SIZE = 48        # on field, each character is 48 * 48
 FIELD_ATK_UNIT_SIZE = 64    # on field, for unit_atk pic, it is 64 * 64
 FIELD_ACT_FRAME_LAST = 70   # on field, when playing act, every frame last 70 minisecond by default
 FIELD_DIE_FLICK_LAST = 700
+FIELD_INFO_LAST = 1500
 FIELD_POLL_LAST = 400
 
 MBINFO_DIALOG_WIDTH = 220   # map block dialog

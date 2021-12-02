@@ -495,3 +495,18 @@ def draw_mbinfo(screen, pos, type, terrain_details):
     # elif start_y + MBINFO_DIALOG_HEIGHT + 200 > screen_rect.height:
     #     start_y = screen_rect.height - MBINFO_DIALOG_HEIGHT - 200
     screen.blit(s, (start_x, start_y))
+
+def draw_bfinfo(screen, text):
+    # global bfinfo_img
+    # if not bfinfo_img:
+        # bfinfo_img = pygame.image.load('resource/mark/bdialogr_bg.png').convert()
+    bfinfo_img = pygame.image.load('resource/mark/battlefieldinfo_bg.png').convert()
+    rect = bfinfo_img.get_rect()
+    screen_rect = screen.get_rect()
+    # print(screen_rect)
+    # print(rect)
+    x = (screen_rect.width - rect.width) // 2
+    y = (screen_rect.height - rect.height) // 2 - 20
+    screen.blit(bfinfo_img, (x, y))
+    draw_text(screen, text, 17, COLOR_DARK_BLUE, x + 10, y + 15)
+    
