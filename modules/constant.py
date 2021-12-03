@@ -53,3 +53,17 @@ DEFAULT_MOVE_POWER = 4
 DEFAULT_HIT_AREA = 'A'
 
 MP_BAR_COLOR = '#ccd5ae'
+
+# 1: face down move; 2: face down move; 3: face up move; 4: face up move; 5: face left move; 6: face left move;
+# 7: face down still; 8: face up still; 9: face left still; 10: struggle; 11: more struggle
+BF_CHAR_FRAME_MOVEDOWN = 1
+BF_CHAR_FRAME_MOVEDOWN2 = 2
+BF_CHAR_FRAME_MOVEUP = 3
+BF_CHAR_FRAME_MOVEUP2 = 4
+BF_CHAR_FRAME_MOVELEFT = 5
+BF_CHAR_FRAME_MOVELEFT2 = 6
+BF_CHAR_FRAME_DOWN = 7
+BF_CHAR_FRAME_UP = 8
+BF_CHAR_FRAME_LEFT = 9
+BF_CHAR_FRAME_STRUGGLE = 10
+BF_CHAR_FRAME_STRUGGLE2 = 11

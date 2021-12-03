@@ -54,6 +54,10 @@ cur_action = {
 logger = logging.getLogger('main')
 
 # Character on map
+# For image, it is sth like resource/unit_mov/黄巾军.bmp
+# For this kind of image, frame start from 1, here are all the frames
+# 1: face down move; 2: face down move; 3: face up move; 4: face up move; 5: face left move; 6: face left move;
+# 7: face down still; 8: face up still; 9: face left still; 10: struggle; 11: more struggle
 class Character(pygame.sprite.Sprite):
     def  __init__(self, name):
         # s1_story["人物"][name] = s1_story["人物"][name]
@@ -147,8 +151,8 @@ class Character(pygame.sprite.Sprite):
         self.rect.y = s1_story["人物"][name]['starty'] * FIELD_UNIT_SIZE
         self.col = s1_story["人物"][name]['startx']
         self.row = s1_story["人物"][name]['starty']
-        self.original_x = self.rect.x
-        self.original_y = self.rect.y
+        # self.original_x = self.rect.x
+        # self.original_y = self.rect.y
 
         self.prev_tick = pygame.time.get_ticks()
         self.cur_pic = 0
@@ -224,7 +228,27 @@ class Character(pygame.sprite.Sprite):
                 self.image.set_colorkey(COLOR_BLACK)
 
     def move(self):
-        # print("move", self.name)
+        if cur_action['action'] == 'MOVE_CHARACTER' and self == cur_instance:
+            if self.target_row < self.row:
+                # mbtype = mblocks_info[self.col][self.row - 1]
+                # terrain_details[mblocks_info[self.col][self.row - 1]]['移动效果'][self.category]
+                self.row -= 1
+                self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+                self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+            elif self.target_row > self.row:
+                self.row += 1
+                self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+                self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+            elif self.target_col < self.col:
+                self.col -= 1
+                self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+                self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+            elif self.target_col > self.col:
+                self.col += 1
+                self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+                self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+            return
+
         global timeline
 
         if self.name != s1_story["时间轴"][str(timeline)]['人物']:
@@ -304,6 +328,9 @@ class Character(pygame.sprite.Sprite):
             self.image.set_colorkey(COLOR_KEY)
 
     def update(self):
+        if cur_action['action'] == 'MOVE_CHARACTER' and self == cur_instance:
+            self.move()
+
         global timeline
         if timeline == 999:
             return self.poll()
@@ -435,6 +462,11 @@ def b1_main():
                             cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
                             cur_action['text'] = "不是移动范围"
                             cur_action['start_click'] = cycle_tick
+                        else:
+                            logger.info(f"{cur_instance.name} move to {clicked_row}, {clicked_col}")
+                            cur_instance.target_col = clicked_col
+                            cur_instance.target_row = clicked_row
+                            cur_action['action'] = 'MOVE_CHARACTER'
                         # draw_bfinfo(screen, "不是移动范围")
                 else:
                     # first click on a character or on map
@@ -524,8 +556,9 @@ def b1_main():
     #         select_time = None
 
     for sprite in all_sprites:
-        sprite.rect.y = sprite.original_y + LEFTTOP_Y
-        # print(sprite.original_y, LEFTTOP_Y)
+        sprite.rect.y = sprite.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+        sprite.rect.x = sprite.col * FIELD_UNIT_SIZE + LEFTTOP_X
+        # print(sprite.row, LEFTTOP_Y)
 
     all_sprites.update()
     all_sprites.draw(screen)
@@ -704,7 +737,7 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
 
     # Initial screen
     for sprite in all_sprites:
-        sprite.rect.y = sprite.original_y + LEFTTOP_Y
+        sprite.rect.y = sprite.row * FIELD_UNIT_SIZE + LEFTTOP_Y
     screen.blit(background_img, (LEFTTOP_X, LEFTTOP_Y))
     all_sprites.draw(screen)
 
