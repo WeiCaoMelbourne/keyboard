@@ -1,5 +1,6 @@
 import pygame
 from .constant import *
+import logging
 
 def is_inrange(pos, length):
     # print("is_inrange", pos, length)
@@ -163,15 +164,15 @@ def make_movearea(instance, terrain_details, mblocks_info, all_characters):
                 if row == center and col == center:
                     continue
 
-                occupied = False
-                for name, c in all_characters.items():
-                    if c.row == instance.row + (row - center) and c.col == instance.col + (col - center):
-                        # if c.troop_group == instance.troop_group:   # Friends
-                        mp_table[row][col] = 99
-                        occupied = True
+                # occupied = False
+                # for name, c in all_characters.items():
+                #     if c.row == instance.row + (row - center) and c.col == instance.col + (col - center):
+                #         # if c.troop_group == instance.troop_group:   # Friends
+                #         mp_table[row][col] = 99
+                #         occupied = True
 
-                if occupied:
-                    continue
+                # if occupied:
+                #     continue
 
                 if mp_table[row][col] == 999:
                     continue
@@ -249,4 +250,77 @@ def draw_attack(screen, instance, shift):
         draw_hitsqure(screen, ((instance.col - 2)* FIELD_UNIT_SIZE + shift[0], (instance.row) * FIELD_UNIT_SIZE + shift[1]))
         draw_hitsqure(screen, ((instance.col)* FIELD_UNIT_SIZE + shift[0], (instance.row + 2) * FIELD_UNIT_SIZE + shift[1]))
         draw_hitsqure(screen, ((instance.col)* FIELD_UNIT_SIZE + shift[0], (instance.row - 2) * FIELD_UNIT_SIZE + shift[1]))
-    
+
+def findpath(instance, target, moveable_area):
+    logger = logging.getLogger('main')
+    logger.debug(f"{__name__} start")
+
+    # Depth-first 
+    stack = []
+    links = {}
+    stack.append((instance.row, instance.col))
+    side_length = instance.move_power * 2 + 1 
+    visited = [[0 for x in range(side_length)] for y in range(side_length)]
+    center = instance.move_power
+    visited[center][center] = 1
+
+    while len(stack) > 0:
+        cur_pos = stack.pop()
+        if cur_pos[0] == target[0] and cur_pos[1] == target[1]:
+            print("Found")
+            break
+
+        # up
+        tmp_pos = (cur_pos[0] - 1, cur_pos[1])
+        row_in_ma = center + tmp_pos[0] - instance.row 
+        col_in_ma = center + tmp_pos[1] - instance.col
+        if is_inrange((row_in_ma, col_in_ma), side_length) and visited[row_in_ma][col_in_ma] == 0 and \
+            moveable_area[row_in_ma][col_in_ma] < instance.move_power:
+            visited[row_in_ma][col_in_ma] = 1
+            stack.append(tmp_pos)
+            links[(tmp_pos[0], tmp_pos[1])] = (cur_pos[0], cur_pos[1])
+        
+        # down
+        tmp_pos = (cur_pos[0] + 1, cur_pos[1])
+        row_in_ma = center + tmp_pos[0] - instance.row 
+        col_in_ma = center + tmp_pos[1] - instance.col
+        if is_inrange((row_in_ma, col_in_ma), side_length) and visited[row_in_ma][col_in_ma] == 0 and \
+            moveable_area[row_in_ma][col_in_ma] < instance.move_power:
+            visited[row_in_ma][col_in_ma] = 1
+            stack.append(tmp_pos)
+            links[(tmp_pos[0], tmp_pos[1])] = (cur_pos[0], cur_pos[1])
+
+        # left
+        tmp_pos = (cur_pos[0], cur_pos[1] - 1)
+        row_in_ma = center + tmp_pos[0] - instance.row 
+        col_in_ma = center + tmp_pos[1] - instance.col
+        if is_inrange((row_in_ma, col_in_ma), side_length) and visited[row_in_ma][col_in_ma] == 0 and \
+            moveable_area[row_in_ma][col_in_ma] < instance.move_power:
+            visited[row_in_ma][col_in_ma] = 1
+            stack.append(tmp_pos)
+            links[(tmp_pos[0], tmp_pos[1])] = (cur_pos[0], cur_pos[1])
+
+        # right
+        tmp_pos = (cur_pos[0], cur_pos[1] + 1)
+        row_in_ma = center + tmp_pos[0] - instance.row 
+        col_in_ma = center + tmp_pos[1] - instance.col
+        if is_inrange((row_in_ma, col_in_ma), side_length) and visited[row_in_ma][col_in_ma] == 0 and \
+            moveable_area[row_in_ma][col_in_ma] < instance.move_power:
+            visited[row_in_ma][col_in_ma] = 1
+            stack.append(tmp_pos)
+            links[(tmp_pos[0], tmp_pos[1])] = (cur_pos[0], cur_pos[1])
+
+    path = []
+    path.append(target)
+    temp_pos = target
+    while True:
+        prev = links[temp_pos]
+        path.append(prev)
+        if prev[0] == instance.row and prev[1] == instance.col:
+            break
+        temp_pos = prev
+
+    print(path)
+    path.reverse()
+    print(path)
+    return path

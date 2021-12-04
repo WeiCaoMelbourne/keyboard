@@ -2,7 +2,7 @@ import pygame
 
 from modules.toolbar import characters
 from ..common_funcs import draw_selecter, bdraw_dialog, draw_mousebox, draw_mbinfo, draw_miinfo, draw_bfinfo
-from ..battlefield_action import make_movearea, draw_movearea, draw_attack
+from ..battlefield_action import make_movearea, draw_movearea, draw_attack, findpath
 import json
 from ..constant import *
 from ..win_pos import window_pos
@@ -228,26 +228,53 @@ class Character(pygame.sprite.Sprite):
                 self.image.set_colorkey(COLOR_BLACK)
 
     def move(self):
+        # print(cur_action['action'])
         if cur_action['action'] == 'MOVE_CHARACTER' and self == cur_instance:
-            if self.target_row < self.row:
-                # mbtype = mblocks_info[self.col][self.row - 1]
-                # terrain_details[mblocks_info[self.col][self.row - 1]]['移动效果'][self.category]
-                self.row -= 1
-                self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-                self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-            elif self.target_row > self.row:
-                self.row += 1
-                self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-                self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-            elif self.target_col < self.col:
-                self.col -= 1
-                self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-                self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-            elif self.target_col > self.col:
-                self.col += 1
-                self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-                self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-            return
+            # print("to calc move")
+            self.move_path = findpath(self, (self.target_row, self.target_col), moveable_area)
+            print(self.move_path)
+            cur_action['action'] = 'MOVE_CHARACTER_START'
+        elif cur_action['action'] == 'MOVE_CHARACTER_START' and self == cur_instance:
+            # print("to move")
+            for index, pos in enumerate(self.move_path):
+                if self.row == pos[0] and self.col == pos[1]:
+                    if index < len(self.move_path) - 1:
+                        if self.row < self.move_path[index + 1][0]:
+                            self.row += 1
+                            self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+                            self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+                        elif self.row > self.move_path[index + 1][0]:
+                            self.row -= 1
+                            self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+                            self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+                        elif self.col < self.move_path[index + 1][1]:
+                            self.col += 1
+                            self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+                            self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+                        elif self.col > self.move_path[index + 1][1]:
+                            self.col -= 1
+                            self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+                            self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+
+            # if self.target_row < self.row:
+            #     # mbtype = mblocks_info[self.col][self.row - 1]
+            #     # terrain_details[mblocks_info[self.col][self.row - 1]]['移动效果'][self.category]
+            #     self.row -= 1
+            #     self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+            #     self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+            # elif self.target_row > self.row:
+            #     self.row += 1
+            #     self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+            #     self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+            # elif self.target_col < self.col:
+            #     self.col -= 1
+            #     self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+            #     self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+            # elif self.target_col > self.col:
+            #     self.col += 1
+            #     self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+            #     self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+            # return
 
         global timeline
 
@@ -328,7 +355,7 @@ class Character(pygame.sprite.Sprite):
             self.image.set_colorkey(COLOR_KEY)
 
     def update(self):
-        if cur_action['action'] == 'MOVE_CHARACTER' and self == cur_instance:
+        if 'MOVE_CHARACTER' in cur_action['action'] and self == cur_instance:
             self.move()
 
         global timeline
