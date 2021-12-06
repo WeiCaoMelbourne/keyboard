@@ -234,48 +234,16 @@ class Character(pygame.sprite.Sprite):
             self.move_path = findpath(self, (self.target_row, self.target_col), moveable_area)
             print(self.move_path)
             cur_action['action'] = 'MOVE_CHARACTER_START'
+            cur_action['step'] = 0
         elif cur_action['action'] == 'MOVE_CHARACTER_START' and self == cur_instance:
-            # print("to move")
-            for index, pos in enumerate(self.move_path):
-                if self.row == pos[0] and self.col == pos[1]:
-                    if index < len(self.move_path) - 1:
-                        if self.row < self.move_path[index + 1][0]:
-                            self.row += 1
-                            self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-                            self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-                        elif self.row > self.move_path[index + 1][0]:
-                            self.row -= 1
-                            self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-                            self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-                        elif self.col < self.move_path[index + 1][1]:
-                            self.col += 1
-                            self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-                            self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-                        elif self.col > self.move_path[index + 1][1]:
-                            self.col -= 1
-                            self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-                            self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-
-            # if self.target_row < self.row:
-            #     # mbtype = mblocks_info[self.col][self.row - 1]
-            #     # terrain_details[mblocks_info[self.col][self.row - 1]]['移动效果'][self.category]
-            #     self.row -= 1
-            #     self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-            #     self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-            # elif self.target_row > self.row:
-            #     self.row += 1
-            #     self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-            #     self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-            # elif self.target_col < self.col:
-            #     self.col -= 1
-            #     self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-            #     self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-            # elif self.target_col > self.col:
-            #     self.col += 1
-            #     self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
-            #     self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-            # return
-
+            # print("step", cur_action['step'])
+            if cur_action['step'] < len(self.move_path):
+                self.row = self.move_path[cur_action['step']][0]
+                self.col = self.move_path[cur_action['step']][1]
+                self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+                self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+                cur_action['step'] += 1
+            
         global timeline
 
         if self.name != s1_story["时间轴"][str(timeline)]['人物']:
