@@ -124,10 +124,8 @@ def post_enemies(instance, side_length, center, mp_table, terrain_details, mbloc
             #                 mp_table[row][col + 1] = 999
                         
 
-def make_movearea(instance, terrain_details, mblocks_info, all_characters):
+def make_movearea(instance, terrain_details, mblocks_info, all_characters, groups):
     logger.debug(f"make_movearea start. instance name: {instance.name}")
-    with open('data/story/b1-groups.json', 'rb') as f:
-        groups = json.load(f)
 
     side_length = instance.move_power * 2 + 1 
     mp_table = [[99 for x in range(side_length)] for y in range(side_length)]  # For every block, move power needed

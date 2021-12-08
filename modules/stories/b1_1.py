@@ -48,7 +48,8 @@ cur_instance = None
 
 cur_action = {
     'target_cycle' : 0,
-    'action': ""
+    'action': "",
+    "second": ""
 }
 
 logger = logging.getLogger('main')
@@ -427,51 +428,65 @@ def b1_main():
                 if cur_action['action'] == "DISPLAY_MOVE_AREA":
                     # sequential click, decide move target
 
-                    clicked_on_same = False
-                    clicked_on_others = False
-                    for name, instance in all_characters.items():
-                        # print(c)
-                        if instance.rect.collidepoint(mouse_pos):
-                            if cur_instance and cur_instance == instance:
-                                cur_action['target_cycle'] = cycle_tick + 1
-                                cur_action['action'] = 'DISPLAY_INSTANCE_MENU'
-                                clicked_on_same = True
-                                break
-                            elif cur_instance:
-                                clicked_on_others = True
-                    
-                    if not clicked_on_same:
-                        # clicked_pos = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE, 
-                        #     FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
-                        clicked_row = (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE
-                        clicked_col = (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE
-                        row = cur_instance.move_power + (clicked_row - cur_instance.row)
-                        col = cur_instance.move_power + (clicked_col - cur_instance.col)
-                        # print(clicked_row, clicked_col)
-                        # print(cur_instance.row, cur_instance.col)
-                        # print(moveable_area)
-                        if clicked_on_others:
+                    # check character group
+                    if cur_instance.group != '曹操':
+                        if cur_instance.group in groups['曹操']['敌军']:
                             cur_action['action'] = 'DISPLAY_INFO_DIALOG'
-                            cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
-                            cur_action['text'] = "不是移动范围"
+                            cur_action['prev_action'] = ''
+                            cur_action['text'] = "这是敌军部队"
                             cur_action['start_click'] = cycle_tick
-                        elif row < 0 or row > cur_instance.move_power * 2 or \
-                            col < 0 or col > cur_instance.move_power * 2:
+                        elif cur_instance.group in groups['曹操']['友军']:
                             cur_action['action'] = 'DISPLAY_INFO_DIALOG'
-                            cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
-                            cur_action['text'] = "不是移动范围"
+                            cur_action['prev_action'] = ''
+                            cur_action['text'] = "这是友军部队"
                             cur_action['start_click'] = cycle_tick
-                        elif moveable_area[row][col] > cur_instance.move_power:
-                            cur_action['action'] = 'DISPLAY_INFO_DIALOG'
-                            cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
-                            cur_action['text'] = "不是移动范围"
-                            cur_action['start_click'] = cycle_tick
-                        else:
-                            logger.info(f"{cur_instance.name} move to {clicked_row}, {clicked_col}")
-                            cur_instance.target_col = clicked_col
-                            cur_instance.target_row = clicked_row
-                            cur_action['action'] = 'MOVE_CHARACTER'
-                        # draw_bfinfo(screen, "不是移动范围")
+                    else:
+                        # clicked on the same character, display menu
+                        clicked_on_same = False
+                        clicked_on_others = False
+                        for name, instance in all_characters.items():
+                            if instance.rect.collidepoint(mouse_pos):
+                                if cur_instance and cur_instance == instance:
+                                    cur_action['target_cycle'] = cycle_tick + 1
+                                    cur_action['action'] = 'DISPLAY_INSTANCE_MENU'
+                                    clicked_on_same = True
+                                    break
+                                elif cur_instance:
+                                    clicked_on_others = True
+                        
+                        # clicked on other location, move or display incorrect location
+                        if not clicked_on_same:
+                            # clicked_pos = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE, 
+                            #     FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
+                            clicked_row = (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE
+                            clicked_col = (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE
+                            row = cur_instance.move_power + (clicked_row - cur_instance.row)
+                            col = cur_instance.move_power + (clicked_col - cur_instance.col)
+                            # print(clicked_row, clicked_col)
+                            # print(cur_instance.row, cur_instance.col)
+                            # print(moveable_area)
+                            if clicked_on_others:
+                                cur_action['action'] = 'DISPLAY_INFO_DIALOG'
+                                cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
+                                cur_action['text'] = "不是移动范围"
+                                cur_action['start_click'] = cycle_tick
+                            elif row < 0 or row > cur_instance.move_power * 2 or \
+                                col < 0 or col > cur_instance.move_power * 2:
+                                cur_action['action'] = 'DISPLAY_INFO_DIALOG'
+                                cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
+                                cur_action['text'] = "不是移动范围"
+                                cur_action['start_click'] = cycle_tick
+                            elif moveable_area[row][col] > cur_instance.move_power:
+                                cur_action['action'] = 'DISPLAY_INFO_DIALOG'
+                                cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
+                                cur_action['text'] = "不是移动范围"
+                                cur_action['start_click'] = cycle_tick
+                            else:
+                                logger.info(f"{cur_instance.name} move to {clicked_row}, {clicked_col}")
+                                cur_instance.target_col = clicked_col
+                                cur_instance.target_row = clicked_row
+                                cur_action['action'] = 'MOVE_CHARACTER'
+                            # draw_bfinfo(screen, "不是移动范围")
                 else:
                     # first click on a character or on map
                     clicked_on_char = False
@@ -480,7 +495,7 @@ def b1_main():
                             clicked_on_char = True
                             cur_instance = instance
                             # draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), 6, terrain_details, mblocks_info)
-                            moveable_area = make_movearea(cur_instance, terrain_details, mblocks_info, all_characters)
+                            moveable_area = make_movearea(cur_instance, terrain_details, mblocks_info, all_characters, groups)
                             # cur_action['target_cycle'] = cycle_tick + 1
                             cur_action["action"] = 'DISPLAY_MOVE_AREA'
                             break
@@ -694,7 +709,7 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
     # return
     
     global root, screen, background_img, cursor_img, s1_story, tool_bar, all_sprites, timeline, parent_func
-    global troop_details, terrain_details, mblocks_info, heros_info
+    global troop_details, terrain_details, mblocks_info, heros_info, groups
     global unit_imgs, atk_imgs
     with open('data/story/b1.json', 'rb') as f:
         s1_story = json.load(f)
@@ -710,6 +725,10 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
 
     with open('data/characters.json', 'rb') as f:
         heros_info = json.load(f)
+
+    with open('data/story/b1-groups.json', 'rb') as f:
+        groups = json.load(f)
+
     # print(data)
     # if data[0][0] == '平原':
     #     print("correct")
