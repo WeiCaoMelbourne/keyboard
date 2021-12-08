@@ -1,6 +1,9 @@
 import pygame
 from .constant import *
 import logging
+import json
+
+logger = logging.getLogger('main')
 
 def is_inrange(pos, length):
     # print("is_inrange", pos, length)
@@ -57,7 +60,7 @@ def add_adjacent_to_queue(pos, side_length, visited, BSF_q, queued):
         BSF_q.append(adj_pos)
 
 # For all the enemies, up/down/left/right are speicals. can stay in it, but cannot cross it
-def pre_enemies(instance, side_length, center, mp_table, visited, all_characters):
+def pre_enemies(instance, side_length, center, mp_table, visited, all_characters, groups):
     for row in range(0, side_length):
         for col in range(0, side_length):
             if row == center and col == center:
@@ -65,9 +68,7 @@ def pre_enemies(instance, side_length, center, mp_table, visited, all_characters
 
             for name, c in all_characters.items():
                 if c.row == instance.row + (row - center) and c.col == instance.col + (col - center):
-                    if c.troop_group != instance.troop_group:   # From different side
-                        # print("Found", name)
-                        # print(c.row, c.col, row, col)
+                    if instance.group in groups[c.group]['敌军'] or c.group in groups[instance.group]['敌军']:   # From different side
                         mp_table[row][col] = 999
                         visited[row][col] = 1
                         if row > 0:
@@ -124,6 +125,10 @@ def post_enemies(instance, side_length, center, mp_table, terrain_details, mbloc
                         
 
 def make_movearea(instance, terrain_details, mblocks_info, all_characters):
+    logger.debug(f"make_movearea start. instance name: {instance.name}")
+    with open('data/story/b1-groups.json', 'rb') as f:
+        groups = json.load(f)
+
     side_length = instance.move_power * 2 + 1 
     mp_table = [[99 for x in range(side_length)] for y in range(side_length)]  # For every block, move power needed
     center = instance.move_power
@@ -131,7 +136,7 @@ def make_movearea(instance, terrain_details, mblocks_info, all_characters):
     queued = [[0 for x in range(side_length)] for y in range(side_length)]
     queued[center][center] = 1
     
-    pre_enemies(instance, side_length, center, mp_table, visited, all_characters)
+    pre_enemies(instance, side_length, center, mp_table, visited, all_characters, groups)
     mp_table[center][center] = 0
     visited[center][center] = 1     
     
@@ -164,15 +169,15 @@ def make_movearea(instance, terrain_details, mblocks_info, all_characters):
                 if row == center and col == center:
                     continue
 
-                # occupied = False
-                # for name, c in all_characters.items():
-                #     if c.row == instance.row + (row - center) and c.col == instance.col + (col - center):
-                #         # if c.troop_group == instance.troop_group:   # Friends
-                #         mp_table[row][col] = 99
-                #         occupied = True
+                occupied = False
+                for name, c in all_characters.items():
+                    if c.row == instance.row + (row - center) and c.col == instance.col + (col - center):
+                        if instance.group in groups[c.group]['敌军'] or c.group in groups[instance.group]['敌军']:   # From different side
+                            mp_table[row][col] = 99
+                            occupied = True
 
-                # if occupied:
-                #     continue
+                if occupied:
+                    continue
 
                 if mp_table[row][col] == 999:
                     continue
@@ -295,7 +300,6 @@ def find_prev_step(pos, side_length, moveable_area):
     
 
 def findpath(instance, target, moveable_area):
-    logger = logging.getLogger('main')
     logger.debug(f"{__name__} start")
 
     path = []

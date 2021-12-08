@@ -91,8 +91,8 @@ class Character(pygame.sprite.Sprite):
             self.category_level = self.category
         if 'category-level' in s1_story["人物"][name]:
             self.category_level = s1_story["人物"][name]['category-level']
-        if 'group' in s1_story["人物"][name]:
-            self.group = s1_story["人物"][name]['group']
+        # if 'group' in s1_story["人物"][name]:
+        #     self.group = s1_story["人物"][name]['group']
         
         self.move_power = DEFAULT_MOVE_POWER
         self.hit_area = DEFAULT_HIT_AREA
@@ -119,29 +119,38 @@ class Character(pygame.sprite.Sprite):
         if 'spc_img' in s1_story["人物"][name]:
             self.spc_img = pygame.image.load(s1_story["人物"][name]['spc_img']).convert()
         
+        self.frame = 1
         if 'direction' in s1_story["人物"][name]:
             if s1_story["人物"][name]['direction'] == 'right':
-                self.image = self.unit_img.subsurface(0, UNIT_MOV_LEFT_FRAME * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                self.frame = BF_CHAR_FRAME_MOVELEFT
+                self.pic_direct = BF_CHAR_FACE_RIGHT
+                self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_LEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
                 self.image = pygame.transform.flip(self.image, True, False)
             elif s1_story["人物"][name]['direction'] == 'left':
-                self.image = self.unit_img.subsurface(0, UNIT_MOV_LEFT_FRAME * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                self.frame = BF_CHAR_FRAME_MOVELEFT
+                self.pic_direct = BF_CHAR_FACE_LEFT
+                self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_LEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
             elif s1_story["人物"][name]['direction'] == 'up':
-                self.image = self.unit_img.subsurface(0, UNIT_MOV_UP_FRAME * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                self.frame = BF_CHAR_FRAME_MOVEUP
+                self.pic_direct = BF_CHAR_FACE_UP
+                self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_UP - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
             else:
-                self.image = self.unit_img.subsurface(0, UNIT_MOV_DOWN_FRAME, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                self.frame = BF_CHAR_FRAME_MOVEDOWN
+                self.pic_direct = BF_CHAR_FACE_DOWN
+                self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_DOWN - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
         else:
-            # print(name, self.leftdown_img, self.rightup_img)
-            self.image = self.unit_img.subsurface(0, UNIT_MOV_DOWN_FRAME, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+            self.frame = BF_CHAR_FRAME_MOVEDOWN
+            self.pic_direct = BF_CHAR_FACE_DOWN
+            self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_DOWN - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
         
-        self.frame = 1
         if 'frame' in s1_story["人物"][name]:
             self.frame = s1_story["人物"][name]['frame']
             frame_index = s1_story["人物"][name]['frame'] - 1
             self.image = self.unit_img.subsurface(0, frame_index * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
 
-        self.troop_group = FIELD_TROOP_ENEMY
+        self.group = FIELD_TROOP_ENEMY
         if 'group' in s1_story["人物"][name]:
-            self.troop_group = s1_story["人物"][name]['group']
+            self.group = s1_story["人物"][name]['group']
         
         self.image.set_colorkey(COLOR_KEY)
         self.rect = pygame.Rect(0, 0, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
@@ -167,7 +176,6 @@ class Character(pygame.sprite.Sprite):
             return
 
         now = pygame.time.get_ticks()
-        # print(now, self.prev_tick)
         if now - self.prev_tick > self.actframe_last:
             self.act += 1
             if self.act >= len(s1_story["时间轴"][str(timeline)][self.name]):
@@ -227,7 +235,6 @@ class Character(pygame.sprite.Sprite):
 
     def move(self):
         if cur_action['action'] == 'MOVE_CHARACTER' and self == cur_instance:
-            # print("to calc move")
             self.move_path = findpath(self, (self.target_row, self.target_col), moveable_area)
             logger.debug("Move path:")
             logger.debug(self.move_path)
@@ -274,7 +281,7 @@ class Character(pygame.sprite.Sprite):
                         self.pic_direct = BF_CHAR_FACE_LEFT 
                     elif self.move_path[cur_action['step'] + 1][1] > self.move_path[cur_action['step']][1]:
                         self.pic_direct = BF_CHAR_FACE_RIGHT
-                # print(self.pic_direct)
+                
                 if self.pic_direct == BF_CHAR_FACE_LEFT:
                     self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVELEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
                 elif self.pic_direct == BF_CHAR_FACE_RIGHT:
@@ -318,7 +325,7 @@ class Character(pygame.sprite.Sprite):
                 self.frame -= 1
             else:
                 self.frame += 1
-            print(self.name, self.frame)
+            
             self.image = self.unit_img.subsurface(0, (self.frame - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
             self.image.set_colorkey(COLOR_KEY)
 
@@ -326,10 +333,10 @@ class Character(pygame.sprite.Sprite):
         if 'MOVE_CHARACTER' in cur_action['action'] and self == cur_instance:
             self.move()
 
-        global timeline
+        # global timeline
         if timeline == 999:
             return self.poll()
-
+        
         if s1_story["时间轴"][str(timeline)]["类型"] == '结束':
              return
 

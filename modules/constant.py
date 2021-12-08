@@ -36,14 +36,14 @@ MBINFO_DIALOG_HEIGHT = 140
 MIINFO_DIALOG_WIDTH = 200   # map item dialog
 MIINFO_DIALOG_HEIGHT = 105
 
-UNIT_MOV_LEFT_FRAME = 4     # This frame start from 0
-UNIT_MOV_RIGHT_FRAME = 4
-UNIT_MOV_DOWN_FRAME = 0
-UNIT_MOV_UP_FRAME = 2
+# UNIT_MOV_LEFT_FRAME = 4     # This frame start from 0
+# UNIT_MOV_RIGHT_FRAME = 4
+# UNIT_MOV_DOWN_FRAME = 0
+# UNIT_MOV_UP_FRAME = 2
 
 FIELD_TROOP_US = 0          # On battle field, our troop
 FIELD_TROOP_ENEMY = 1       # Enemy
-# FIELD_TROOP_ALLY = 2       # AllY
+FIELD_TROOP_ALLY = 2       # AllY
 
 FONT_SONGTI = 'resource/font/FangZhengShuSong-GBK-1.ttf'
 # FONT_NAME_CHN = 'resource/font/FangZhengHeiTI.ttf'
