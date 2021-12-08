@@ -151,8 +151,6 @@ class Character(pygame.sprite.Sprite):
         self.rect.y = s1_story["人物"][name]['starty'] * FIELD_UNIT_SIZE
         self.col = s1_story["人物"][name]['startx']
         self.row = s1_story["人物"][name]['starty']
-        # self.original_x = self.rect.x
-        # self.original_y = self.rect.y
 
         self.prev_tick = pygame.time.get_ticks()
         self.cur_pic = 0
@@ -228,21 +226,80 @@ class Character(pygame.sprite.Sprite):
                 self.image.set_colorkey(COLOR_BLACK)
 
     def move(self):
-        # print(cur_action['action'])
         if cur_action['action'] == 'MOVE_CHARACTER' and self == cur_instance:
             # print("to calc move")
             self.move_path = findpath(self, (self.target_row, self.target_col), moveable_area)
-            print(self.move_path)
+            logger.debug("Move path:")
+            logger.debug(self.move_path)
             cur_action['action'] = 'MOVE_CHARACTER_START'
-            cur_action['step'] = 0
+            cur_action['step'] = 1
+            self.mov_tick = pygame.time.get_ticks()
+            self.original_row = self.row
+            self.original_col = self.col
+            self.original_image = self.image
+        elif cur_action['action'] == 'MOVE_CHARACTER_DONE' and self == cur_instance:
+            del self.original_row
+            del self.original_col
+            if self.pic_direct == BF_CHAR_FACE_LEFT:
+                self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_LEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+            elif self.pic_direct == BF_CHAR_FACE_RIGHT:
+                self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_LEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                self.image = pygame.transform.flip(self.image, True, False)
+            elif self.pic_direct == BF_CHAR_FACE_UP:
+                self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_UP - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+            elif self.pic_direct == BF_CHAR_FACE_DOWN:
+                self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_DOWN - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+
+            self.image.set_colorkey(COLOR_KEY)
+            cur_action['target_cycle'] = 0
+            cur_action["action"] = ''
+        elif cur_action['action'] == 'MOVE_CHARACTER_RESTORE' and self == cur_instance:
+            self.row = self.original_row
+            self.col = self.original_col
+            self.image = self.original_image
+            self.image.set_colorkey(COLOR_KEY)
+            self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
+            self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
+            cur_action['target_cycle'] = 0
+            cur_action["action"] = ''
         elif cur_action['action'] == 'MOVE_CHARACTER_START' and self == cur_instance:
-            # print("step", cur_action['step'])
-            if cur_action['step'] < len(self.move_path):
+            now = pygame.time.get_ticks()
+            if now - self.mov_tick > FIELD_MOVE_FAST and cur_action['step'] < len(self.move_path):
+                if cur_action['step'] < len(self.move_path) - 1:
+                    if self.move_path[cur_action['step'] + 1][0] < self.move_path[cur_action['step']][0]:
+                        self.pic_direct = BF_CHAR_FACE_UP
+                    elif self.move_path[cur_action['step'] + 1][0] > self.move_path[cur_action['step']][0]:
+                        self.pic_direct = BF_CHAR_FACE_DOWN
+                    elif self.move_path[cur_action['step'] + 1][1] < self.move_path[cur_action['step']][1]:
+                        self.pic_direct = BF_CHAR_FACE_LEFT 
+                    elif self.move_path[cur_action['step'] + 1][1] > self.move_path[cur_action['step']][1]:
+                        self.pic_direct = BF_CHAR_FACE_RIGHT
+                # print(self.pic_direct)
+                if self.pic_direct == BF_CHAR_FACE_LEFT:
+                    self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVELEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                elif self.pic_direct == BF_CHAR_FACE_RIGHT:
+                    self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVELEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                    self.image = pygame.transform.flip(self.image, True, False)
+                elif self.pic_direct == BF_CHAR_FACE_UP:
+                    self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVEUP - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                elif self.pic_direct == BF_CHAR_FACE_DOWN:
+                    self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVEDOWN - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+
+                self.image.set_colorkey(COLOR_KEY)
                 self.row = self.move_path[cur_action['step']][0]
                 self.col = self.move_path[cur_action['step']][1]
                 self.rect.x = self.col * FIELD_UNIT_SIZE + LEFTTOP_X
                 self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
-                cur_action['step'] += 1
+
+                if cur_action['step'] == len(self.move_path) - 1:
+                    cur_action['target_cycle'] = now + 1
+                    cur_action["action"] = 'DISPLAY_INSTANCE_MENU'
+                    cur_action['second'] = 'MOVE_CHARACTER_FINISH'
+                    cur_action['step'] += 1     # to skip out this section in next loop
+                    logger.debug("set it")
+                else:
+                    cur_action['step'] += 1
+                    self.mov_tick = now
             
         global timeline
 
@@ -252,63 +309,6 @@ class Character(pygame.sprite.Sprite):
         s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 
         s.fill(MOVE_BG_COLOR)    
         screen.blit(s, (self.rect.x - FIELD_UNIT_SIZE, self.rect.y - FIELD_UNIT_SIZE))
-
-        # h_direct = 'left'
-        # if 'h-direct' in s1_story["时间轴"][str(timeline)][self.name]:
-        #     h_direct = s1_story["时间轴"][str(timeline)][self.name]['h-direct']
-        # v_direct = 'down'
-        # if 'v-direct' in s1_story["时间轴"][str(timeline)][self.name]:
-        #     v_direct = s1_story["时间轴"][str(timeline)][self.name]['v-direct']
-        
-        # if 'benchmark' in s1_story["时间轴"][str(timeline)] and self.name == s1_story["时间轴"][str(timeline)]["benchmark"] :
-        #     end_pivot = 'endx'
-        #     if 'end-pivot' in s1_story["时间轴"][str(timeline)][self.name]:
-        #         end_pivot = s1_story["时间轴"][str(timeline)][self.name]['end-pivot']
-
-        #     if end_pivot == 'endx':
-        #         if h_direct == 'left':
-        #             if self.rect.x < s1_story["时间轴"][str(timeline)][self.name]['endx']:
-        #                 timeline += 1
-        #                 return
-        #         else:
-        #             if self.rect.x > s1_story["时间轴"][str(timeline)][self.name]['endx']:
-        #                 timeline += 1
-                        
-        #     else:
-        #         if v_direct == 'up':
-        #             if self.rect.y < s1_story["时间轴"][str(timeline)][self.name]['endy']:
-        #                 timeline += 1
-        #                 return
-        #         else:
-        #             if self.rect.y > s1_story["时间轴"][str(timeline)][self.name]['endy']:
-        #                 timeline += 1
-        #                 return    
-        
-        # # by default, h direct is left, v direct is down
-        # if h_direct == 'left':
-        #     self.rect.x -= s1_story["时间轴"][str(timeline)][self.name]['speedx']
-        # else:
-        #     self.rect.x += s1_story["时间轴"][str(timeline)][self.name]['speedx']
-        
-        # if v_direct == 'up':
-        #     self.rect.y -= s1_story["时间轴"][str(timeline)][self.name]['speedy']
-        # else:
-        #     self.rect.y += s1_story["时间轴"][str(timeline)][self.name]['speedy']
-        
-        # now = pygame.time.get_ticks()
-        # # print(now, self.prev_tick)
-        # if now - self.prev_tick > 70:
-        #     if self.cur_pic >= 2:
-        #         self.pic_direct *= -1
-        #     self.cur_pic += self.pic_direct
-        #     if self.cur_pic <= 0:
-        #         self.pic_direct *= -1
-            
-        #     self.prev_tick = now
-
-        # self.image = self.main_image.subsurface(0, 64 * self.cur_pic, 48, 64)
-        # # Looks like if it is PNG file, do not need to call set_colorkey every time; but for BMP, it does
-        # self.image.set_colorkey(COLOR_KEY)
 
     def poll(self):
         now = pygame.time.get_ticks()
@@ -363,10 +363,6 @@ def b1_main():
     screen.blit(background_img, (LEFTTOP_X, LEFTTOP_Y))
 
     cycle_tick = pygame.time.get_ticks()
-    # if s1_story["时间轴"][str(timeline)]["类型"] == '结束':
-    #     all_sprites.empty()
-    #     root.after(1000 // FPS, parent_func)
-    #     return
 
     for event in pygame.event.get():
         # print("evnet in s1_entrance", event, pygame.mouse.get_pos())
@@ -425,6 +421,7 @@ def b1_main():
                     # sequential click, decide move target
 
                     clicked_on_same = False
+                    clicked_on_others = False
                     for name, instance in all_characters.items():
                         # print(c)
                         if instance.rect.collidepoint(mouse_pos):
@@ -433,10 +430,12 @@ def b1_main():
                                 cur_action['action'] = 'DISPLAY_INSTANCE_MENU'
                                 clicked_on_same = True
                                 break
-
+                            elif cur_instance:
+                                clicked_on_others = True
+                    
                     if not clicked_on_same:
-                        clicked_pos = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE, 
-                            FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
+                        # clicked_pos = (FIELD_UNIT_SIZE * (mouse_pos[0] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE, 
+                        #     FIELD_UNIT_SIZE * (mouse_pos[1] // FIELD_UNIT_SIZE) - FIELD_UNIT_SIZE)
                         clicked_row = (mouse_pos[1] - LEFTTOP_Y) // FIELD_UNIT_SIZE
                         clicked_col = (mouse_pos[0] - LEFTTOP_X) // FIELD_UNIT_SIZE
                         row = cur_instance.move_power + (clicked_row - cur_instance.row)
@@ -444,10 +443,13 @@ def b1_main():
                         # print(clicked_row, clicked_col)
                         # print(cur_instance.row, cur_instance.col)
                         # print(moveable_area)
-                        if row < 0 or row > cur_instance.move_power * 2 or \
+                        if clicked_on_others:
+                            cur_action['action'] = 'DISPLAY_INFO_DIALOG'
+                            cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
+                            cur_action['text'] = "不是移动范围"
+                            cur_action['start_click'] = cycle_tick
+                        elif row < 0 or row > cur_instance.move_power * 2 or \
                             col < 0 or col > cur_instance.move_power * 2:
-                            # draw_bfinfo(screen, "不是移动范围")
-                            # cur_action['target_cycle'] = cycle_tick + 1
                             cur_action['action'] = 'DISPLAY_INFO_DIALOG'
                             cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
                             cur_action['text'] = "不是移动范围"
@@ -514,7 +516,7 @@ def b1_main():
                     cur_action['action'] = ""
                     cur_instance = None
                     mbinfo_switch = None
-            
+                
             # options = s1_story["时间轴"][str(timeline)]['选项'].split("\n")
             # selected = False
             # if option_rects:
@@ -650,15 +652,23 @@ def b1_main():
             cur_action['target_cycle'] = cycle_tick + 1
             cur_action["action"] = 'DISPLAY_MP_SELECTOR'
         elif bf_menu.choice == 'quit':
-            cur_action['target_cycle'] = 0
-            cur_action["action"] = ''
-            mbinfo_switch = None
-            cur_instance = None
-
+            logger.debug("Quit from menu")
+            if cur_action['second'] == 'MOVE_CHARACTER_FINISH':
+                cur_action['action'] = 'MOVE_CHARACTER_RESTORE'
+            else:
+                cur_action['target_cycle'] = 0
+                cur_action["action"] = ''
+                mbinfo_switch = None
+                cur_instance = None
+        elif bf_menu.choice == '待命':
+            if cur_action['second'] == 'MOVE_CHARACTER_FINISH':
+                cur_action['action'] = 'MOVE_CHARACTER_DONE'
+                
     if cur_action['target_cycle'] <= cycle_tick and cur_action['action'] == 'DISPLAY_MP_SELECTOR':
         mp_selector = MPSelector(root, cur_instance, x=root.winfo_x() + (cur_instance.col + 2) * FIELD_UNIT_SIZE + LEFTTOP_X, 
             y=root.winfo_y() + (cur_instance.row + 1) * FIELD_UNIT_SIZE + LEFTTOP_Y)
         if mp_selector.choice == 'quit':
+            logger.debug("set it")
             cur_action['target_cycle'] = cycle_tick + 1
             cur_action["action"] = 'DISPLAY_INSTANCE_MENU'
     

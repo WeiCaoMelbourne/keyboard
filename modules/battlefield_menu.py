@@ -87,18 +87,22 @@ class BattlefieldMenu():
 
         item_img5 = tk.PhotoImage(file="resource/mark/Cmdicon_104.png")
         okBtn = tk.Button(self.root, text='取消', image=item_img5, compound=tk.LEFT, height=14,
-            padx=20, command=self.ok)
+            padx=20, command=self.cancel)
         okBtn.pack(fill=tk.X, ipady=2, pady=4)
         
         parent.wait_window(self.root)
 
     def rightclicked(self, event):
         # self.state['starting'] = False
-        print("right clicked")
         self.root.destroy()
         self.choice = "quit"
 
     def ok(self):
+        # self.state['starting'] = False
+        self.root.destroy()
+        self.choice = "待命"
+
+    def cancel(self):
         # self.state['starting'] = False
         self.root.destroy()
         self.choice = "quit"
