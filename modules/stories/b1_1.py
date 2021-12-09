@@ -2,7 +2,7 @@ import pygame
 
 from modules.toolbar import characters
 from ..common_funcs import draw_selecter, bdraw_dialog, draw_mousebox, draw_mbinfo, draw_miinfo, draw_bfinfo
-from ..battlefield_action import make_movearea, draw_movearea, draw_attack, findpath
+from ..battlefield_action import make_movearea, draw_movearea, draw_attack, findpath, auto
 import json
 from ..constant import *
 from ..win_pos import window_pos
@@ -235,8 +235,10 @@ class Character(pygame.sprite.Sprite):
                 self.image.set_colorkey(COLOR_BLACK)
 
     def move(self):
+        global timeline
+
         if cur_action['action'] == 'MOVE_CHARACTER' and self == cur_instance:
-            self.move_path = findpath(self, (self.target_row, self.target_col), moveable_area)
+            self.move_path = findpath(self, (self.target_row, self.target_col), cur_instance.moveable_area)
             logger.debug("Move path:")
             logger.debug(self.move_path)
             cur_action['action'] = 'MOVE_CHARACTER_START'
@@ -273,6 +275,7 @@ class Character(pygame.sprite.Sprite):
         elif cur_action['action'] == 'MOVE_CHARACTER_START' and self == cur_instance:
             now = pygame.time.get_ticks()
             if now - self.mov_tick > FIELD_MOVE_FAST and cur_action['step'] < len(self.move_path):
+                print("MOVE_CHARACTER_START", cur_action['step'])
                 if cur_action['step'] < len(self.move_path) - 1:
                     if self.move_path[cur_action['step'] + 1][0] < self.move_path[cur_action['step']][0]:
                         self.pic_direct = BF_CHAR_FACE_UP
@@ -300,18 +303,20 @@ class Character(pygame.sprite.Sprite):
                 self.rect.y = self.row * FIELD_UNIT_SIZE + LEFTTOP_Y
 
                 if cur_action['step'] == len(self.move_path) - 1:
+                    print("set action to DISPLAY_INSTANCE_MENU")
                     cur_action['target_cycle'] = now + 1
-                    cur_action["action"] = 'DISPLAY_INSTANCE_MENU'
-                    cur_action['second'] = 'MOVE_CHARACTER_FINISH'
                     cur_action['step'] += 1     # to skip out this section in next loop
-                    logger.debug("set it")
+                    if s1_story["时间轴"][str(timeline)]["类型"] == "自动":
+                        cur_action["action"] = self.next_action
+                    else:
+                        cur_action["action"] = 'DISPLAY_INSTANCE_MENU'
+                        cur_action['second'] = 'MOVE_CHARACTER_FINISH'
                 else:
+                    print("DO NOT set action to DISPLAY_INSTANCE_MENU")
                     cur_action['step'] += 1
                     self.mov_tick = now
             
-        global timeline
-
-        if self.name != s1_story["时间轴"][str(timeline)]['人物']:
+        if '人物' in s1_story["时间轴"][str(timeline)] and self.name != s1_story["时间轴"][str(timeline)]['人物']:
             return
         
         s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 
@@ -330,9 +335,38 @@ class Character(pygame.sprite.Sprite):
             self.image = self.unit_img.subsurface(0, (self.frame - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
             self.image.set_colorkey(COLOR_KEY)
 
+    def auto(self):
+        now = pygame.time.get_ticks()
+
+        # if hasattr(self, 'auto_state') and self.auto_state == 'done':
+        #     return
+
+        if self.name == '弓兵2':
+            if 'MOVE_CHARACTER' in cur_action['action']:
+                self.move()
+                # self.auto_state = 'done'
+            elif cur_action['action'] == "AUTO_MOVE":
+                draw_attack(screen, self, (LEFTTOP_X, LEFTTOP_Y))
+            elif cur_action['action'] == "AUTO_ATTACK":
+                print("AUTO_ATTACK!!!")
+                draw_attack(screen, self, (LEFTTOP_X, LEFTTOP_Y))
+            else:
+                global timeline, cur_instance
+                # print("auto")
+                ret = auto(self, terrain_details, mblocks_info, all_characters, groups)
+                cur_action['action'] = ret['action']
+                self.next_action = ret['next_action']
+                self.moveable_area = ret['moveable_area']
+                self.target_col = ret['target_col']
+                self.target_row = ret['target_row']
+                cur_instance = self
+            # timeline += 1
+
     def update(self):
-        if 'MOVE_CHARACTER' in cur_action['action'] and self == cur_instance:
-            self.move()
+        if s1_story["时间轴"][str(timeline)]["类型"] == "玩家":
+            if 'MOVE_CHARACTER' in cur_action['action'] and self == cur_instance:
+                self.move()
+                return
 
         # global timeline
         if timeline == 999:
@@ -343,6 +377,8 @@ class Character(pygame.sprite.Sprite):
 
         if s1_story["时间轴"][str(timeline)]["类型"] == "移动":
             self.move()
+        elif s1_story["时间轴"][str(timeline)]["类型"] == "自动":
+            self.auto()
         elif s1_story["时间轴"][str(timeline)]["类型"] == "动画":
             self.play()
         elif s1_story["时间轴"][str(timeline)]["类型"] == "死亡":
@@ -366,7 +402,7 @@ class Character(pygame.sprite.Sprite):
 
 def b1_main():
     global act, option_rects, timeline, selection, select_time, LEFTTOP_Y, \
-        mbinfo_switch, mbinfo_pos, mb_type, cur_instance, moveable_area, cur_action
+        mbinfo_switch, mbinfo_pos, mb_type, cur_instance, cur_action
 
     screen.blit(background_img, (LEFTTOP_X, LEFTTOP_Y))
 
@@ -476,7 +512,7 @@ def b1_main():
                                 cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
                                 cur_action['text'] = "不是移动范围"
                                 cur_action['start_click'] = cycle_tick
-                            elif moveable_area[row][col] > cur_instance.move_power:
+                            elif cur_instance.moveable_area[row][col] > cur_instance.move_power:
                                 cur_action['action'] = 'DISPLAY_INFO_DIALOG'
                                 cur_action['prev_action'] = 'DISPLAY_MOVE_AREA'
                                 cur_action['text'] = "不是移动范围"
@@ -495,7 +531,7 @@ def b1_main():
                             clicked_on_char = True
                             cur_instance = instance
                             # draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), 6, terrain_details, mblocks_info)
-                            moveable_area = make_movearea(cur_instance, terrain_details, mblocks_info, all_characters, groups)
+                            cur_instance.moveable_area = make_movearea(cur_instance, terrain_details, mblocks_info, all_characters, groups)
                             # cur_action['target_cycle'] = cycle_tick + 1
                             cur_action["action"] = 'DISPLAY_MOVE_AREA'
                             break
@@ -587,7 +623,8 @@ def b1_main():
         draw_mbinfo(screen, mbinfo_pos, mb_type, terrain_details)
 
     if cur_instance and cur_action['action'] == "DISPLAY_MOVE_AREA":
-        draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), moveable_area)
+        logger.debug("DISPLAY_MOVE_AREA")
+        draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), cur_instance.moveable_area)
         draw_attack(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y))
 
     # print(cur_action['action'])
@@ -764,7 +801,8 @@ def b1_entrance(parent_root, parent_screen, parent_cur, parent_tool_bar, global_
 
     # 999 for testing only
     # timeline = 999
-    timeline = 0
+    # timeline = 0
+    timeline = 22  # TODO AUTO test
 
     # Initial screen
     for sprite in all_sprites:

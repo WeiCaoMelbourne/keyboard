@@ -254,6 +254,55 @@ def draw_attack(screen, instance, shift):
         draw_hitsqure(screen, ((instance.col)* FIELD_UNIT_SIZE + shift[0], (instance.row + 2) * FIELD_UNIT_SIZE + shift[1]))
         draw_hitsqure(screen, ((instance.col)* FIELD_UNIT_SIZE + shift[0], (instance.row - 2) * FIELD_UNIT_SIZE + shift[1]))
 
+def get_attackable(instance):
+    attack_area = []
+    if instance.hit_area == 'A':
+        attack_area.append((instance.row + 1, instance.col))
+        attack_area.append((instance.row - 1, instance.col))
+        attack_area.append((instance.row, instance.col + 1))
+        attack_area.append((instance.row, instance.col - 1))
+    elif instance.hit_area == 'B':
+        attack_area.append((instance.row - 1, instance.col - 1))
+        attack_area.append((instance.row - 1, instance.col))
+        attack_area.append((instance.row - 1, instance.col + 1))
+        attack_area.append((instance.row, instance.col - 1))
+        attack_area.append((instance.row, instance.col + 1))
+        attack_area.append((instance.row + 1, instance.col - 1))
+        attack_area.append((instance.row + 1, instance.col))
+        attack_area.append((instance.row + 1, instance.col + 1))
+    elif instance.hit_area == 'E':
+        attack_area.append((instance.row + 2, instance.col))
+        attack_area.append((instance.row - 2, instance.col))
+        attack_area.append((instance.row, instance.col + 2))
+        attack_area.append((instance.row, instance.col - 2))
+    
+    return attack_area
+
+# Find attackable location from source
+def get_attackable2(source, hit_area):
+    attack_area = []
+    if hit_area == 'A':
+        attack_area.append((source[0] + 1, source[1]))
+        attack_area.append((source[0] - 1, source[1]))
+        attack_area.append((source[0], source[1] + 1))
+        attack_area.append((source[0], source[1] - 1))
+    elif hit_area == 'B':
+        attack_area.append((source[0] - 1, source[1] - 1))
+        attack_area.append((source[0] - 1, source[1]))
+        attack_area.append((source[0] - 1, source[1] + 1))
+        attack_area.append((source[0], source[1] - 1))
+        attack_area.append((source[0], source[1] + 1))
+        attack_area.append((source[0] + 1, source[1] - 1))
+        attack_area.append((source[0] + 1, source[1]))
+        attack_area.append((source[0] + 1, source[1] + 1))
+    elif hit_area == 'E':
+        attack_area.append((source[0] + 2, source[1]))
+        attack_area.append((source[0] - 2, source[1]))
+        attack_area.append((source[0], source[1] + 2))
+        attack_area.append((source[0], source[1] - 2))
+    
+    return attack_area
+
 # convert a (row, col) on map to (row, col) in a array centered instance,
 # array size is instance.move_power * 2 + 1
 def convert_mappos_to_centralpos(instance, map_pos):
@@ -298,7 +347,7 @@ def find_prev_step(pos, side_length, moveable_area):
     
 
 def findpath(instance, target, moveable_area):
-    logger.debug(f"{__name__} start")
+    logger.debug(f"findpath start. instance name: {instance.name}")
 
     path = []
     step = target
@@ -398,3 +447,59 @@ def findpath(instance, target, moveable_area):
     # path.reverse()
     # print(path)
     # return path
+
+def auto(instance, terrain_details, mblocks_info, all_characters, groups):
+    logger.debug(f"auto start. instance name:{instance.name}, location:{instance.row}, {instance.col}")
+    # Check HP
+
+    # For all the attacks, get all the location it can approach, and make all enemies into
+    # a list, then loop the list to find the best target
+    moveable_area = make_movearea(instance, terrain_details, mblocks_info, all_characters, groups)
+    print(moveable_area)
+    movable = []
+    for row in range(0, len(moveable_area)):
+        for col in range(0, len(moveable_area[0])):
+            if moveable_area[row][col] <= instance.move_power:
+                movable.append(convert_centralpos_to_mappos(instance, (row, col)))
+    print(movable)
+    attackable = {}
+    for i in movable:
+        attack_area = get_attackable2(i, instance.hit_area)
+        for name, c in all_characters.items():
+            if c.group != instance.group and c.group in groups[instance.group]['敌军']:
+                # print("Enemy found", c.name, c.row, c.col)
+                if (c.row, c.col) in attack_area:
+                    logger.debug(f"Enemy found, name:{c.name}, location:{c.row}, {c.col}, source:{i[0]}, {i[1]}")
+                    attackable[i] = c 
+                
+    print(attackable)
+    min_HP = 999
+    target_pos = None
+    target_enemy = None
+    for pos, c in attackable.items():
+        if c.HP < min_HP:
+            min_HP = c.HP
+            target_pos = pos
+            target_enemy = c
+    # print(c.name, target_pos)
+    logger.debug(f"Target, name:{target_enemy.name}, row:{target_enemy.row}, col:{target_enemy.col}, move target:{target_pos[0]}, {target_pos[1]}")
+    return {
+        'action': 'MOVE_CHARACTER',
+        'next_action': 'AUTO_ATTACK',
+        'target_enemy': target_enemy,
+        'target_row': target_pos[0],
+        'target_col': target_pos[1],
+        'moveable_area': moveable_area
+    }
+    # 1. If there is any enemy in attach area
+    # attack_area = get_attack_area(instance)
+    # attackable = []
+    # for name, c in all_characters.items():
+    #     if c.group != instance.group and c.group in groups[instance.group]['敌军']:
+    #         # print("Enemy found", c.name, c.row, c.col)
+    #         if (c.row, c.col) in attack_area:
+    #             logger.debug(f"Enemy found, name:{c.name}, location:{c.row}, {c.col}")
+    #             attackable.append(c)
+
+    # return 'TO_ATTACK'
+        # draw_attack(screen, instance, shift)
