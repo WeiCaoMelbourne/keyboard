@@ -2,7 +2,7 @@ import pygame
 
 from modules.toolbar import characters
 from ..common_funcs import draw_selecter, bdraw_dialog, draw_mousebox, draw_mbinfo, draw_miinfo, draw_bfinfo
-from ..battlefield_action import make_movearea, draw_movearea, draw_attack, findpath, auto
+from ..battlefield_action import make_movearea, draw_movearea, draw_attackarea, findpath, auto
 import json
 from ..constant import *
 from ..win_pos import window_pos
@@ -166,7 +166,7 @@ class Character(pygame.sprite.Sprite):
         self.cur_pic = 0
         self.pic_direct = 1
         self.act = -1
-        self.actframe_last = FIELD_ACT_FRAME_LAST
+        self.actframe_last = FIELD_PLAY_FRAME_LAST
         self.die_flick = 0
 
     def play(self):
@@ -191,7 +191,7 @@ class Character(pygame.sprite.Sprite):
             if 'last' in s1_story["时间轴"][str(timeline)][self.name][self.act]:
                 self.actframe_last = s1_story["时间轴"][str(timeline)][self.name][self.act]['last']
             else:
-                self.actframe_last = FIELD_ACT_FRAME_LAST
+                self.actframe_last = FIELD_PLAY_FRAME_LAST
             self.prev_tick = now
             
         if s1_story["时间轴"][str(timeline)][self.name][self.act]['img'] == 'atk_img':
@@ -335,6 +335,34 @@ class Character(pygame.sprite.Sprite):
             self.image = self.unit_img.subsurface(0, (self.frame - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
             self.image.set_colorkey(COLOR_KEY)
 
+    def attack(self):
+        # if not hasattr(self, 'target_enemy'):
+        #     logger.debug(f"Character {self.name} does not have 'target_enemy' property")
+        #     return
+        
+        
+        now = pygame.time.get_ticks()
+        if now - self.prev_tick > FIELD_ATK_FRAME_LAST:
+            logger.debug(f"Character {self.name} attack. act: {self.act}")
+            self.prev_tick = now
+
+            if self.pic_direct == BF_CHAR_FACE_LEFT:
+                self.image = self.atk_img.subsurface(0, (BF_CHAR_FRAMEATK_LEFT - 1 + self.act) * FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
+            elif self.pic_direct == BF_CHAR_FACE_RIGHT:
+                self.image = self.atk_img.subsurface(0, (BF_CHAR_FRAMEATK_LEFT - 1 + self.act) * FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
+                self.image = pygame.transform.flip(self.image, True, False)
+            elif self.pic_direct == BF_CHAR_FACE_UP:
+                self.image = self.atk_img.subsurface(0, (BF_CHAR_FRAMEATK_UP - 1 + self.act) * FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
+            elif self.pic_direct == BF_CHAR_FACE_DOWN:
+                self.image = self.atk_img.subsurface(0, (BF_CHAR_FRAMEATK_DOWN - 1 + self.act) * FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
+            
+            self.image.set_colorkey(COLOR_KEY)
+            self.act += 1
+            if self.act >= 4:   # Attack has 4 frames
+                self.act = 0
+                # cur_action['action'] = 'NONE'   # TODO
+                return
+
     def auto(self):
         now = pygame.time.get_ticks()
 
@@ -345,11 +373,37 @@ class Character(pygame.sprite.Sprite):
             if 'MOVE_CHARACTER' in cur_action['action']:
                 self.move()
                 # self.auto_state = 'done'
+            elif cur_action['action'] == "ATTACK":
+                self.attack()
             elif cur_action['action'] == "AUTO_MOVE":
-                draw_attack(screen, self, (LEFTTOP_X, LEFTTOP_Y))
+                draw_attackarea(screen, self, (LEFTTOP_X, LEFTTOP_Y))
             elif cur_action['action'] == "AUTO_ATTACK":
-                print("AUTO_ATTACK!!!")
-                draw_attack(screen, self, (LEFTTOP_X, LEFTTOP_Y))
+                # print("AUTO_ATTACK!!!")
+                if hasattr(self, 'target_enemy'):
+                    if self.target_enemy.row < self.row:
+                        self.pic_direct = BF_CHAR_FACE_UP
+                    elif self.target_enemy.row > self.row:
+                        self.pic_direct = BF_CHAR_FACE_DOWN
+                    elif self.target_enemy.col < self.col:
+                        self.pic_direct = BF_CHAR_FACE_LEFT 
+                    elif self.target_enemy.col > self.col:
+                        self.pic_direct = BF_CHAR_FACE_RIGHT
+                    
+                    if self.pic_direct == BF_CHAR_FACE_LEFT:
+                        self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVELEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                    elif self.pic_direct == BF_CHAR_FACE_RIGHT:
+                        self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVELEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                        self.image = pygame.transform.flip(self.image, True, False)
+                    elif self.pic_direct == BF_CHAR_FACE_UP:
+                        self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVEUP - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                    elif self.pic_direct == BF_CHAR_FACE_DOWN:
+                        self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVEDOWN - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+
+                    self.image.set_colorkey(COLOR_KEY)
+
+                draw_attackarea(screen, self, (LEFTTOP_X, LEFTTOP_Y))
+                self.act = 0
+                cur_action['action'] = 'ATTACK'
             else:
                 global timeline, cur_instance
                 # print("auto")
@@ -359,6 +413,8 @@ class Character(pygame.sprite.Sprite):
                 self.moveable_area = ret['moveable_area']
                 self.target_col = ret['target_col']
                 self.target_row = ret['target_row']
+                if 'target_enemy' in ret:
+                    self.target_enemy = ret['target_enemy']
                 cur_instance = self
             # timeline += 1
 
@@ -366,6 +422,9 @@ class Character(pygame.sprite.Sprite):
         if s1_story["时间轴"][str(timeline)]["类型"] == "玩家":
             if 'MOVE_CHARACTER' in cur_action['action'] and self == cur_instance:
                 self.move()
+                return
+            elif cur_action['action'] == 'ATTACK' and self == cur_instance:
+                self.attack()
                 return
 
         # global timeline
@@ -625,7 +684,7 @@ def b1_main():
     if cur_instance and cur_action['action'] == "DISPLAY_MOVE_AREA":
         logger.debug("DISPLAY_MOVE_AREA")
         draw_movearea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y), cur_instance.moveable_area)
-        draw_attack(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y))
+        draw_attackarea(screen, cur_instance, (LEFTTOP_X, LEFTTOP_Y))
 
     # print(cur_action['action'])
     if cur_action['action'] == "DISPLAY_INFO_DIALOG":

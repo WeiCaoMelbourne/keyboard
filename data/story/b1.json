@@ -10,7 +10,8 @@
     "atk_imgs": [
         "resource/unit_atk/黄巾军.bmp",
         "resource/unit_atk/道士.bmp",
-        "resource/unit_atk/步兵.bmp"
+        "resource/unit_atk/步兵.bmp",
+        "resource/unit_atk/弓兵.bmp"
     ],
     "人物": {
         "黄巾军1": {
@@ -227,6 +228,7 @@
         "弓兵1": {
             "display-name": "弓兵",
             "unit_img": 2,
+            "atk_img": 3,
             "spc_img": "resource/unit_spc/弓兵.bmp",
             "startx": 7,
             "starty": 16,
@@ -242,6 +244,7 @@
         "弓兵2": {
             "display-name": "弓兵",
             "unit_img": 2,
+            "atk_img": 3,
             "startx": 12,
             "starty": 17,
             "frame": 10,

@@ -23,7 +23,8 @@ COLOR_KEY_TRANSPARENT = (247, 0, 255, 255)
 MOVE_UNIT = 48
 FIELD_UNIT_SIZE = 48        # on field, each character is 48 * 48
 FIELD_ATK_UNIT_SIZE = 64    # on field, for unit_atk pic, it is 64 * 64
-FIELD_ACT_FRAME_LAST = 70   # on field, when playing act, every frame last 70 minisecond by default
+FIELD_PLAY_FRAME_LAST = 70   # on field, when playing act, every frame last 70 minisecond by default
+FIELD_ATK_FRAME_LAST = 140   # on field, when playing act
 FIELD_DIE_FLICK_LAST = 700
 FIELD_INFO_LAST = 1500
 FIELD_POLL_LAST = 400
@@ -75,3 +76,8 @@ BF_CHAR_FACE_LEFT = 0
 BF_CHAR_FACE_RIGHT = 1
 BF_CHAR_FACE_UP = 2
 BF_CHAR_FACE_DOWN = 3
+
+# for example: resource/unit_atk/弓兵.bmp; every action has 4 frames
+BF_CHAR_FRAMEATK_DOWN = 1  
+BF_CHAR_FRAMEATK_UP = 5  
+BF_CHAR_FRAMEATK_LEFT = 9  

@@ -220,7 +220,7 @@ def draw_hitsqure(screen, pos):
     # tmp_img.set_colorkey(COLOR_KEY)
     screen.blit(hitsqure_img, pos)
 
-def draw_attack(screen, instance, shift):
+def draw_attackarea(screen, instance, shift):
     # s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 
     # s.fill(HITAREA_BG_COLOR)
     # screen.blit(s, ((instance.col + 1)* FIELD_UNIT_SIZE + shift[0], (instance.row + 1) * FIELD_UNIT_SIZE + shift[1]))
@@ -502,4 +502,4 @@ def auto(instance, terrain_details, mblocks_info, all_characters, groups):
     #             attackable.append(c)
 
     # return 'TO_ATTACK'
-        # draw_attack(screen, instance, shift)
+        # draw_attackarea(screen, instance, shift)
