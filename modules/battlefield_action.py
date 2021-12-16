@@ -191,6 +191,7 @@ def make_movearea(instance, terrain_details, mblocks_info, all_characters, group
     return mp_table
 
 def draw_movearea(screen, instance, shift, mp_table):
+    logger.debug(f"draw_movearea start. instance name: {instance.name}")
     # with codecs.open('data/troop-category-levels.csv', "r", "utf-8") as csvfile:
     #     categorylevel_info = list(csv.reader(csvfile, delimiter=','))
 

@@ -275,7 +275,6 @@ class Character(pygame.sprite.Sprite):
         elif cur_action['action'] == 'MOVE_CHARACTER_START' and self == cur_instance:
             now = pygame.time.get_ticks()
             if now - self.mov_tick > FIELD_MOVE_FAST and cur_action['step'] < len(self.move_path):
-                print("MOVE_CHARACTER_START", cur_action['step'])
                 if cur_action['step'] < len(self.move_path) - 1:
                     if self.move_path[cur_action['step'] + 1][0] < self.move_path[cur_action['step']][0]:
                         self.pic_direct = BF_CHAR_FACE_UP
@@ -312,16 +311,11 @@ class Character(pygame.sprite.Sprite):
                         cur_action["action"] = 'DISPLAY_INSTANCE_MENU'
                         cur_action['second'] = 'MOVE_CHARACTER_FINISH'
                 else:
-                    print("DO NOT set action to DISPLAY_INSTANCE_MENU")
                     cur_action['step'] += 1
                     self.mov_tick = now
             
         if '人物' in s1_story["时间轴"][str(timeline)] and self.name != s1_story["时间轴"][str(timeline)]['人物']:
             return
-        
-        s = pygame.Surface((FIELD_UNIT_SIZE, FIELD_UNIT_SIZE), pygame.SRCALPHA) 
-        s.fill(MOVE_BG_COLOR)    
-        screen.blit(s, (self.rect.x - FIELD_UNIT_SIZE, self.rect.y - FIELD_UNIT_SIZE))
 
     def poll(self):
         now = pygame.time.get_ticks()
@@ -347,20 +341,24 @@ class Character(pygame.sprite.Sprite):
             self.prev_tick = now
 
             if self.pic_direct == BF_CHAR_FACE_LEFT:
-                self.image = self.atk_img.subsurface(0, (BF_CHAR_FRAMEATK_LEFT - 1 + self.act) * FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
+                self.image = self.atk_img.subsurface(FIELD_ATK_IMG_SHIFT, 
+                    (BF_CHAR_FRAMEATK_LEFT - 1 + self.act) * FIELD_ATK_UNIT_SIZE + FIELD_ATK_IMG_SHIFT, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
             elif self.pic_direct == BF_CHAR_FACE_RIGHT:
-                self.image = self.atk_img.subsurface(0, (BF_CHAR_FRAMEATK_LEFT - 1 + self.act) * FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
+                self.image = self.atk_img.subsurface(FIELD_ATK_IMG_SHIFT, 
+                    (BF_CHAR_FRAMEATK_LEFT - 1 + self.act) * FIELD_ATK_UNIT_SIZE + FIELD_ATK_IMG_SHIFT, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
                 self.image = pygame.transform.flip(self.image, True, False)
             elif self.pic_direct == BF_CHAR_FACE_UP:
-                self.image = self.atk_img.subsurface(0, (BF_CHAR_FRAMEATK_UP - 1 + self.act) * FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
+                self.image = self.atk_img.subsurface(FIELD_ATK_IMG_SHIFT, 
+                    (BF_CHAR_FRAMEATK_UP - 1 + self.act) * FIELD_ATK_UNIT_SIZE + FIELD_ATK_IMG_SHIFT, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
             elif self.pic_direct == BF_CHAR_FACE_DOWN:
-                self.image = self.atk_img.subsurface(0, (BF_CHAR_FRAMEATK_DOWN - 1 + self.act) * FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE, FIELD_ATK_UNIT_SIZE)
+                self.image = self.atk_img.subsurface(FIELD_ATK_IMG_SHIFT, 
+                    (BF_CHAR_FRAMEATK_DOWN - 1 + self.act) * FIELD_ATK_UNIT_SIZE + FIELD_ATK_IMG_SHIFT, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
             
             self.image.set_colorkey(COLOR_KEY)
             self.act += 1
             if self.act >= 4:   # Attack has 4 frames
                 self.act = 0
-                # cur_action['action'] = 'NONE'   # TODO
+                cur_action['action'] = 'AUTO_DONE'   # TODO
                 return
 
     def auto(self):
@@ -375,8 +373,19 @@ class Character(pygame.sprite.Sprite):
                 # self.auto_state = 'done'
             elif cur_action['action'] == "ATTACK":
                 self.attack()
-            elif cur_action['action'] == "AUTO_MOVE":
-                draw_attackarea(screen, self, (LEFTTOP_X, LEFTTOP_Y))
+            elif cur_action['action'] == "AUTO_DONE":
+                # draw_attackarea(screen, self, (LEFTTOP_X, LEFTTOP_Y))
+                if self.pic_direct == BF_CHAR_FACE_LEFT:
+                    self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVELEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                elif self.pic_direct == BF_CHAR_FACE_RIGHT:
+                    self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVELEFT - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                    self.image = pygame.transform.flip(self.image, True, False)
+                elif self.pic_direct == BF_CHAR_FACE_UP:
+                    self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVEUP - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+                elif self.pic_direct == BF_CHAR_FACE_DOWN:
+                    self.image = self.unit_img.subsurface(0, (BF_CHAR_FRAME_MOVEDOWN - 1) * FIELD_UNIT_SIZE, FIELD_UNIT_SIZE, FIELD_UNIT_SIZE)
+
+                self.image.set_colorkey(COLOR_KEY)
             elif cur_action['action'] == "AUTO_ATTACK":
                 # print("AUTO_ATTACK!!!")
                 if hasattr(self, 'target_enemy'):
